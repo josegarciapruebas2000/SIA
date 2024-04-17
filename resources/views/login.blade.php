@@ -88,6 +88,7 @@
                                 <div class="d-flex justify-content-center align-items-center h-100">
                                     <div style="width: 90%;"> <!-- Establecer el ancho del contenedor del formulario al 90% -->
                                         <h2 class="text-center mb-4">Iniciar sesión</h2>
+                                        <h2 class="text-center mb-4">Holi</h2>
                                         <form action="#" method="post">
                                             <div class="form-group" style="width: 90%;"> <!-- Establecer el ancho de los campos del formulario al 90% -->
                                                 <label for="email" style="margin-bottom: 15px;">Correo:</label> <!-- Ajustar el margen inferior -->
