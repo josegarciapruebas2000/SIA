@@ -72,6 +72,16 @@
             background-color: #495057;
         }
 
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            max-width: 100px; /* Ajusta el tamaño máximo del logo según tus necesidades */
+        }
+
         /* Estilos para dispositivos móviles */
         @media (max-width: 991.98px) {
             .navbar-nav {
@@ -144,8 +154,13 @@
 
     <div id="sidebar">
         <br><br><br>
+        
+        <div class="logo-container">
+            <img src="/img/logo.png" alt="Logo de la empresa">
+        </div>
         <h3 class="text-center">AJEB</h3>
-        <ul class="nav flex-column">
+        
+        <ul class="nav flex-column" style="padding-left: 20px;"> <!-- Agrega un margen izquierdo de 20px -->
             <li class="nav-item">
                 <a class="nav-link active" href="#">Inicio</a>
             </li>
@@ -159,6 +174,7 @@
                 <a class="nav-link" href="#">Configuración</a>
             </li>
         </ul>
+        
     </div>
 
     <div class="card shadow border">
