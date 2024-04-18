@@ -21,3 +21,6 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
+Route::get('/solicitud', function () {
+    return view('gastos/viaticos/solicitud');
+})->name('solicitud');

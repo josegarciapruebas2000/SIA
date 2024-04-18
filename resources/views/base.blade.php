@@ -7,6 +7,10 @@
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <style>
         /* Estilos personalizados */
         body {
@@ -27,7 +31,7 @@
             left: 0;
             height: 100vh;
             width: 250px;
-            background-color: rgba(0,8,44,255);
+            background-color: rgba(0, 8, 44, 255);
             color: white;
             transition: transform 0.3s ease;
             z-index: 999;
@@ -79,7 +83,8 @@
         }
 
         .logo-container img {
-            max-width: 100px; /* Ajusta el tamaño máximo del logo según tus necesidades */
+            max-width: 100px;
+            /* Ajusta el tamaño máximo del logo según tus necesidades */
         }
 
         /* Estilos para dispositivos móviles */
@@ -99,7 +104,8 @@
 
             #sidebar {
                 width: 0;
-                transition: width 0.3s ease; /* Añadir animación para el cambio de ancho */
+                transition: width 0.3s ease;
+                /* Añadir animación para el cambio de ancho */
             }
 
             #sidebar.show-sidebar {
@@ -121,10 +127,16 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a id="dashboard-title" class="navbar-brand" style="color: #343a4000">Dashboard</a>
-            <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark" style="background-color: transparent; border: none; position: absolute; top: 50%; transform: translateY(-50%);">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 24px; height: 24px; vertical-align: middle;"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" fill="currentColor"/></svg>
+            <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark"
+                style="background-color: transparent; border: none; position: absolute; top: 50%; transform: translateY(-50%);">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
+                    style="width: 24px; height: 24px; vertical-align: middle;">
+                    <path
+                        d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+                        fill="currentColor" />
+                </svg>
             </button>
-                     
+
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
@@ -154,12 +166,12 @@
 
     <div id="sidebar">
         <br><br><br>
-        
+
         <div class="logo-container">
             <img src="/img/logo.png" alt="Logo de la empresa">
         </div>
         <h3 class="text-center">AJEB</h3>
-        
+
         <ul class="nav flex-column" style="padding-left: 20px;"> <!-- Agrega un margen izquierdo de 20px -->
             <li class="nav-item">
                 <a class="nav-link active" href="#">Inicio</a>
@@ -174,15 +186,15 @@
                 <a class="nav-link" href="#">Configuración</a>
             </li>
         </ul>
-        
+
     </div>
 
-    
+
     <div class="card shadow border">
         <div id="content-container" class="card-body">
             <div class="main-content">
-                <h2 style="text-align: center">Bienvenido a la vista principal</h2>
-                <p>Akira la info</p>
+                <!-- Área de contenido dinámico -->
+                @yield('content')
             </div>
         </div>
     </div>

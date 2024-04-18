@@ -177,7 +177,6 @@
         
     </div>
 
-    
     <div class="card shadow border">
         <div id="content-container" class="card-body">
             <div class="main-content">
