@@ -139,7 +139,7 @@
         width: 200px;
         height: 40px;
         line-height: 40px;
-        background-color: #4CAF50;
+        background-color: rgba(0, 8, 44, 255);
         color: white;
         text-align: center;
         text-decoration: none;
@@ -150,7 +150,7 @@
     }
 
     .button-link:hover {
-        background-color: #45a049;
+        background-color: rgba(0, 8, 44, 255);
     }
     
 </style>
