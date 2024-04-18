@@ -21,7 +21,12 @@
 
         /* Estilos para el botón de menú */
         #menu-toggle {
-            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            background-color: transparent;
+            border: none;
         }
 
         /* Estilos para el sidebar */
@@ -36,8 +41,7 @@
             transition: transform 0.3s ease;
             z-index: 999;
             overflow-x: hidden;
-            transform: translateX(0);
-            /* Por defecto, el sidebar estará visible en modo escritorio */
+            transform: translateX(-250px); /* Inicialmente fuera de la pantalla */
         }
 
         /* Estilo para mostrar el sidebar */
@@ -47,10 +51,9 @@
 
         /* Estilo para el contenido principal */
         #content-container {
-            margin-left: 250px;
+            margin-left: 0; /* Cambiado de 250px a 0 */
             transition: margin-left 0.3s;
-            width: calc(100% - 250px);
-            /* Ajuste para el ancho del contenido */
+            width: 100%; /* Cambiado de calc(100% - 250px) a 100% */
             min-height: 100vh;
             background-color: #f8f9fa;
         }
@@ -61,7 +64,6 @@
             min-height: 80vh;
             border-radius: 8px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            /* Ajustar la transparencia para difuminar más la sombra */
         }
 
         /* Estilos para los enlaces del menú */
@@ -84,7 +86,6 @@
 
         .logo-container img {
             max-width: 100px;
-            /* Ajusta el tamaño máximo del logo según tus necesidades */
         }
 
         /* Estilos para dispositivos móviles */
@@ -103,13 +104,13 @@
             }
 
             #sidebar {
-                width: 0;
-                transition: width 0.3s ease;
-                /* Añadir animación para el cambio de ancho */
+                width: 250px;
+                transition: transform 0.3s; /* Cambiado de width a transform */
+                transform: translateX(-250px); /* Inicialmente fuera de la pantalla */
             }
 
             #sidebar.show-sidebar {
-                width: 250px;
+                transform: translateX(0);
             }
 
             #menu-toggle {
@@ -203,6 +204,8 @@
         function toggleSidebar() {
             var sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('show-sidebar');
+            var contentContainer = document.getElementById('content-container');
+            contentContainer.style.marginLeft = sidebar.classList.contains('show-sidebar') ? '250px' : '0';
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
