@@ -1,201 +1,252 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('base')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
-        /* Estilos personalizados */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    @import url(https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css);
+    @import url(https://fonts.googleapis.com/css?family=Raleway:400,500,800);
 
-        /* Estilos para el botón de menú */
-        #menu-toggle {
-            display: none;
-        }
+    figure.snip1321 {
+        font-family: 'Raleway', Arial, sans-serif;
+        position: relative;
+        overflow: hidden;
+        margin: 40px auto;
+        /* Cambiado para centrar automáticamente */
+        min-width: 230px;
+        max-width: 315px;
+        width: 100%;
+        color: #000000;
+        text-align: center;
+        -webkit-perspective: 50em;
+        perspective: 50em;
+    }
 
-        /* Estilos para el sidebar */
-        #sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 250px;
-            background-color: rgba(0,8,44,255);
-            color: white;
-            transition: transform 0.3s ease;
-            z-index: 999;
-            overflow-x: hidden;
-            transform: translateX(0);
-            /* Por defecto, el sidebar estará visible en modo escritorio */
-        }
+    figure.snip1321 * {
+        -webkit-box-sizing: padding-box;
+        box-sizing: padding-box;
+        -webkit-transition: all 0.2s ease-out;
+        transition: all 0.2s ease-out;
+    }
 
-        /* Estilo para mostrar el sidebar */
-        #sidebar.show-sidebar {
-            transform: translateX(0);
-        }
+    figure.snip1321 img {
+        max-width: 100%;
+        vertical-align: top;
+    }
 
-        /* Estilo para el contenido principal */
-        #content-container {
-            margin-left: 250px;
-            transition: margin-left 0.3s;
-            width: calc(100% - 250px);
-            /* Ajuste para el ancho del contenido */
-            min-height: 100vh;
-            background-color: #f8f9fa;
-        }
+    figure.snip1321 figcaption {
+        top: 50%;
+        left: 20px;
+        right: 20px;
+        position: absolute;
+        opacity: 0;
+        z-index: 1;
+        transition: all 0.2s ease-out;
+    }
 
-        /* Estilos para el contenido principal */
-        .main-content {
-            padding: 20px;
-            min-height: 80vh;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            /* Ajustar la transparencia para difuminar más la sombra */
-        }
+    figure.snip1321 h2,
+    figure.snip1321 h4 {
+        margin: 0;
+    }
 
-        /* Estilos para los enlaces del menú */
-        #sidebar a {
-            padding: 10px;
-            display: block;
-            color: white;
-            text-decoration: none;
-        }
+    figure.snip1321 h2 {
+        font-weight: 600;
+    }
 
-        #sidebar a:hover {
-            background-color: #495057;
-        }
+    figure.snip1321 h4 {
+        font-weight: 400;
+        text-transform: uppercase;
+    }
 
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+    figure.snip1321 i {
+        font-size: 32px;
+    }
 
-        .logo-container img {
-            max-width: 100px; /* Ajusta el tamaño máximo del logo según tus necesidades */
-        }
+    figure.snip1321:after {
+        background-color: #ffffff;
+        position: absolute;
+        content: "";
+        display: block;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        transition: all 0.4s ease-in-out;
+        transform: rotateX(-90deg);
+        transform-origin: 50% 50%;
+        opacity: 0;
+    }
 
-        /* Estilos para dispositivos móviles */
-        @media (max-width: 991.98px) {
-            .navbar-nav {
-                flex-direction: row !important;
-            }
+    figure.snip1321 a {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        position: absolute;
+        z-index: 1;
+    }
 
-            .nav-item {
-                margin-right: 10px;
-            }
+    figure.snip1321:hover figcaption,
+    figure.snip1321.hover figcaption {
+        transform: translateY(-50%);
+        opacity: 1;
+        transition-delay: 0.2s;
+    }
 
-            #content-container {
-                margin-left: 0;
-                width: 100%;
-            }
+    figure.snip1321:hover:after,
+    figure.snip1321.hover:after {
+        transform: rotateX(0);
+        opacity: 0.9;
+    }
 
-            #sidebar {
-                width: 0;
-                transition: width 0.3s ease; /* Añadir animación para el cambio de ancho */
-            }
+    .snip1321 figcaption {
+        padding: 20px;
+        text-align: center;
+    }
 
-            #sidebar.show-sidebar {
-                width: 250px;
-            }
+    .snip1321 h4 {
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        color: #333;
+    }
 
-            #menu-toggle {
-                display: block;
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                z-index: 9999;
-            }
-        }
-    </style>
-</head>
+    .button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a id="dashboard-title" class="navbar-brand" style="color: #343a4000">Dashboard</a>
-            <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark" style="background-color: transparent; border: none; position: absolute; top: 50%; transform: translateY(-50%);">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 24px; height: 24px; vertical-align: middle;"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" fill="currentColor"/></svg>
-            </button>
-                     
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Notificaciones
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Notificación 1</a></li>
-                        <li><a class="dropdown-item" href="#">Notificación 2</a></li>
-                        <li><a class="dropdown-item" href="#">Notificación 3</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Perfil
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Editar Perfil</a></li>
-                        <li><a class="dropdown-item" href="{{ route('login') }}">Cerrar Sesión</a></li>
-                    </ul>
-                </li>
+    .button-fixed-width {
+        width: 200px;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border-radius: 5px;
+        /* Agregar radio de borde */
+        border: 1px solid #ccc;
+        /* Agregar borde */
+        background-color: #fff;
+        /* Color de fondo */
+        padding: 8px;
+        /* Espaciado interno */
+        cursor: pointer;
+    }
 
-            </ul>
-        </div>
-    </nav>
+    .button-container {
+        text-align: center;
+    }
 
-    <div id="sidebar">
-        <br><br><br>
-        
-        <div class="logo-container">
-            <img src="/img/logo.png" alt="Logo de la empresa">
-        </div>
-        <h3 class="text-center">AJEB</h3>
-        
-        <ul class="nav flex-column" style="padding-left: 20px;"> <!-- Agrega un margen izquierdo de 20px -->
-            <li class="nav-item">
-                <a class="nav-link active" href="#">Inicio</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Usuarios</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Productos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Configuración</a>
-            </li>
-        </ul>
-        
-    </div>
+    .button-link {
+        display: inline-block;
+        width: 200px;
+        height: 40px;
+        line-height: 40px;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+        transition: background-color 0.3s;
+    }
 
+    .button-link:hover {
+        background-color: #45a049;
+    }
     
-    <div class="card shadow border">
-        <div id="content-container" class="card-body">
-            <div class="main-content">
-                <h2 style="text-align: center">Bienvenido a la vista principal</h2>
-                <p>Akira la info</p>
+</style>
+
+@section('content')
+    <div class="container">
+        <div class="row justify-content-center"> <!-- Alinea horizontalmente las columnas -->
+            <div class="col-md-4 col-sm-6">
+                <figure class="snip1321">
+                    <div style="position: relative; display: inline-block;">
+                        <img src="img/modulogastos.jpg" alt="sq-sample26"
+                            style="border-radius: 8px; height: 400px; width: 100%; filter: brightness(50%);" />
+                        <div
+                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; font-size: 24px; font-family: 'Helvetica', sans-serif;">
+                            GASTOS
+                        </div>
+                    </div>
+
+                    <figcaption>
+                        <i class="ion-ios-calculator-outline"></i>
+                        <h4>Gastos</h4>
+                        <br>
+                        <div class="button-container">
+                            <div class="button-link" onclick="window.location.href='/solicitud'">Solicitud de viáticos</div>
+                            <button class="button-fixed-width">Comprobación</button>
+                            <button class="button-fixed-width">Reposición</button>
+                            <button class="button-fixed-width">Pago de proveedor</button>
+                            <button class="button-fixed-width">Historial de gasto</button>
+                        </div>
+                    </figcaption>
+                    
+                </figure>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <figure class="snip1321">
+                    <div style="position: relative; display: inline-block;">
+                        <img src="img/modulocompras.png" alt="sq-sample26"
+                            style="border-radius: 8px; height: 400px; width: 100%; filter: brightness(50%);" />
+                        <div
+                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; font-size: 24px; font-family: 'Helvetica', sans-serif;">
+                            COMPRAS
+                        </div>
+                    </div>
+                    <figcaption>
+                        <i class="ion-ios-cart-outline"></i>
+                        <h4>Compras</h4>
+                        <br>
+                        <div class="button-container">
+                            <button class="button-fixed-width">Alta de proveedores</button>
+                            <button class="button-fixed-width">Cotizaciones</button>
+                            <button class="button-fixed-width">Orden de pago</button>
+                            <button class="button-fixed-width">Pago de proveedor</button>
+                            <button class="button-fixed-width">Cargo de pago</button>
+                            <button class="button-fixed-width">Historial de compras</button>
+                        </div>
+                    </figcaption>
+                    <a href="#"></a>
+                </figure>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <figure class="snip1321">
+                    <div style="position: relative; display: inline-block;">
+                        <img src="img/modulogastos.jpg" alt="sq-sample26" style="border-radius: 8px; height: 400px; width: 100%; filter: brightness(50%);" />
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; font-size: 24px; font-family: 'Helvetica', sans-serif;">
+                          ALMACEN
+                        </div>
+                      </div>
+                      
+                    <figcaption>
+                        <i class="ion-ios-box-outline"></i>
+                        <h4>Almacen</h4>
+                        <br>
+                        <div class="button-container">
+                            <button class="button-fixed-width">SEG</button>
+                            <button class="button-fixed-width">Papelería</button>
+                            <button class="button-fixed-width">Herramientas</button>
+                            <button class="button-fixed-width">Autos</button>
+                            <button class="button-fixed-width">Equipos de computo</button>
+                            <button class="button-fixed-width">Entrada y salida</button>
+                        </div>
+                    </figcaption>
+                    <a href="#"></a>
+                </figure>
             </div>
         </div>
+
     </div>
+@endsection
 
-    <script>
-        function toggleSidebar() {
-            var sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('show-sidebar');
+<script>
+    /* Demo purposes only */
+    $(".hover").mouseleave(
+        function() {
+            $(this).removeClass("hover");
         }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
-</body>
-
-</html>
+    );
+</script>
