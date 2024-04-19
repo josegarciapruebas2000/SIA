@@ -24,3 +24,15 @@ Route::get('/dashboard', function () {
 Route::get('/solicitud', function () {
     return view('gastos/viaticos/solicitud');
 })->name('solicitud');
+
+Route::get('/comprobaciones', function () {
+    return view('gastos/viaticos/comprobaciones');
+})->name('comprobaciones');
+
+Route::get('/comprobacion', function () {
+    return view('gastos/viaticos/comprobacion');
+})->name('comprobacion');
+
+Route::get('/reposicion', function () {
+    return view('gastos/viaticos/reposicion');
+})->name('reposicion');

@@ -175,7 +175,7 @@
 
         <ul class="nav flex-column" style="padding-left: 20px;"> <!-- Agrega un margen izquierdo de 20px -->
             <li class="nav-item">
-                <a class="nav-link active" href="#">Inicio</a>
+                <a class="nav-link active" href="/dashboard">Inicio</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Usuarios</a>

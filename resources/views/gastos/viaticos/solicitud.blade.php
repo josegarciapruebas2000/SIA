@@ -12,8 +12,12 @@
             </div>
             <div class="col">
                 <label for="grupo" class="form-label">Proyecto:</label>
-                <input type="text" class="form-control" id="proyecto" name="proyecto" placeholder="Ingrese proyecto"
-                    oninput="this.value = this.value.toUpperCase()">
+                <select class="form-control">
+                    <option>Seleccione una opción</option>
+                    <option>Proyecto 1</option>
+                    <option>Proyecto 2</option>
+                    <option>Proyecto 3</option>
+                </select>
             </div>
 
         </div>
@@ -23,10 +27,10 @@
             <div class="col">
                 <label for="tutor" class="form-label">Comentario:</label>
                 <input type="text" class="form-control" id="comentario" name="comentario"
-                    placeholder="Ingrese comentarios" oninput="this.value = this.value.toUpperCase()">
+                    placeholder="Ingrese comentarios">
             </div>
         </div>
-
+        <br>
         <div class="row mb-3">
             <div class="col text-center">
                 <label for="generacion" class="form-label">Periodo:</label>
@@ -52,16 +56,16 @@
         </div>
 
 
-        <br>
+        <br><br>
 
         <div class="row mb-3">
             <div class="col">
                 <label for="grado" class="form-label">Revisor:</label>
                 <select class="form-control">
                     <option>Seleccione una opción</option>
-                    <option>Opción 1</option>
-                    <option>Opción 2</option>
-                    <option>Opción 3</option>
+                    <option>Revisor 1</option>
+                    <option>Revisor 2</option>
+                    <option>Revisor 3</option>
                 </select>
 
             </div>
