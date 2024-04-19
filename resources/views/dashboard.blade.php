@@ -176,8 +176,7 @@
                         <div class="button-container">
                             <div class="button-link" onclick="window.location.href='/solicitud'">Solicitud de viáticos</div>
                             <div class="button-link" onclick="window.location.href='/comprobaciones'">Comprobación</div>
-                            <div class="button-link" onclick="window.location.href='/reposicion'">Reposición</div>
-                            <button class="button-fixed-width">Pago de proveedor</button>
+                            <div class="button-link" onclick="window.location.href='/reposicion'">Reposición</div>                            
                             <button class="button-fixed-width">Historial de gasto</button>
                         </div>
                     </figcaption>
