@@ -119,7 +119,12 @@
                                         <h2 class="text-center mb-4">Iniciar sesión</h2>
                                         <form action="{{ route('login.authenticate') }}" method="post">
                                             @csrf
-                                            
+                                            @if (session('error'))
+                                                <div class="alert alert-danger" role="alert">
+                                                    {{ session('error') }}
+                                                </div>
+                                            @endif
+
                                             @error('email')
                                                 <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror

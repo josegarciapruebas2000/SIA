@@ -23,4 +23,10 @@ class LoginController extends Controller
             return redirect()->back()->withErrors(['auth' => 'Credenciales incorrectas.'])->withInput($request->only('email'));
         }
     }
+
+    public function showLoginForm()
+    {
+        $error = session('error');
+        return view('login')->with('error', $error);
+    }
 }
