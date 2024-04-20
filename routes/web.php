@@ -42,6 +42,10 @@ Route::get('/RegistrarUsuario', function () {
 
 Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario');
 
+Route::put('/usuarios/{id}/toggle', [Usuarios::class, 'toggleUsuario'])->name('usuarios.toggle');
+Route::delete('/usuarios/{id}', [Usuarios::class, 'eliminarUsuario'])->name('usuarios.delete');
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');

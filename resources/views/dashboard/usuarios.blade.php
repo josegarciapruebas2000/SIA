@@ -10,13 +10,11 @@
         </div>
         <div class="col-auto">
             <a href="{{ route('registrar.usuario') }}">
-                <button type="button" class="btn btn-primary mb-2 mb-sm-0">Agregar</button>
+                <button type="button" class="btn btn-primary btn-sm mb-2 mb-sm-0">Agregar</button>
             </a>
         </div>
         <div class="col-auto">
-            <div class="d-flex justify-content-center justify-content-sm-end mb-2 mb-sm-0">
-                <button type="button" class="btn btn-outline-secondary" onclick="window.history.back()">Regresar</button>
-            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm mb-2 mb-sm-0" onclick="window.history.back()">Regresar</button>
         </div>
     </div>
 
@@ -32,7 +30,7 @@
                         <th scope="col" class="text-center">Correo</th>
                         <th scope="col" class="text-center">Rol</th>
                         <th scope="col" class="text-center">Estado</th>
-                        <th scope="col"></th>
+                        <th scope="col" class="text-center">Acciones</th>
                     </tr>
                 </thead>
 
@@ -46,18 +44,26 @@
                             <td class="text-center">{{ $user->email }}</td>
                             <td class="text-center">{{ $user->role }}</td>
                             <td class="text-center">{{ $user->status ? 'Habilitado' : 'Deshabilitado' }}</td>
-                            <td>
+                            <td class="text-center"> 
                                 <!-- Botones de acción -->
-                                <div class="button-container">
-                                    @if ($user->status)
-                                        <button type="button" class="btn btn-outline-secondary">Deshabilitar</button>
-                                    @else
-                                        <button type="button" class="btn btn-outline-success">Habilitar</button>
-                                    @endif
+                                <div class="button-container d-flex justify-content-center justify-content-sm-end">
+                                    <form method="POST" action="{{ route('usuarios.toggle', ['id' => $user->id]) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        @if ($user->status)
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm mx-1">Deshabilitar</button>
+                                        @else
+                                            <button type="submit" class="btn btn-outline-success btn-sm mx-1">Habilitar</button>
+                                        @endif
+                                    </form>
                                     <a href="/profile" style="text-decoration: none;">
-                                        <button type="button" class="btn btn-outline-warning">Editar</button>
+                                        <button type="button" class="btn btn-outline-warning btn-sm mx-1">Editar</button>
                                     </a>
-                                    <button type="button" class="btn btn-outline-danger">Eliminar</button>
+                                    <form method="POST" action="{{ route('usuarios.delete', ['id' => $user->id]) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger btn-sm mx-1">Eliminar</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -78,11 +84,23 @@
         .table tbody tr td,
         .table thead tr th {
             text-align: center;
+            padding: 8px; /* Ajusta el espaciado entre el contenido y los bordes de las celdas */
         }
 
         /* Regla de estilo para centrar verticalmente las filas de la tabla */
         .align-middle {
             vertical-align: middle;
+        }
+
+        /* Ajuste de espaciado entre columnas */
+        .table th,
+        .table td {
+            padding: 0.75rem; /* Ajusta el espaciado entre las columnas */
+        }
+
+        /* Ajuste de altura de los botones */
+        .btn-sm {
+            height: 30px; /* Ajusta la altura de los botones pequeños */
         }
 
         /* Regla de estilo específica para dispositivos móviles */
