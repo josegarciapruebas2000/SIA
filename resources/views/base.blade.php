@@ -21,12 +21,17 @@
 
         /* Estilos para el botón de menú */
         #menu-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
             z-index: 9999;
             background-color: transparent;
             border: none;
+        }
+
+        /* Estilos para la barra de navegación */
+        .navbar {
+            position: relative; /* Agrega posición relativa para los elementos absolutos */
         }
 
         /* Estilos para el sidebar */
@@ -97,8 +102,9 @@
 
             #menu-toggle {
                 display: block;
-                position: fixed;
-                top: 20px;
+                position: absolute; /* Cambia a posición absoluta */
+                top: 50%;
+                transform: translateY(-50%);
                 left: 20px;
                 z-index: 9999;
             }
@@ -109,12 +115,12 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
+            <a id="dashboard-title" class="navbar-brand" style="color: #343a4000">Dashboard</a>
             <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 24px; height: 24px;">
                     <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" fill="currentColor" />
                 </svg>
             </button>
-            <a id="dashboard-title" class="navbar-brand" style="color: #343a4000">Dashboard</a>
             <ul class="navbar-nav ml-auto">
                 @if (session('user'))
                     <li class="nav-item">
