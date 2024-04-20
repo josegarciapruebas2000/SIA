@@ -42,6 +42,7 @@ Route::get('/RegistrarUsuario', function () {
 
 Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario');
 
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');

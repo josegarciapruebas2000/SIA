@@ -31,31 +31,38 @@
 
         /* Estilos para la barra de navegación */
         .navbar {
-            position: relative; /* Agrega posición relativa para los elementos absolutos */
+            position: relative;
+            /* Agrega posición relativa para los elementos absolutos */
         }
 
         /* Estilos para el sidebar */
         #sidebar {
             position: fixed;
             top: 0;
-            left: -250px; /* Cambia la posición inicial para que esté fuera de la pantalla */
+            left: -250px;
+            /* Cambia la posición inicial para que esté fuera de la pantalla */
             height: 100vh;
             width: 250px;
             background-color: rgba(0, 8, 44, 255);
             color: white;
-            transition: left 0.3s ease; /* Cambia la propiedad de transición */
+            transition: left 0.3s ease;
+            /* Cambia la propiedad de transición */
             z-index: 999;
             overflow-x: hidden;
         }
 
         /* Estilo para mostrar el sidebar */
         #sidebar.show-sidebar {
-            left: 0; /* Cambia la posición cuando se muestra */
+            left: 0;
+            /* Cambia la posición cuando se muestra */
         }
 
         /* Estilo para el contenido principal */
         #content-container {
-            margin-left: 0; /* Elimina el margen izquierdo */
+            width: 90%;
+            margin: 0 auto;
+
+            /* Elimina el margen izquierdo */
             min-height: 100vh;
             background-color: #f8f9fa;
         }
@@ -92,17 +99,21 @@
 
         @media (max-width: 991.98px) {
             #sidebar {
-                left: -250px; /* Cambia la posición inicial para que esté fuera de la pantalla */
-                transition: left 0.3s ease; /* Cambia la propiedad de transición */
+                left: -250px;
+                /* Cambia la posición inicial para que esté fuera de la pantalla */
+                transition: left 0.3s ease;
+                /* Cambia la propiedad de transición */
             }
 
             #sidebar.show-sidebar {
-                left: 0; /* Cambia la posición cuando se muestra */
+                left: 0;
+                /* Cambia la posición cuando se muestra */
             }
 
             #menu-toggle {
                 display: block;
-                position: absolute; /* Cambia a posición absoluta */
+                position: absolute;
+                /* Cambia a posición absoluta */
                 top: 50%;
                 transform: translateY(-50%);
                 left: 20px;
@@ -118,13 +129,16 @@
             <a id="dashboard-title" class="navbar-brand" style="color: #343a4000">Dashboard</a>
             <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 24px; height: 24px;">
-                    <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" fill="currentColor" />
+                    <path
+                        d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+                        fill="currentColor" />
                 </svg>
             </button>
             <ul class="navbar-nav ml-auto">
                 @if (session('user'))
                     <li class="nav-item">
-                        <a class="nav-link" style="color: #ffffff" id="navbarDropdownMenuLink" role="button" aria-expanded="false">
+                        <a class="nav-link" style="color: #ffffff" id="navbarDropdownMenuLink" role="button"
+                            aria-expanded="false">
                             {{ session('user')->name }} ({{ session('user')->role }})
                         </a>
                     </li>

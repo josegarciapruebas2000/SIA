@@ -14,25 +14,29 @@ class Usuarios extends Controller
     }
 
     public function guardar(Request $request)
-    {
-        // Validar los datos del formulario
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed', // Utiliza el campo 'password' en lugar de 'password_confirmation'
-            'rol' => 'required|string',
-        ]);
+{
+    // Validar los datos del formulario
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8', // No necesitas la confirmación aquí
+        'rol' => 'required|string',
+    ]);
 
-        // Crear un nuevo usuario
-        $user = new User();
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($request->input('password')); // Obtén la contraseña del campo 'password'
-        $user->role = $request->input('rol'); // Ajusta el nombre del campo al que estás usando en el formulario
-        $user->status = $request->has('flexSwitchCheckDefault') ? 'Habilitado' : 'Deshabilitado'; // Ajusta el nombre del campo del estado
-        $user->save();
+    // Determinar el estado
+    $estado = $request->has('estado') ? 1 : 0;
 
-        // Redirigir a alguna vista o ruta después de guardar el usuario
-        return redirect()->route('dashboard.usuarios')->with('success', 'Usuario creado exitosamente');
-    }
+    // Crear un nuevo usuario
+    $user = new User();
+    $user->name = $request->input('name');
+    $user->email = $request->input('email');
+    $user->password = bcrypt($request->input('password'));
+    $user->role = $request->input('rol');
+    $user->status = $estado; // Asignar el estado como un número (1 para Habilitado, 0 para Deshabilitado)
+    $user->save();
+
+    // Redirigir a alguna vista o ruta después de guardar el usuario
+    return redirect()->route('usuarios.lista')->with('success', 'Usuario creado exitosamente');
+}
+
 }

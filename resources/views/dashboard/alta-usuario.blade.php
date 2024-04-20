@@ -35,7 +35,7 @@
                         onchange="changeLabelText()">
                     <label class="form-check-label" id="switchLabel" for="flexSwitchCheckDefault">Deshabilitado</label>
                 </div>
-            </div>
+            </div>            
             <script>
                 function changeLabelText() {
                     var switchLabel = document.getElementById('switchLabel');
