@@ -143,10 +143,13 @@
             </button>
 
             <ul class="navbar-nav ml-auto">
-                <a style="margin-right: 50px;" class="nav-link" style="color: #ffffff" id="navbarDropdownMenuLink"
-                    role="button" aria-expanded="false">
-                    Danae (SuperAdmin)
-                </a>
+                @if (session('user'))
+                    <a style="margin-right: 50px;" class="nav-link" style="color: #ffffff" id="navbarDropdownMenuLink"
+                        role="button" aria-expanded="false">
+                        {{ session('user')->name }} ({{ session('user')->role }})
+                    </a>
+                @endif
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -186,13 +189,13 @@
                 <a class="nav-link active" href="/dashboard">Inicio</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link active" href="/#">Clientes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/#">Proyectos</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/usuarios">Usuarios</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Productos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Configuración</a>
             </li>
         </ul>
 

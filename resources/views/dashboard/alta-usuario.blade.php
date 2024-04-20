@@ -1,14 +1,14 @@
 @extends('base')
 
 @section('content')
-    <h2 style="text-align: center">Información del perfil</h2>
+    <h2 style="text-align: center">Añadir de usuario</h2>
     <br><br>
     <form class="centered-form">
         <div class="row mb-3">
             <div class="col">
                 <label for="grado" class="form-label">Nombre:</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese nombre de usuario"
-                    value="{{ session('user')->name }}" oninput="this.value = this.value.toUpperCase()">
+                    oninput="this.value = this.value.toUpperCase()">
             </div>
             <div class="col">
                 <label for="grado" class="form-label">Correo:</label>

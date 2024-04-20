@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LoginController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,11 +20,17 @@ Route::get('/', function () {
     return view('login');
 })->name('login');
 
+Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
+
 Route::get('/profile', function () {
     return view('dashboard/profile');
 })->name('profile');
 
 Route::get('/usuarios', [Controller::class, 'listaUsuarios'])->name('usuarios.lista');
+
+Route::get('/RegistrarUsuario', function () {
+    return view('dashboard/alta-usuario');
+})->name('registrar.usuario');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
