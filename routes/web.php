@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\Usuarios;
 use App\Http\Middleware\CheckRole;
 
 
@@ -31,7 +32,7 @@ Route::get('/profile', function () {
     return view('dashboard/profile');
 })->name('profile');
 
-Route::get('/usuarios', [Controller::class, 'listaUsuarios'])
+Route::get('/usuarios', [Usuarios::class, 'listaUsuarios'])
     ->name('usuarios.lista')
     ->middleware('role:SuperAdmin,Administrador');
 
@@ -39,6 +40,7 @@ Route::get('/RegistrarUsuario', function () {
     return view('dashboard/alta-usuario');
 })->name('registrar.usuario')->middleware('role:SuperAdmin,Administrador');
 
+Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

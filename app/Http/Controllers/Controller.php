@@ -12,9 +12,5 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    public function listaUsuarios()
-    {
-        $users = User::paginate(10); // Obtener usuarios paginados con 10 usuarios por página
-        return view('dashboard.usuarios', compact('users'));
-    }
+    
 }

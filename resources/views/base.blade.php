@@ -90,41 +90,39 @@
             max-width: 100px;
         }
 
-        /* Estilos para dispositivos móviles */
         @media (max-width: 991.98px) {
-            .navbar-nav {
-                flex-direction: row !important;
-            }
+    .navbar-nav {
+        flex-direction: row !important;
+    }
 
-            .nav-item {
-                margin-right: 10px;
-            }
+    .nav-item {
+        margin-right: 10px;
+    }
 
-            #content-container {
-                margin-left: 0;
-                width: 100%;
-            }
+    #content-container {
+        width: 100%;
+        padding-left: 20px; /* Agrega padding para evitar solapamiento con el sidebar */
+        padding-right: 20px; /* Agrega padding para evitar solapamiento con el scrollbar vertical */
+    }
 
-            #sidebar {
-                width: 250px;
-                transition: transform 0.3s;
-                /* Cambiado de width a transform */
-                transform: translateX(-250px);
-                /* Inicialmente fuera de la pantalla */
-            }
+    #sidebar {
+        width: 250px;
+        transition: transform 0.3s;
+        transform: translateX(-250px);
+    }
 
-            #sidebar.show-sidebar {
-                transform: translateX(0);
-            }
+    #sidebar.show-sidebar {
+        transform: translateX(0);
+    }
 
-            #menu-toggle {
-                display: block;
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                z-index: 9999;
-            }
-        }
+    #menu-toggle {
+        display: block;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 9999;
+    }
+}
     </style>
 </head>
 
