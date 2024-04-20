@@ -33,32 +33,27 @@
         #sidebar {
             position: fixed;
             top: 0;
-            left: 0;
+            left: -250px; /* Cambia la posición inicial para que esté fuera de la pantalla */
             height: 100vh;
             width: 250px;
             background-color: rgba(0, 8, 44, 255);
             color: white;
-            transition: transform 0.3s ease;
+            transition: left 0.3s ease; /* Cambia la propiedad de transición */
             z-index: 999;
             overflow-x: hidden;
-            transform: translateX(-250px);
-            /* Inicialmente fuera de la pantalla */
         }
 
         /* Estilo para mostrar el sidebar */
         #sidebar.show-sidebar {
-            transform: translateX(0);
+            left: 0; /* Cambia la posición cuando se muestra */
         }
 
         /* Estilo para el contenido principal */
         #content-container {
-            margin: 0 auto;
-            /* Esto centra horizontalmente */
-            width: 85%;
+            margin-left: 0; /* Elimina el margen izquierdo */
             min-height: 100vh;
             background-color: #f8f9fa;
         }
-
 
         /* Estilos para el contenido principal */
         .main-content {
@@ -91,63 +86,43 @@
         }
 
         @media (max-width: 991.98px) {
-    .navbar-nav {
-        flex-direction: row !important;
-    }
+            #sidebar {
+                left: -250px; /* Cambia la posición inicial para que esté fuera de la pantalla */
+                transition: left 0.3s ease; /* Cambia la propiedad de transición */
+            }
 
-    .nav-item {
-        margin-right: 10px;
-    }
+            #sidebar.show-sidebar {
+                left: 0; /* Cambia la posición cuando se muestra */
+            }
 
-    #content-container {
-        width: 100%;
-        padding-left: 20px; /* Agrega padding para evitar solapamiento con el sidebar */
-        padding-right: 20px; /* Agrega padding para evitar solapamiento con el scrollbar vertical */
-    }
-
-    #sidebar {
-        width: 250px;
-        transition: transform 0.3s;
-        transform: translateX(-250px);
-    }
-
-    #sidebar.show-sidebar {
-        transform: translateX(0);
-    }
-
-    #menu-toggle {
-        display: block;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 9999;
-    }
-}
+            #menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 9999;
+            }
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a id="dashboard-title" class="navbar-brand" style="color: #343a4000">Dashboard</a>
-            <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark"
-                style="background-color: transparent; border: none; position: absolute; top: 50%; transform: translateY(-50%);">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
-                    style="width: 24px; height: 24px; vertical-align: middle;">
-                    <path
-                        d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
-                        fill="currentColor" />
+            <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 24px; height: 24px;">
+                    <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" fill="currentColor" />
                 </svg>
             </button>
-
+            <a id="dashboard-title" class="navbar-brand" style="color: #343a4000">Dashboard</a>
             <ul class="navbar-nav ml-auto">
                 @if (session('user'))
-                    <a style="margin-right: 50px;" class="nav-link" style="color: #ffffff" id="navbarDropdownMenuLink"
-                        role="button" aria-expanded="false">
-                        {{ session('user')->name }} ({{ session('user')->role }})
-                    </a>
+                    <li class="nav-item">
+                        <a class="nav-link" style="color: #ffffff" id="navbarDropdownMenuLink" role="button" aria-expanded="false">
+                            {{ session('user')->name }} ({{ session('user')->role }})
+                        </a>
+                    </li>
                 @endif
-
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -169,7 +144,6 @@
                         <li><a class="dropdown-item" href="{{ route('login') }}">Cerrar Sesión</a></li>
                     </ul>
                 </li>
-
             </ul>
         </div>
     </nav>
@@ -182,7 +156,7 @@
         </div>
         <h3 class="text-center">AJEB</h3>
 
-        <ul class="nav flex-column" style="padding-left: 20px;"> <!-- Agrega un margen izquierdo de 20px -->
+        <ul class="nav flex-column" style="padding-left: 20px;">
             <li class="nav-item">
                 <a class="nav-link active" href="/dashboard">Inicio</a>
             </li>
@@ -199,7 +173,6 @@
 
     </div>
 
-
     <div class="card shadow border">
         <div id="content-container" class="card-body">
             <div class="main-content">
@@ -213,8 +186,6 @@
         function toggleSidebar() {
             var sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('show-sidebar');
-            var contentContainer = document.getElementById('content-container');
-            contentContainer.style.marginLeft = sidebar.classList.contains('show-sidebar') ? '250px' : '0';
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
