@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>SIA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -41,7 +41,8 @@
             transition: transform 0.3s ease;
             z-index: 999;
             overflow-x: hidden;
-            transform: translateX(-250px); /* Inicialmente fuera de la pantalla */
+            transform: translateX(-250px);
+            /* Inicialmente fuera de la pantalla */
         }
 
         /* Estilo para mostrar el sidebar */
@@ -51,12 +52,13 @@
 
         /* Estilo para el contenido principal */
         #content-container {
-            margin-left: 0; /* Cambiado de 250px a 0 */
-            transition: margin-left 0.3s;
-            width: 100%; /* Cambiado de calc(100% - 250px) a 100% */
+            margin: 0 auto;
+            /* Esto centra horizontalmente */
+            width: 85%;
             min-height: 100vh;
             background-color: #f8f9fa;
         }
+
 
         /* Estilos para el contenido principal */
         .main-content {
@@ -105,8 +107,10 @@
 
             #sidebar {
                 width: 250px;
-                transition: transform 0.3s; /* Cambiado de width a transform */
-                transform: translateX(-250px); /* Inicialmente fuera de la pantalla */
+                transition: transform 0.3s;
+                /* Cambiado de width a transform */
+                transform: translateX(-250px);
+                /* Inicialmente fuera de la pantalla */
             }
 
             #sidebar.show-sidebar {
@@ -139,6 +143,10 @@
             </button>
 
             <ul class="navbar-nav ml-auto">
+                <a style="margin-right: 50px;" class="nav-link" style="color: #ffffff" id="navbarDropdownMenuLink"
+                    role="button" aria-expanded="false">
+                    Danae (SuperAdmin)
+                </a>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -156,7 +164,7 @@
                         Perfil
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Editar Perfil</a></li>
+                        <li><a class="dropdown-item" href="/profile">Editar Perfil</a></li>
                         <li><a class="dropdown-item" href="{{ route('login') }}">Cerrar Sesión</a></li>
                     </ul>
                 </li>
@@ -178,7 +186,7 @@
                 <a class="nav-link active" href="/dashboard">Inicio</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Usuarios</a>
+                <a class="nav-link" href="/usuarios">Usuarios</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Productos</a>
