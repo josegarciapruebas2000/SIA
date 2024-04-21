@@ -14,7 +14,9 @@
             </a>
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-outline-secondary btn-sm mb-2 mb-sm-0" onclick="window.history.back()">Regresar</button>
+            <a href="{{ route('dashboard') }}">
+                <button type="button" class="btn btn-outline-secondary btn-sm mb-2 mb-sm-0">Regresar</button>
+            </a>
         </div>
     </div>
 

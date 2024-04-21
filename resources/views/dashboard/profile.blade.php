@@ -95,12 +95,18 @@
         }
     </script>
 
-    @if(session('success'))
-        <script>
-            // Mostrar el modal de confirmación cuando la sesión tenga un mensaje 'success'
-            $(document).ready(function(){
-                $('#confirmationModal').modal('show');
-            });
-        </script>
-    @endif
+    <!-- Script para mostrar el modal después de actualizar el perfil -->
+    <script>
+        // Mostrar el modal de confirmación cuando la sesión tenga un mensaje 'success'
+        $(document).ready(function(){
+            $('#confirmationModal').modal('show');
+        });
+    </script>
+
+    <!-- Redirigir al usuario al login después de cerrar el modal -->
+    <script>
+        $('#confirmationModal').on('hidden.bs.modal', function (e) {
+            window.location.replace("{{ route('login') }}");
+        });
+    </script>
 @endsection

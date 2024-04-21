@@ -119,6 +119,6 @@ class Usuarios extends Controller
         $user->save();
 
         // Redireccionar a alguna página después de guardar los cambios
-        return redirect()->back()->with('success', 'Perfil actualizado correctamente.');
+        return redirect()->route('login')->with('success', 'Perfil actualizado correctamente.');
     }
 }
