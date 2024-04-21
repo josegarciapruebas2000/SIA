@@ -19,7 +19,7 @@ class Usuarios extends Controller
         $users = User::where('id', '!=', $userId)->paginate(10);
 
         // Pasar la lista de usuarios a la vista
-        return view('dashboard.usuarios', compact('users'));
+        return view('dashboard.usuarios.usuarios', compact('users'));
     }
 
 
@@ -74,7 +74,7 @@ class Usuarios extends Controller
         $usuario = User::find($id);
 
         // Pasar el usuario a la vista del formulario de edición
-        return view('dashboard.editarUsuario', compact('usuario'));
+        return view('dashboard.usuarios.editarUsuario', compact('usuario'));
     }
 
 

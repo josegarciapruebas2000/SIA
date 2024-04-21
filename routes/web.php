@@ -26,8 +26,10 @@ Route::get('/', function () {
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 
+/* Usuarios */
+
 Route::get('/perfil', function () {
-    return view('dashboard/profile');
+    return view('dashboard/usuarios/profile');
 })->name('profile');
 
 Route::get('/usuarios', [Usuarios::class, 'listaUsuarios'])
@@ -35,7 +37,7 @@ Route::get('/usuarios', [Usuarios::class, 'listaUsuarios'])
     ->middleware('role:SuperAdmin,Administrador');
 
 Route::get('/RegistrarUsuario', function () {
-    return view('dashboard/alta-usuario');
+    return view('dashboard/usuarios/alta-usuario');
 })->name('registrar.usuario')->middleware('role:SuperAdmin,Administrador');
 
 Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario');

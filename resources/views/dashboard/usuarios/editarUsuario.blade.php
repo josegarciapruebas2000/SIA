@@ -24,11 +24,12 @@
             <div class="col">
                 <label for="rol" class="form-label">Rol:</label>
                 <select class="form-control" name="role" id="role">
-                    <option value="Ventas" {{ $usuario->role == 'Ventas' ? 'selected' : '' }}>Ventas</option>
+                    <option value="Gerencia" {{ $usuario->role == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>
+                    <option value="Gerente de ventas" {{ $usuario->role == 'Gerente de ventas' ? 'selected' : '' }}>Gerente de ventas</option>
                     <option value="Empleado" {{ $usuario->role == 'Empleado' ? 'selected' : '' }}>Empleado</option>
-                    <option value="Contador" {{ $usuario->role == 'Contador' ? 'selected' : '' }}>Contador</option>
-                    <option value="Almacen" {{ $usuario->role == 'Almacen' ? 'selected' : '' }}>Almacen</option>
-                    <option value="SuperAdmin" {{ $usuario->role == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>
+                    <option value="Contadora" {{ $usuario->role == 'Contadora' ? 'selected' : '' }}>Contadora</option>
+                    <option value="Recursos Humanos" {{ $usuario->role == 'Recursos Humanos' ? 'selected' : '' }}>Recursos Humanos</option>                    
+                    <option value="Superadmin" {{ $usuario->role == 'Superadmin' ? 'selected' : '' }}>Superadmin</option>
                 </select>
             </div>
 

@@ -8,7 +8,8 @@
         <div class="row mb-3">
             <div class="col">
                 <label for="name" class="form-label">Nombre:</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese nombre de usuario">
+                <input type="text" class="form-control" id="name" name="name"
+                    placeholder="Ingrese nombre de usuario">
             </div>
             <div class="col">
                 <label for="email" class="form-label">Correo:</label>
@@ -19,13 +20,14 @@
         <div class="row mb-3">
             <div class="col">
                 <label for="role" class="form-label">Rol:</label>
-                <select class="form-control" name="role"> 
+                <select class="form-control" name="role">
                     <option>Seleccione una opción</option>
-                    <option value="Ventas">Ventas</option> 
+                    <option value="Gerencia">Gerencia</option>                    
+                    <option value="Gerente de ventas">Gerente de ventas</option>
                     <option value="Empleado">Empleado</option>
-                    <option value="Contador">Contador</option>
-                    <option value="Almacen">Almacen</option>
-                    <option value="SuperAdmin">SuperAdmin</option>
+                    <option value="Contadora">Contadora</option>
+                    <option value="Recursos Humanos">Recursos Humanos</option>
+                    <option value="Superadmin">SuperAdmin</option>
                 </select>
             </div>
             <div class="col">
@@ -35,7 +37,7 @@
                         onchange="changeLabelText()">
                     <label class="form-check-label" id="switchLabel" for="flexSwitchCheckDefault">Deshabilitado</label>
                 </div>
-            </div>            
+            </div>
         </div>
         <br>
         <div class="row mb-3">
@@ -45,7 +47,8 @@
             </div>
             <div class="col">
                 <label for="confirm_password" class="form-label">Confirmar contraseña:</label>
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Ingrese contraseña">
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                    placeholder="Ingrese contraseña">
                 <div id="passwordError" class="invalid-feedback" style="display: none;">
                     Las contraseñas no coinciden o no tienen al menos 8 caracteres. Por favor, inténtelo de nuevo.
                 </div>
