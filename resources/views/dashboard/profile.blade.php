@@ -34,9 +34,16 @@
                 </div>
             </div>
         </div>
-        
+        <br>
 
-        <br><br>
+        <!-- Leyenda para cerrar sesión -->
+        <div class="row">
+            <div class="col">
+                <p style="font-size: 14px; color: #666; text-align: center;">Al guardar, la sesión se cerrará automáticamente para aplicar cambios.</p>
+            </div>
+        </div>
+
+        <br>
 
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-6">
@@ -51,35 +58,12 @@
             </div>
         </div>
     </form>
-
-    <!-- Modal de confirmación -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Perfil actualizado correctamente</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Se han guardado los cambios en tu perfil. Por favor, vuelve a iniciar sesión para aplicar los cambios.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script>
-        // Inicializar Flatpickr en español
-        flatpickr("#fecha_sesion", {
-            dateFormat: "Y-m-d",
-            locale: "es", // Establecer el idioma a español
-        });
-
         function validatePassword() {
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('password_confirmation').value;
@@ -100,18 +84,4 @@
         }
     </script>
 
-    <!-- Script para mostrar el modal después de actualizar el perfil -->
-    <script>
-        // Mostrar el modal de confirmación cuando la sesión tenga un mensaje 'success'
-        $(document).ready(function(){
-            $('#confirmationModal').modal('show');
-        });
-    </script>
-
-    <!-- Redirigir al usuario al login después de cerrar el modal -->
-    <script>
-        $('#confirmationModal').on('hidden.bs.modal', function (e) {
-            window.location.replace("{{ route('login') }}");
-        });
-    </script>
 @endsection

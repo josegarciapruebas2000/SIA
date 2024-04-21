@@ -100,29 +100,30 @@ class Usuarios extends Controller
     }
 
     public function profileUpdate(Request $request)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Validar los campos que pueden ser actualizados
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed', // La contraseña debe ser confirmada
-        ]);
+    // Validar los campos que pueden ser actualizados
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+        'password' => 'nullable|string|min:8|confirmed', // La contraseña debe ser confirmada
+    ]);
 
-        // Actualizar los campos del usuario
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
+    // Actualizar los campos del usuario
+    $user->name = $request->input('name');
+    $user->email = $request->input('email');
 
-        // Si la contraseña no está en blanco, actualízala; de lo contrario, conserva la contraseña anterior
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->input('password'));
-        }
-
-        // Guardar los cambios en la base de datos
-        $user->save();
-
-        // Redireccionar a alguna página después de guardar los cambios
-        return redirect()->route('login')->with('success', 'Perfil actualizado correctamente.');
+    // Si la contraseña no está en blanco, actualízala; de lo contrario, conserva la contraseña anterior
+    if ($request->filled('password')) {
+        $user->password = Hash::make($request->input('password'));
     }
+
+    // Guardar los cambios en la base de datos
+    $user->save();
+
+    // Redireccionar a alguna página después de guardar los cambios
+    return redirect()->route('login')->with('success', 'Perfil actualizado correctamente.');
+}
+
 }
