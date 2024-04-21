@@ -12,7 +12,13 @@ class Usuarios extends Controller
 {
     public function listaUsuarios()
     {
-        $users = User::paginate(10); // Obtener usuarios paginados con 10 usuarios por página
+        // Obtener el ID del usuario que inició sesión
+        $userId = Auth::id();
+
+        // Obtener la lista de usuarios excluyendo al usuario que inició sesión
+        $users = User::where('id', '!=', $userId)->paginate(10);
+
+        // Pasar la lista de usuarios a la vista
         return view('dashboard.usuarios', compact('users'));
     }
 
@@ -28,7 +34,7 @@ class Usuarios extends Controller
         ]);
 
         // Crear un nuevo usuario
-        $user = new User();      
+        $user = new User();
 
         $user->name = $request->input('name');
         $user->email = $request->input('email');
@@ -38,7 +44,7 @@ class Usuarios extends Controller
         $user->role = $request->input('role');
         $user->status = $estado; // Asignar el estado como un número (1 para Habilitado, 0 para Deshabilitado)
         $user->save();
-        
+
         // Redirigir a alguna vista o ruta después de guardar el usuario
         return redirect()->route('usuarios.lista')->with('success', 'Usuario creado exitosamente');
     }
@@ -73,52 +79,46 @@ class Usuarios extends Controller
 
 
     public function update(Request $request, $id)
-{
-    // Encuentra el usuario por su ID
-    $usuario = User::findOrFail($id);
+    {
+        // Encuentra el usuario por su ID
+        $usuario = User::findOrFail($id);
 
-    // Actualiza los campos del usuario con los datos del formulario
-    $usuario->name = $request->input('name');
-    $usuario->email = $request->input('email');
-    $usuario->role = $request->input('role');    
-    // Verifica si el checkbox de estado está marcado y actualiza el estado del usuario en consecuencia
-    $usuario->status = $request->has('status') ? 1 : 0;
+        // Actualiza los campos del usuario con los datos del formulario
+        $usuario->name = $request->input('name');
+        $usuario->email = $request->input('email');
+        $usuario->role = $request->input('role');
+        // Verifica si el checkbox de estado está marcado y actualiza el estado del usuario en consecuencia
+        $usuario->status = $request->has('status') ? 1 : 0;
 
-    $usuario->password = bcrypt($request->input('password'));
+        $usuario->password = bcrypt($request->input('password'));
 
-    // Guarda los cambios en la base de datos
-    $usuario->save();
+        // Guarda los cambios en la base de datos
+        $usuario->save();
 
-    // Redirecciona a alguna página después de guardar los cambios
-    return redirect()->route('usuarios.lista')->with('success', 'Usuario actualizado correctamente.');
-}
+        // Redirecciona a alguna página después de guardar los cambios
+        return redirect()->route('usuarios.lista')->with('success', 'Usuario actualizado correctamente.');
+    }
 
     public function profileUpdate(Request $request)
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    // Validar los campos que pueden ser actualizados
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-        'password' => 'nullable|string|min:8|confirmed', // La contraseña debe ser confirmada
-    ]);
+        // Validar los campos que pueden ser actualizados
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed', // La contraseña debe ser confirmada
+        ]);
 
-    // Actualizar los campos del usuario
-    $user->name = $request->input('name');
-    $user->email = $request->input('email');
-    $user->password = Hash::make($request->input('password'));
+        // Actualizar los campos del usuario
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->input('password'));
 
-    // Guardar los cambios en la base de datos
-    $user->save();
+        // Guardar los cambios en la base de datos
+        $user->save();
 
-    // Redireccionar a alguna página después de guardar los cambios
-    return redirect()->back()->with('success', 'Perfil actualizado correctamente.');
-}
-
-
-
-
-
-
+        // Redireccionar a alguna página después de guardar los cambios
+        return redirect()->back()->with('success', 'Perfil actualizado correctamente.');
+    }
 }
