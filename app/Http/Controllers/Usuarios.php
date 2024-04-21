@@ -113,7 +113,11 @@ class Usuarios extends Controller
         // Actualizar los campos del usuario
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
+
+        // Si la contraseña no está en blanco, actualízala; de lo contrario, conserva la contraseña anterior
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
 
         // Guardar los cambios en la base de datos
         $user->save();

@@ -85,12 +85,17 @@
             const confirmPassword = document.getElementById('password_confirmation').value;
             const passwordError = document.getElementById('passwordError');
 
-            if (password.length < 8 || password !== confirmPassword) {
-                passwordError.style.display = 'block';
-                return false; // Evitar que se envíe el formulario
+            // Verificar si los campos de contraseña no están vacíos
+            if (password !== '' && confirmPassword !== '') {
+                if (password.length < 8 || password !== confirmPassword) {
+                    passwordError.style.display = 'block';
+                    return false; // Evitar que se envíe el formulario
+                } else {
+                    passwordError.style.display = 'none';
+                    return true; // Permitir el envío del formulario
+                }
             } else {
-                passwordError.style.display = 'none';
-                return true; // Permitir el envío del formulario
+                return true; // Permitir el envío del formulario si los campos de contraseña están vacíos
             }
         }
     </script>
