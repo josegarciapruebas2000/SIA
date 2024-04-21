@@ -20,7 +20,16 @@
 
     <br>
     <form class="centered-form">
+        <!-- Mostrar la alerta solo si hay un mensaje de éxito -->
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
         <div class="table-responsive">
+            <!-- Cuerpo de la tabla -->
             <table class="table table-striped">
                 <!-- Encabezado de la tabla -->
                 <thead>
@@ -34,7 +43,6 @@
                     </tr>
                 </thead>
 
-                <!-- Cuerpo de la tabla -->
                 <tbody>
                     <!-- Iteración sobre los usuarios -->
                     @foreach ($users as $user)
@@ -56,9 +64,9 @@
                                             <button type="submit" class="btn btn-outline-success btn-sm mx-1">Habilitar</button>
                                         @endif
                                     </form>
-                                    <a href="/profile" style="text-decoration: none;">
+                                    <a href="{{ route('editar.usuario', ['id' => $user->id]) }}" style="text-decoration: none;">
                                         <button type="button" class="btn btn-outline-warning btn-sm mx-1">Editar</button>
-                                    </a>
+                                    </a>                                                                       
                                     <form method="POST" action="{{ route('usuarios.delete', ['id' => $user->id]) }}">
                                         @csrf
                                         @method('DELETE')
@@ -69,50 +77,42 @@
                         </tr>
                     @endforeach
                 </tbody>
-
             </table>
         </div>
     </form>
 
     <style>
-        /* Regla de estilo para los botones dentro de .button-container */
-        .button-container button {
-            margin-bottom: 5px; /* Margen inferior para separar verticalmente los botones */
-        }
-
-        /* Regla de estilo para centrar el texto en las celdas y encabezados de la tabla */
-        .table tbody tr td,
-        .table thead tr th {
-            text-align: center;
-            padding: 8px; /* Ajusta el espaciado entre el contenido y los bordes de las celdas */
-        }
-
-        /* Regla de estilo para centrar verticalmente las filas de la tabla */
-        .align-middle {
-            vertical-align: middle;
-        }
-
-        /* Ajuste de espaciado entre columnas */
-        .table th,
-        .table td {
-            padding: 0.75rem; /* Ajusta el espaciado entre las columnas */
-        }
-
-        /* Ajuste de altura de los botones */
-        .btn-sm {
-            height: 30px; /* Ajusta la altura de los botones pequeños */
-        }
-
-        /* Regla de estilo específica para dispositivos móviles */
-        @media (max-width: 991.98px) {
-            .button-container button {
-                margin-bottom: 10px; /* Incrementa el margen inferior en dispositivos móviles */
-            }
-        }
+        /* Estilos adicionales aquí */
     </style>
 
-    <div class="pagination justify-content-end">
-        <!-- Paginación -->
-        {{ $users->links() }}
-    </div>
+<!-- Paginación -->
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-end">
+      <li class="page-item">
+        <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only"></span>
+        </a>
+      </li>
+      @for ($i = 1; $i <= $users->lastPage(); $i++)
+        <li class="page-item {{ ($users->currentPage() == $i) ? 'active' : '' }}">
+          <a class="page-link" href="{{ $users->url($i) }}">{{ $i }}</a>
+        </li>
+      @endfor
+      <li class="page-item">
+        <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only"></span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+      
+    <!-- Script para ocultar la alerta después de 3 segundos -->
+    <script>
+        // Ocultar la alerta después de 3 segundos
+        setTimeout(function() {
+            document.getElementById('successAlert').style.display = 'none';
+        }, 3000);
+    </script>
 @endsection

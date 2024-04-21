@@ -160,7 +160,7 @@
                         Perfil
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="/profile">Editar Perfil</a></li>
+                        <li><a class="dropdown-item" href="{{ route('profile') }}">Editar Perfil</a></li>
                         <li><a class="dropdown-item" href="{{ route('login') }}">Cerrar Sesión</a></li>
                     </ul>
                 </li>

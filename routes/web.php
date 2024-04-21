@@ -18,9 +18,7 @@ use App\Http\Middleware\CheckRole;
 |
 */
 
-
 Route::view('/error/403', 'errors.403')->name('error.403');
-
 
 Route::get('/', function () {
     return view('login');
@@ -28,7 +26,7 @@ Route::get('/', function () {
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 
-Route::get('/profile', function () {
+Route::get('/perfil', function () {
     return view('dashboard/profile');
 })->name('profile');
 
@@ -44,6 +42,12 @@ Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usu
 
 Route::put('/usuarios/{id}/toggle', [Usuarios::class, 'toggleUsuario'])->name('usuarios.toggle');
 Route::delete('/usuarios/{id}', [Usuarios::class, 'eliminarUsuario'])->name('usuarios.delete');
+
+Route::get('/editar-usuario/{id}', [Usuarios::class, 'editarUsuario'])->name('editar.usuario')->middleware('role:SuperAdmin,Administrador');
+
+Route::put('/usuario/{id}', [Usuarios::class, 'update'])->name('usuarios.update');
+
+Route::post('/perfil/actualizar', [Usuarios::class, 'profileUpdate'])->name('perfil.actualizar');
 
 
 
@@ -66,3 +70,6 @@ Route::get('/comprobacion', function () {
 Route::get('/reposicion', function () {
     return view('gastos/viaticos/reposicion');
 })->name('reposicion');
+
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
