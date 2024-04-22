@@ -27,7 +27,7 @@
                     <option value="Empleado">Empleado</option>
                     <option value="Contadora">Contadora</option>
                     <option value="Recursos Humanos">Recursos Humanos</option>
-                    <option value="Superadmin">SuperAdmin</option>
+                    <option value="SuperAdmin">SuperAdmin</option>
                 </select>
             </div>
             <div class="col">
