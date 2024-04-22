@@ -23,11 +23,11 @@
     <br>
     <form class="centered-form">
         <!-- Mostrar la alerta solo si hay un mensaje de éxito -->
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
 
         <div class="table-responsive">
@@ -54,25 +54,30 @@
                             <td class="text-center">{{ $user->email }}</td>
                             <td class="text-center">{{ $user->role }}</td>
                             <td class="text-center">{{ $user->status ? 'Habilitado' : 'Deshabilitado' }}</td>
-                            <td class="text-center"> 
+                            <td class="text-center">
                                 <!-- Botones de acción -->
                                 <div class="button-container d-flex justify-content-center justify-content-sm-end">
                                     @if ($user->status)
-                                        <button type="button" class="btn btn-outline-secondary btn-sm mx-1" onclick="toggleUsuario({{ $user->id }})">Deshabilitar</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm mx-1"
+                                            onclick="toggleUsuario({{ $user->id }})">Deshabilitar</button>
                                     @else
-                                        <button type="button" class="btn btn-outline-success btn-sm mx-1" onclick="toggleUsuario({{ $user->id }})">Habilitar</button>
+                                        <button type="button" class="btn btn-outline-success btn-sm mx-1"
+                                            onclick="toggleUsuario({{ $user->id }})">Habilitar</button>
                                     @endif
-                                    <a href="{{ route('editar.usuario', ['id' => $user->id]) }}" style="text-decoration: none;">
+                                    <a href="{{ route('editar.usuario', ['id' => $user->id]) }}"
+                                        style="text-decoration: none;">
                                         <button type="button" class="btn btn-outline-warning btn-sm mx-1">Editar</button>
-                                    </a>                                                                       
-                                    <form method="POST" action="{{ route('usuarios.delete', ['id' => $user->id]) }}">
+                                    </a>
+                                    <form id="deleteForm{{ $user->id }}" method="POST"
+                                        action="{{ route('usuarios.delete', ['id' => $user->id]) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger btn-sm mx-1">Eliminar</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm mx-1"
+                                            onclick="deleteUser({{ $user->id }})">Eliminar</button>
                                     </form>
                                 </div>
                             </td>
-                            
+
                         </tr>
                     @endforeach
                 </tbody>
@@ -84,29 +89,29 @@
         /* Estilos adicionales aquí */
     </style>
 
-<!-- Paginación -->
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-end">
-      <li class="page-item">
-        <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only"></span>
-        </a>
-      </li>
-      @for ($i = 1; $i <= $users->lastPage(); $i++)
-        <li class="page-item {{ ($users->currentPage() == $i) ? 'active' : '' }}">
-          <a class="page-link" href="{{ $users->url($i) }}">{{ $i }}</a>
-        </li>
-      @endfor
-      <li class="page-item">
-        <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-          <span class="sr-only"></span>
-        </a>
-      </li>
-    </ul>
-  </nav>
-      
+    <!-- Paginación -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item">
+                <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only"></span>
+                </a>
+            </li>
+            @for ($i = 1; $i <= $users->lastPage(); $i++)
+                <li class="page-item {{ $users->currentPage() == $i ? 'active' : '' }}">
+                    <a class="page-link" href="{{ $users->url($i) }}">{{ $i }}</a>
+                </li>
+            @endfor
+            <li class="page-item">
+                <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only"></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
     <!-- Script para ocultar la alerta después de 3 segundos -->
     <script>
         // Ocultar la alerta después de 3 segundos
@@ -116,28 +121,51 @@
     </script>
 
     <script>
-        
-    function toggleUsuario(userId) {
-        fetch("{{ url('usuarios') }}/" + userId + "/toggle", {
-            method: 'PUT',
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                // Actualizar la página después de la solicitud exitosa
-                window.location.reload();
-            } else {
-                // Manejar errores en la solicitud
-                console.error('Error al procesar la solicitud');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-</script>
+        function toggleUsuario(userId) {
+            fetch("{{ url('usuarios') }}/" + userId + "/toggle", {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Actualizar la página después de la solicitud exitosa
+                        window.location.reload();
+                    } else {
+                        // Manejar errores en la solicitud
+                        console.error('Error al procesar la solicitud');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
 
+    <script>
+        function deleteUser(userId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
+                fetch("{{ url('usuarios') }}/" + userId, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Actualizar la página después de la eliminación exitosa
+                            window.location.reload();
+                        } else {
+                            // Manejar errores en la solicitud
+                            console.error('Error al procesar la solicitud');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+        }
+    </script>
 @endsection

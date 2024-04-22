@@ -60,13 +60,17 @@ class Usuarios extends Controller
 
 
     public function eliminarUsuario($id)
-    {
-        $user = User::find($id);
-        if ($user) {
-            $user->delete();
-        }
-        return redirect()->route('usuarios.lista')->with('success', 'Usuario eliminado exitosamente');
+{
+    $user = User::find($id);
+    if ($user) {
+        $user->delete();
+        
+    } else {
+        return redirect()->route('usuarios.lista')->with('error', 'No se pudo encontrar el usuario');
     }
+}
+
+
 
     public function editarUsuario($id)
     {

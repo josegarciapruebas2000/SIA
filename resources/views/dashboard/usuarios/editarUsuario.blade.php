@@ -31,7 +31,7 @@
                     <option value="Contadora" {{ $usuario->role == 'Contadora' ? 'selected' : '' }}>Contadora</option>
                     <option value="Recursos Humanos" {{ $usuario->role == 'Recursos Humanos' ? 'selected' : '' }}>Recursos
                         Humanos</option>
-                    <option value="Superadmin" {{ $usuario->role == 'Superadmin' ? 'selected' : '' }}>SuperAdmin</option>
+                    <option value="SuperAdmin" {{ $usuario->role == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>
                 </select>
             </div>
 
