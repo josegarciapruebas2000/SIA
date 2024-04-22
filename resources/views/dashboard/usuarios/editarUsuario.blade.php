@@ -25,10 +25,12 @@
                 <label for="rol" class="form-label">Rol:</label>
                 <select class="form-control" name="role" id="role">
                     <option value="Gerencia" {{ $usuario->role == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>
-                    <option value="Gerente de ventas" {{ $usuario->role == 'Gerente de ventas' ? 'selected' : '' }}>Gerente de ventas</option>
+                    <option value="Gerente de ventas" {{ $usuario->role == 'Gerente de ventas' ? 'selected' : '' }}>Gerente
+                        de ventas</option>
                     <option value="Empleado" {{ $usuario->role == 'Empleado' ? 'selected' : '' }}>Empleado</option>
                     <option value="Contadora" {{ $usuario->role == 'Contadora' ? 'selected' : '' }}>Contadora</option>
-                    <option value="Recursos Humanos" {{ $usuario->role == 'Recursos Humanos' ? 'selected' : '' }}>Recursos Humanos</option>                    
+                    <option value="Recursos Humanos" {{ $usuario->role == 'Recursos Humanos' ? 'selected' : '' }}>Recursos
+                        Humanos</option>
                     <option value="Superadmin" {{ $usuario->role == 'Superadmin' ? 'selected' : '' }}>Superadmin</option>
                 </select>
             </div>
@@ -51,14 +53,14 @@
 
         <div class="row mb-3">
             <div class="col">
-                <label for="password" class="form-label">Actualizar contraseña:</label>
+                <label for="password" class="form-label">Actualizar contraseña (opcional):</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese contraseña">
             </div>
 
             <div class="col">
                 <label for="confirmPassword" class="form-label">Confirmar contraseña:</label>
-                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                    placeholder="Confirme contraseña">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese contraseña">
+                <p style="font-size: 14px; color: #666;">Deje este campo en blanco para mantener la contraseña actual.</p>
             </div>
         </div>
 

@@ -90,7 +90,10 @@ class Usuarios extends Controller
         // Verifica si el checkbox de estado está marcado y actualiza el estado del usuario en consecuencia
         $usuario->status = $request->has('status') ? 1 : 0;
 
-        $usuario->password = bcrypt($request->input('password'));
+        // Verifica si se proporcionó una nueva contraseña
+        if ($request->filled('password')) {
+            $usuario->password = bcrypt($request->input('password'));
+        }
 
         // Guarda los cambios en la base de datos
         $usuario->save();
@@ -98,6 +101,7 @@ class Usuarios extends Controller
         // Redirecciona a alguna página después de guardar los cambios
         return redirect()->route('usuarios.lista')->with('success', 'Usuario actualizado correctamente.');
     }
+
 
     public function profileUpdate(Request $request)
     {
