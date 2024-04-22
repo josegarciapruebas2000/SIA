@@ -17,8 +17,15 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            $request->session()->put('user', $user);
-            return redirect()->intended('/dashboard');
+
+            // Verificar si el usuario está activo
+            if ($user->status) {
+                $request->session()->put('user', $user);
+                return redirect()->intended('/dashboard');
+            } else {
+                // Si el usuario está deshabilitado, redirigir de vuelta con un mensaje de error
+                return redirect()->back()->withErrors(['auth' => 'Tu cuenta ha sido deshabilitada.'])->withInput($request->only('email'));
+            }
         } else {
             return redirect()->back()->withErrors(['auth' => 'Credenciales incorrectas.'])->withInput($request->only('email'));
         }

@@ -57,15 +57,11 @@
                             <td class="text-center"> 
                                 <!-- Botones de acción -->
                                 <div class="button-container d-flex justify-content-center justify-content-sm-end">
-                                    <form method="POST" action="{{ route('usuarios.toggle', ['id' => $user->id]) }}">
-                                        @csrf
-                                        @method('PUT')
-                                        @if ($user->status)
-                                            <button type="submit" class="btn btn-outline-secondary btn-sm mx-1">Deshabilitar</button>
-                                        @else
-                                            <button type="submit" class="btn btn-outline-success btn-sm mx-1">Habilitar</button>
-                                        @endif
-                                    </form>
+                                    @if ($user->status)
+                                        <button type="button" class="btn btn-outline-secondary btn-sm mx-1" onclick="toggleUsuario({{ $user->id }})">Deshabilitar</button>
+                                    @else
+                                        <button type="button" class="btn btn-outline-success btn-sm mx-1" onclick="toggleUsuario({{ $user->id }})">Habilitar</button>
+                                    @endif
                                     <a href="{{ route('editar.usuario', ['id' => $user->id]) }}" style="text-decoration: none;">
                                         <button type="button" class="btn btn-outline-warning btn-sm mx-1">Editar</button>
                                     </a>                                                                       
@@ -76,6 +72,7 @@
                                     </form>
                                 </div>
                             </td>
+                            
                         </tr>
                     @endforeach
                 </tbody>
@@ -117,4 +114,30 @@
             document.getElementById('successAlert').style.display = 'none';
         }, 3000);
     </script>
+
+    <script>
+        
+    function toggleUsuario(userId) {
+        fetch("{{ url('usuarios') }}/" + userId + "/toggle", {
+            method: 'PUT',
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Actualizar la página después de la solicitud exitosa
+                window.location.reload();
+            } else {
+                // Manejar errores en la solicitud
+                console.error('Error al procesar la solicitud');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
 @endsection
