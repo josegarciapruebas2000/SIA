@@ -179,16 +179,16 @@
 
         <ul class="nav flex-column" style="padding-left: 20px;">
             <li class="nav-item">
-                <a class="nav-link active" href="/dashboard">Inicio</a>
+                <a class="nav-link active" href="{{ route('dashboard') }}">Inicio</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/#">Clientes</a>
+                <a class="nav-link active" href="{{ route('clientes.lista') }}">Clientes</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" href="/#">Proyectos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/usuarios">Usuarios</a>
+                <a class="nav-link" href="{{ route('usuarios.lista') }}">Usuarios</a>
             </li>
         </ul>
 

@@ -52,6 +52,12 @@ Route::put('/usuario/{id}', [Usuarios::class, 'update'])->name('usuarios.update'
 Route::post('/perfil/actualizar', [Usuarios::class, 'profileUpdate'])->name('perfil.actualizar');
 
 
+/* Clientes */
+
+Route::get('/clientes', [Usuarios::class, 'listaClientes'])
+    ->name('clientes.lista')
+    ->middleware('role:SuperAdmin,Administrador,Ventas');
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
