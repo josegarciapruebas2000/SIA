@@ -4,21 +4,33 @@
     <h2 style="text-align: center">Clientes</h2>
     <br><br>
 
-    <div class="row mb-3 justify-content-end">
-        <div class="col-auto">
-            <input type="text" class="form-control" placeholder="Buscar">
+    <div class="row mb-3">
+        <div class="col">
+            <form action="{{ route('clientes.lista') }}" method="GET" class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar" name="search" style="max-width: 350px;">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <svg class="icon-lupa" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                        <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+                    </svg>
+                </button>
+            </form>
         </div>
-        <div class="col-auto">
-            <!-- Agregar un identificador al botón "Agregar" -->
-            <button type="button" class="btn btn-primary btn-sm mb-2 mb-sm-0" id="agregarBtn" data-bs-toggle="modal"
-                data-bs-target="#agregarModal">Agregar</button>
-        </div>
-        <div class="col-auto">
-            <a href="{{ route('dashboard') }}">
-                <button type="button" class="btn btn-outline-secondary btn-sm mb-2 mb-sm-0">Regresar</button>
-            </a>
+        <div class="col-md-auto">
+            <div class="row">
+                <div class="col-auto mb-3 mb-md-0" style="margin-bottom: 20px; padding-top: 20px;">
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#agregarModal">Agregar</button>
+                </div>
+                <div class="col-auto" style="margin-bottom: 20px; padding-top: 20px;">
+                    <a href="{{ route('dashboard') }}">
+                        <button type="button" class="btn btn-outline-secondary btn-sm">Regresar</button>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
+    
+
+
 
     <!-- Paginación -->
     <nav aria-label="Page navigation example">
@@ -127,11 +139,12 @@
     </div>
 
 
-    
+
 
     <!-- Modales para editar clientes -->
     @foreach ($clientes as $cliente)
-        <div class="modal fade" id="editarModal{{ $cliente->idCliente }}" tabindex="-1" aria-labelledby="editarModalLabel{{ $cliente->idCliente }}" aria-hidden="true">
+        <div class="modal fade" id="editarModal{{ $cliente->idCliente }}" tabindex="-1"
+            aria-labelledby="editarModalLabel{{ $cliente->idCliente }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -140,26 +153,32 @@
                     </div>
                     <div class="modal-body">
                         <!-- Contenido del formulario para editar un cliente -->
-                        <form action="{{ route('update.clientes', $cliente->idCliente) }}" method="POST" id="formularioEditarCliente{{ $cliente->idCliente }}">
+                        <form action="{{ route('update.clientes', $cliente->idCliente) }}" method="POST"
+                            id="formularioEditarCliente{{ $cliente->idCliente }}">
                             @csrf
                             <!-- Contenido del formulario -->
                             <div class="form-group">
                                 <label for="categoria{{ $cliente->idCliente }}">Categoría:</label>
                                 <select class="form-select" id="categoria{{ $cliente->idCliente }}" name="categoria">
-                                    <option value="CFE" {{ $cliente->CategoriaCliente === 'CFE' ? 'selected' : '' }}>CFE</option>
-                                    <option value="Pemex" {{ $cliente->CategoriaCliente === 'Pemex' ? 'selected' : '' }}>Pemex</option>
-                                    <option value="Privada" {{ $cliente->CategoriaCliente === 'Privada' ? 'selected' : '' }}>Privada</option>
+                                    <option value="CFE" {{ $cliente->CategoriaCliente === 'CFE' ? 'selected' : '' }}>
+                                        CFE</option>
+                                    <option value="Pemex" {{ $cliente->CategoriaCliente === 'Pemex' ? 'selected' : '' }}>
+                                        Pemex</option>
+                                    <option value="Privada"
+                                        {{ $cliente->CategoriaCliente === 'Privada' ? 'selected' : '' }}>Privada</option>
                                 </select>
                             </div>
                             <br>
                             <div class="form-group">
                                 <label for="nombre{{ $cliente->idCliente }}">Nombre:</label>
-                                <input type="text" class="form-control" id="nombre{{ $cliente->idCliente }}" name="nombre" value="{{ $cliente->nombre }}">
+                                <input type="text" class="form-control" id="nombre{{ $cliente->idCliente }}"
+                                    name="nombre" value="{{ $cliente->nombre }}">
                             </div>
                             <br>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">Guardar</button>
-                                <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-secondary ms-2"
+                                    data-bs-dismiss="modal">Cancelar</button>
                             </div>
                         </form>
                     </div>
