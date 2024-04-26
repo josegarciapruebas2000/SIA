@@ -20,7 +20,28 @@
         </div>
     </div>
 
-    <br>
+    <!-- Paginación -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item">
+                <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only"></span>
+                </a>
+            </li>
+            @for ($i = 1; $i <= $users->lastPage(); $i++)
+                <li class="page-item {{ $users->currentPage() == $i ? 'active' : '' }}">
+                    <a class="page-link" href="{{ $users->url($i) }}">{{ $i }}</a>
+                </li>
+            @endfor
+            <li class="page-item">
+                <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only"></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
     <form class="centered-form">
         <!-- Mostrar la alerta solo si hay un mensaje de éxito -->
         @if (session('success'))
@@ -68,13 +89,13 @@
                                         style="text-decoration: none;">
                                         <button type="button" class="btn btn-outline-warning btn-sm mx-1">Editar</button>
                                     </a>
-                                    <form id="deleteForm{{ $user->id }}" method="POST"
-                                        action="{{ route('usuarios.delete', ['id' => $user->id]) }}">
+                                    <form id="deleteForm{{ $user->id }}" method="POST" action="{{ route('usuarios.delete', ['id' => $user->id]) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-outline-danger btn-sm mx-1"
-                                            onclick="deleteUser({{ $user->id }})">Eliminar</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm mx-1">Eliminar</button>
                                     </form>
+                                    
+
                                 </div>
                             </td>
 
@@ -89,28 +110,7 @@
         /* Estilos adicionales aquí */
     </style>
 
-    <!-- Paginación -->
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-end">
-            <li class="page-item">
-                <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only"></span>
-                </a>
-            </li>
-            @for ($i = 1; $i <= $users->lastPage(); $i++)
-                <li class="page-item {{ $users->currentPage() == $i ? 'active' : '' }}">
-                    <a class="page-link" href="{{ $users->url($i) }}">{{ $i }}</a>
-                </li>
-            @endfor
-            <li class="page-item">
-                <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only"></span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    
 
     <!-- Script para ocultar la alerta después de 3 segundos -->
     <script>
@@ -144,28 +144,5 @@
         }
     </script>
 
-    <script>
-        function deleteUser(userId) {
-            if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-                fetch("{{ url('usuarios') }}/" + userId, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                        }
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            // Actualizar la página después de la eliminación exitosa
-                            window.location.reload();
-                        } else {
-                            // Manejar errores en la solicitud
-                            console.error('Error al procesar la solicitud');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            }
-        }
-    </script>
+    
 @endsection

@@ -25,7 +25,7 @@
                     <option value="Gerencia">Gerencia</option>                    
                     <option value="Gerente de ventas">Gerente de ventas</option>
                     <option value="Empleado">Empleado</option>
-                    <option value="Contadora">Contadora</option>
+                    <option value="Contadora">Contador</option>
                     <option value="Recursos Humanos">Recursos Humanos</option>
                     <option value="SuperAdmin">SuperAdmin</option>
                 </select>

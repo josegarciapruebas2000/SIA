@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Usuarios;
+use App\Http\Controllers\ClienteController;
 use App\Http\Middleware\CheckRole;
 
 
@@ -54,9 +55,15 @@ Route::post('/perfil/actualizar', [Usuarios::class, 'profileUpdate'])->name('per
 
 /* Clientes */
 
-Route::get('/clientes', [Usuarios::class, 'listaClientes'])
-    ->name('clientes.lista')
-    ->middleware('role:SuperAdmin,Administrador,Ventas');
+Route::get('/clientes', [ClienteController::class, 'listaClientes'])
+    ->name('clientes.lista')->middleware('role:SuperAdmin,Administrador');
+
+Route::post('/clientes-add', [ClienteController::class, 'agregarCliente'])
+    ->name('add.clientes')->middleware('role:SuperAdmin,Administrador');
+
+Route::put('/clientes-update', [ClienteController::class, 'editarCliente'])
+    ->name('update.clientes')->middleware('role:SuperAdmin,Administrador');
+
 
 
 Route::get('/dashboard', function () {

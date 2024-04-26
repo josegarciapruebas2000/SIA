@@ -28,7 +28,7 @@
                     <option value="Gerente de ventas" {{ $usuario->role == 'Gerente de ventas' ? 'selected' : '' }}>Gerente
                         de ventas</option>
                     <option value="Empleado" {{ $usuario->role == 'Empleado' ? 'selected' : '' }}>Empleado</option>
-                    <option value="Contadora" {{ $usuario->role == 'Contadora' ? 'selected' : '' }}>Contadora</option>
+                    <option value="Contadora" {{ $usuario->role == 'Contadora' ? 'selected' : '' }}>Contador</option>
                     <option value="Recursos Humanos" {{ $usuario->role == 'Recursos Humanos' ? 'selected' : '' }}>Recursos
                         Humanos</option>
                     <option value="SuperAdmin" {{ $usuario->role == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>

@@ -16,7 +16,8 @@ class Usuarios extends Controller
         $userId = Auth::id();
 
         // Obtener la lista de usuarios excluyendo al usuario que inició sesión
-        $users = User::where('id', '!=', $userId)->paginate(10);
+        $users = User::where('id', '!=', $userId)->orderBy('id', 'desc')->paginate(5);
+        
 
         // Pasar la lista de usuarios a la vista
         return view('dashboard.usuarios.usuarios', compact('users'));
@@ -64,11 +65,12 @@ class Usuarios extends Controller
     $user = User::find($id);
     if ($user) {
         $user->delete();
-        
+        return redirect()->route('usuarios.lista')->with('success', 'Usuario eliminado correctamente.');
     } else {
         return redirect()->route('usuarios.lista')->with('error', 'No se pudo encontrar el usuario');
     }
 }
+
 
 
 

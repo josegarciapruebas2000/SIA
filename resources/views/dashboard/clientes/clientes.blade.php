@@ -9,9 +9,9 @@
             <input type="text" class="form-control" placeholder="Buscar">
         </div>
         <div class="col-auto">
-            <a href="#">
-                <button type="button" class="btn btn-primary btn-sm mb-2 mb-sm-0">Agregar</button>
-            </a>
+            <!-- Agregar un identificador al botón "Agregar" -->
+            <button type="button" class="btn btn-primary btn-sm mb-2 mb-sm-0" id="agregarBtn" data-bs-toggle="modal"
+                data-bs-target="#agregarModal">Agregar</button>
         </div>
         <div class="col-auto">
             <a href="{{ route('dashboard') }}">
@@ -20,14 +20,36 @@
         </div>
     </div>
 
-    <br>
+    <!-- Paginación -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item {{ $clientes->onFirstPage() ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ $clientes->previousPageUrl() }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only"></span>
+                </a>
+            </li>
+            @for ($i = 1; $i <= $clientes->lastPage(); $i++)
+                <li class="page-item {{ $clientes->currentPage() == $i ? 'active' : '' }}">
+                    <a class="page-link" href="{{ $clientes->url($i) }}">{{ $i }}</a>
+                </li>
+            @endfor
+            <li class="page-item {{ $clientes->currentPage() == $clientes->lastPage() ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ $clientes->nextPageUrl() }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only"></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
     <form class="centered-form">
         <!-- Mostrar la alerta solo si hay un mensaje de éxito -->
-        @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
 
         <div class="table-responsive">
@@ -38,83 +60,159 @@
                     <tr>
                         <th scope="col" class="text-center">ID</th>
                         <th scope="col" class="text-center">Nombre</th>
-                        <th scope="col" class="text-center">Correo</th>
-                        <th scope="col" class="text-center">Rol</th>
-                        <th scope="col" class="text-center">Estado</th>
+                        <th scope="col" class="text-center">Categoria</th>
                         <th scope="col" class="text-center">Acciones</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <!-- Iteración sobre los usuarios -->
-                    @foreach ($users as $user)
-                        <tr class="{{ $user->status ? '' : 'table-danger' }} align-middle">
-                            <td class="text-center">{{ $user->id }}</td>
-                            <td class="text-center">{{ $user->name }}</td>
-                            <td class="text-center">{{ $user->email }}</td>
-                            <td class="text-center">{{ $user->role }}</td>
-                            <td class="text-center">{{ $user->status ? 'Habilitado' : 'Deshabilitado' }}</td>
-                            <td class="text-center"> 
-                                <!-- Botones de acción -->
-                                <div class="button-container d-flex justify-content-center justify-content-sm-end">
-                                    <form method="POST" action="{{ route('usuarios.toggle', ['id' => $user->id]) }}">
-                                        @csrf
-                                        @method('PUT')
-                                        @if ($user->status)
-                                            <button type="submit" class="btn btn-outline-secondary btn-sm mx-1">Deshabilitar</button>
-                                        @else
-                                            <button type="submit" class="btn btn-outline-success btn-sm mx-1">Habilitar</button>
-                                        @endif
-                                    </form>
-                                    <a href="{{ route('editar.usuario', ['id' => $user->id]) }}" style="text-decoration: none;">
-                                        <button type="button" class="btn btn-outline-warning btn-sm mx-1">Editar</button>
-                                    </a>                                                                       
-                                    <form method="POST" action="{{ route('usuarios.delete', ['id' => $user->id]) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger btn-sm mx-1">Eliminar</button>
-                                    </form>
-                                </div>
+                    <!-- Iteración sobre los clientes -->
+                    @foreach ($clientes as $cliente)
+                        <tr>
+                            <td class="text-center">{{ $cliente->idCliente }}</td>
+                            <td class="text-center">{{ $cliente->nombre }}</td>
+                            <td class="text-center">{{ $cliente->CategoriaCliente }}</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-outline-secondary btn-sm mx-1">Deshabilitar</button>
+                                <button class="btn-editar" data-cliente-id="{{ $cliente->id }}">Editar</button>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
+
             </table>
         </div>
     </form>
 
-    <style>
-        /* Estilos adicionales aquí */
-    </style>
 
-<!-- Paginación -->
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-end">
-      <li class="page-item">
-        <a class="page-link" href="{{ $users->previousPageUrl() }}" aria-label="Previous">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only"></span>
-        </a>
-      </li>
-      @for ($i = 1; $i <= $users->lastPage(); $i++)
-        <li class="page-item {{ ($users->currentPage() == $i) ? 'active' : '' }}">
-          <a class="page-link" href="{{ $users->url($i) }}">{{ $i }}</a>
-        </li>
-      @endfor
-      <li class="page-item">
-        <a class="page-link" href="{{ $users->nextPageUrl() }}" aria-label="Next">
-          <span aria-hidden="true">&raquo;</span>
-          <span class="sr-only"></span>
-        </a>
-      </li>
-    </ul>
-  </nav>
-      
+    <!-- Agregar un identificador al modal -->
+    <div class="modal fade" id="agregarModal" tabindex="-1" aria-labelledby="agregarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="agregarModalLabel">Agregar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenedor del mensaje de error -->
+                    <div id="errorMensaje" class="alert alert-danger" style="display: none;"></div>
+
+                    <!-- Contenido del formulario para agregar un cliente -->
+                    <form action="{{ route('add.clientes') }}" method="POST" id="formularioCliente">
+                        @csrf
+                        <div class="form-group">
+                            <label for="categoria">Categoría:</label>
+                            <select class="form-select" id="categoria" name="categoria">
+                                <option value="Seleccionar">Seleccionar</option>
+                                <option value="CFE">CFE</option>
+                                <option value="Pemex">Pemex</option>
+                                <option value="Privada">Privada</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre">
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary" onclick="guardarCliente()">Guardar</button>
+                            <button type="button" class="btn btn-secondary ms-2"
+                                data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    
+
+    <!-- Modales para editar clientes -->
+    @foreach ($clientes as $cliente)
+        <div class="modal fade" id="editarModal{{ $cliente->idCliente }}" tabindex="-1" aria-labelledby="editarModalLabel{{ $cliente->idCliente }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editarModalLabel{{ $cliente->idCliente }}">Editar Cliente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Contenido del formulario para editar un cliente -->
+                        <form action="{{ route('update.clientes', $cliente->idCliente) }}" method="POST" id="formularioEditarCliente{{ $cliente->idCliente }}">
+                            @csrf
+                            <!-- Contenido del formulario -->
+                            <div class="form-group">
+                                <label for="categoria{{ $cliente->idCliente }}">Categoría:</label>
+                                <select class="form-select" id="categoria{{ $cliente->idCliente }}" name="categoria">
+                                    <option value="CFE" {{ $cliente->CategoriaCliente === 'CFE' ? 'selected' : '' }}>CFE</option>
+                                    <option value="Pemex" {{ $cliente->CategoriaCliente === 'Pemex' ? 'selected' : '' }}>Pemex</option>
+                                    <option value="Privada" {{ $cliente->CategoriaCliente === 'Privada' ? 'selected' : '' }}>Privada</option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="nombre{{ $cliente->idCliente }}">Nombre:</label>
+                                <input type="text" class="form-control" id="nombre{{ $cliente->idCliente }}" name="nombre" value="{{ $cliente->nombre }}">
+                            </div>
+                            <br>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+
     <!-- Script para ocultar la alerta después de 3 segundos -->
     <script>
         // Ocultar la alerta después de 3 segundos
         setTimeout(function() {
             document.getElementById('successAlert').style.display = 'none';
         }, 3000);
+
+        // Función para validar y guardar el cliente
+        function guardarCliente() {
+            var categoriaSeleccionada = document.getElementById('categoria').value;
+            var nombreCliente = document.getElementById('nombre').value;
+            var errorMensaje = document.getElementById('errorMensaje');
+
+            // Reiniciar el mensaje de error
+            errorMensaje.innerHTML = '';
+            errorMensaje.style.display = 'none';
+
+            // Validar la selección de categoría
+            if (categoriaSeleccionada === 'Seleccionar') {
+                errorMensaje.innerHTML = 'Por favor seleccione una categoría';
+                errorMensaje.style.display = 'block';
+                return;
+            }
+
+            // Validar el campo de nombre
+            if (nombreCliente.trim() === '') {
+                errorMensaje.innerHTML = 'Por favor ingrese el nombre del cliente';
+                errorMensaje.style.display = 'block';
+                return;
+            }
+
+            // Si todas las validaciones pasan, enviar el formulario
+            document.getElementById('formularioCliente').submit();
+        }
+
+        // Función para cargar el modal de edición
+        $(document).ready(function() {
+            $('.btn-editar').click(function() {
+                var clienteId = $(this).data('cliente-id');
+                var modalId = '#editarModal' + clienteId;
+
+                // Mostrar el modal correspondiente
+                $(modalId).modal('show');
+            });
+        });
     </script>
 @endsection
