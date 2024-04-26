@@ -10,18 +10,28 @@ use Illuminate\Support\Facades\Hash;
 
 class Usuarios extends Controller
 {
-    public function listaUsuarios()
+    public function listaUsuarios(Request $request)
     {
         // Obtener el ID del usuario que inició sesión
         $userId = Auth::id();
 
-        // Obtener la lista de usuarios excluyendo al usuario que inició sesión
-        $users = User::where('id', '!=', $userId)->orderBy('id', 'desc')->paginate(5);
-        
+        // Obtener el término de búsqueda del formulario
+        $searchTerm = $request->input('search');
+
+        // Consulta de búsqueda con cláusula OR para buscar en múltiples columnas
+        $users = User::where('id', '!=', $userId)
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('id', 'like', "%$searchTerm%")
+                    ->orWhere('name', 'like', "%$searchTerm%")
+                    ->orWhere('email', 'like', "%$searchTerm%");
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(5);
 
         // Pasar la lista de usuarios a la vista
         return view('dashboard.usuarios.usuarios', compact('users'));
     }
+
 
 
     public function guardar(Request $request)
@@ -61,15 +71,15 @@ class Usuarios extends Controller
 
 
     public function eliminarUsuario($id)
-{
-    $user = User::find($id);
-    if ($user) {
-        $user->delete();
-        return redirect()->route('usuarios.lista')->with('success', 'Usuario eliminado correctamente.');
-    } else {
-        return redirect()->route('usuarios.lista')->with('error', 'No se pudo encontrar el usuario');
+    {
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return redirect()->route('usuarios.lista')->with('success', 'Usuario eliminado correctamente.');
+        } else {
+            return redirect()->route('usuarios.lista')->with('error', 'No se pudo encontrar el usuario');
+        }
     }
-}
 
 
 
