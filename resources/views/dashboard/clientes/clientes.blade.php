@@ -1,16 +1,27 @@
 @extends('base')
 
+<style>
+    .icon-lupa {
+        fill: rgb(255, 255, 255);
+        /* Cambia "your-color" al color que desees */
+    }
+</style>
+
 @section('content')
     <h2 style="text-align: center">Clientes</h2>
     <br><br>
+
+
 
     <div class="row mb-3">
         <div class="col">
             <form action="{{ route('clientes.lista') }}" method="GET" class="input-group">
                 <input type="text" class="form-control" placeholder="Buscar" name="search" style="max-width: 350px;">
                 <button type="submit" class="btn btn-primary btn-sm">
-                    <svg class="icon-lupa" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
-                        <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+                    <svg class="icon-lupa" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16"
+                        height="16">
+                        <path
+                            d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
                     </svg>
                 </button>
             </form>
@@ -18,7 +29,8 @@
         <div class="col-md-auto">
             <div class="row">
                 <div class="col-auto mb-3 mb-md-0" style="margin-bottom: 20px; padding-top: 20px;">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#agregarModal">Agregar</button>
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#agregarModal">Agregar</button>
                 </div>
                 <div class="col-auto" style="margin-bottom: 20px; padding-top: 20px;">
                     <a href="{{ route('dashboard') }}">
@@ -28,7 +40,7 @@
             </div>
         </div>
     </div>
-    
+
 
 
 
@@ -84,17 +96,40 @@
                             <td class="text-center">{{ $cliente->idCliente }}</td>
                             <td class="text-center">{{ $cliente->nombre }}</td>
                             <td class="text-center">{{ $cliente->CategoriaCliente }}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-outline-secondary btn-sm mx-1">Deshabilitar</button>
-                                <button class="btn-editar" data-cliente-id="{{ $cliente->id }}">Editar</button>
+                            <td class="text-center align-middle"> <!-- Alineación vertical -->
+                                @if ($cliente->status == 0)
+                                    <form id="habilitarForm{{ $cliente->idCliente }}"
+                                        action="{{ route('habilitar.status', ['id' => $cliente->idCliente]) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit"
+                                            class="btn btn-outline-success btn-sm mx-1 btn-habilitar">Habilitar</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('deshabilitar.status', ['id' => $cliente->idCliente]) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <!-- Este formulario envía una solicitud PUT -->
+                                        <button type="submit"
+                                            class="btn btn-outline-secondary btn-sm mx-1">Deshabilitar</button>
+                                    </form>
+                                @endif
+                                <button type="button" class="btn btn-outline-warning btn-sm mx-1 btn-editar"
+                                    data-bs-toggle="modal" data-bs-target="#editarModal{{ $cliente->idCliente }}"
+                                    data-cliente-id="{{ $cliente->idCliente }}">Editar</button>
+                                <button type="submit" class="btn btn-outline-danger btn-sm mx-1">Eliminar</button>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
+                
 
             </table>
         </div>
     </form>
+
 
 
     <!-- Agregar un identificador al modal -->
@@ -153,9 +188,10 @@
                     </div>
                     <div class="modal-body">
                         <!-- Contenido del formulario para editar un cliente -->
-                        <form action="{{ route('update.clientes', $cliente->idCliente) }}" method="POST"
+                        <form action="{{ route('update.clientes', ['id' => $cliente->idCliente]) }}" method="POST"
                             id="formularioEditarCliente{{ $cliente->idCliente }}">
                             @csrf
+                            @method('PUT')
                             <!-- Contenido del formulario -->
                             <div class="form-group">
                                 <label for="categoria{{ $cliente->idCliente }}">Categoría:</label>

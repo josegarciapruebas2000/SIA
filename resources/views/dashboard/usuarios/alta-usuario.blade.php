@@ -8,34 +8,49 @@
         <div class="row mb-3">
             <div class="col">
                 <label for="name" class="form-label">Nombre:</label>
-                <input type="text" class="form-control" id="name" name="name"
-                    placeholder="Ingrese nombre de usuario">
+                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
+                    placeholder="Ingrese nombre de usuario" value="{{ old('name') }}">
+                @error('name')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
             <div class="col">
                 <label for="email" class="form-label">Correo:</label>
-                <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese correo">
+                <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Ingrese correo" value="{{ old('email') }}">
+                @error('email')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
         </div>
         <br>
         <div class="row mb-3">
             <div class="col">
                 <label for="role" class="form-label">Rol:</label>
-                <select class="form-control" name="role">
-                    <option>Seleccione una opción</option>
-                    <option value="Gerencia">Gerencia</option>                    
-                    <option value="Gerente de ventas">Gerente de ventas</option>
-                    <option value="Empleado">Empleado</option>
-                    <option value="Contadora">Contador</option>
-                    <option value="Recursos Humanos">Recursos Humanos</option>
-                    <option value="SuperAdmin">SuperAdmin</option>
+                <select class="form-control @error('role') is-invalid @enderror" name="role">
+                    <option value="">Seleccione una opción</option>
+                    <option value="Gerencia" {{ old('role') == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>                    
+                    <option value="Gerente de ventas" {{ old('role') == 'Gerente de ventas' ? 'selected' : '' }}>Gerente de ventas</option>
+                    <option value="Empleado" {{ old('role') == 'Empleado' ? 'selected' : '' }}>Empleado</option>
+                    <option value="Contadora" {{ old('role') == 'Contadora' ? 'selected' : '' }}>Contador</option>
+                    <option value="Recursos Humanos" {{ old('role') == 'Recursos Humanos' ? 'selected' : '' }}>Recursos Humanos</option>
+                    <option value="SuperAdmin" {{ old('role') == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>
                 </select>
+                @error('role')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
             <div class="col">
                 <label for="estado" class="form-label">Estado:</label>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="estado"
                         onchange="changeLabelText()">
-                    <label class="form-check-label" id="switchLabel" for="flexSwitchCheckDefault">Deshabilitado</label>
+                    <label class="form-check-label btn btn-outline-secondary btn-sm" id="switchLabel" for="flexSwitchCheckDefault">Deshabilitado</label>
                 </div>
             </div>
         </div>
@@ -43,7 +58,12 @@
         <div class="row mb-3">
             <div class="col">
                 <label for="password" class="form-label">Contraseña:</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese contraseña">
+                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Ingrese contraseña">
+                @error('password')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
             </div>
             <div class="col">
                 <label for="confirm_password" class="form-label">Confirmar contraseña:</label>

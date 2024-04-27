@@ -36,13 +36,34 @@ class Usuarios extends Controller
 
     public function guardar(Request $request)
     {
-        // Validar los datos del formulario
+        // Define los mensajes de error personalizados
+        $messages = [
+            'name.required' => 'El campo nombre es obligatorio.',
+            'email.required' => 'El campo correo electrónico es obligatorio.',
+            'email.email' => 'Ingrese un correo electrónico válido.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'password.required' => 'El campo contraseña es obligatorio.',
+            'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'role.required' => 'El campo rol es obligatorio.',
+        ];
+
+        // Validar los datos del formulario con los mensajes personalizados
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8', // No necesitas la confirmación aquí
+            'password' => 'required|string|min:8',
             'role' => 'required|string',
-        ]);
+        ], $messages);
+
+        // Verificar si el correo electrónico está vacío
+        if (empty($request->input('email'))) {
+            return back()->withInput()->withErrors(['email' => 'El correo electrónico es obligatorio.']);
+        }
+
+        // Verificar si el correo electrónico ya existe
+        if (User::where('email', $request->input('email'))->exists()) {
+            return back()->withInput()->withErrors(['email' => 'El correo electrónico ya está registrado.']);
+        }
 
         // Crear un nuevo usuario
         $user = new User();
@@ -51,14 +72,16 @@ class Usuarios extends Controller
         $user->email = $request->input('email');
         // Determinar el estado
         $estado = $request->has('estado') ? 1 : 0;
-        $user->password = Hash::make($request->input('password')); // Utiliza Hash::make para cifrar la contraseña
+        $user->password = Hash::make($request->input('password'));
         $user->role = $request->input('role');
-        $user->status = $estado; // Asignar el estado como un número (1 para Habilitado, 0 para Deshabilitado)
+        $user->status = $estado;
         $user->save();
 
         // Redirigir a alguna vista o ruta después de guardar el usuario
         return redirect()->route('usuarios.lista')->with('success', 'Usuario creado exitosamente');
     }
+
+
 
     public function toggleUsuario($id)
     {

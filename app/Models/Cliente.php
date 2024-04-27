@@ -12,4 +12,6 @@ class Cliente extends Model
     protected $fillable = ['nombre', 'categoriaCliente', 'status'];
 
     public $timestamps = false;
+
+    protected $primaryKey = 'idCliente';
 }

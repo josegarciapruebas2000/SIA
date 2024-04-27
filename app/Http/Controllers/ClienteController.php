@@ -49,6 +49,24 @@ class ClienteController extends Controller
         return Redirect::route('clientes.lista')->with('success', 'Cliente agregado exitosamente');
     }
 
+    public function habilitarStatus($id)
+    {
+        $cliente = Cliente::find($id);
+        $cliente->status = 1;
+        $cliente->save();
+
+        return Redirect::route('clientes.lista')->with('success', 'Cliente habilitado exitosamente');
+    }
+
+    public function deshabilitarStatus($id)
+    {
+        $cliente = Cliente::find($id);
+        $cliente->status = 0;
+        $cliente->save();
+
+        return Redirect::route('clientes.lista')->with('success', 'Cliente deshabilitado exitosamente');
+    }
+
     public function editarCliente(Request $request, $id)
     {
         $request->validate([
@@ -56,7 +74,7 @@ class ClienteController extends Controller
             'categoria' => 'required|string|max:255|not_in:Seleccionar',
         ]);
 
-        $cliente = Cliente::find($id);
+        $cliente = Cliente::findOrFail($id);
 
         $cliente->nombre = $request->input('nombre');
         $cliente->categoriaCliente = $request->input('categoria');
