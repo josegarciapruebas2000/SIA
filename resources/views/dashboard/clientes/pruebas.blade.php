@@ -5,16 +5,13 @@
         fill: rgb(255, 255, 255);
         /* Cambia "your-color" al color que desees */
     }
-
-    .row-red {
-        background-color: #f8d7da;
-        /* Color de fondo rojo */
-    }
 </style>
 
 @section('content')
     <h2 style="text-align: center">Clientes</h2>
     <br><br>
+
+
 
     <div class="row mb-3">
         <div class="col">
@@ -43,6 +40,9 @@
             </div>
         </div>
     </div>
+
+
+
 
     <!-- Paginación -->
     <nav aria-label="Page navigation example">
@@ -92,37 +92,44 @@
                 <tbody>
                     <!-- Iteración sobre los clientes -->
                     @foreach ($clientes as $cliente)
-                        @php
-                            // Verificar si el cliente tiene proyectos asociados
-                            $proyectosAsociados = App\Models\Proyecto::where('idClienteProy', $cliente->idCliente)->exists();
-                        @endphp
-                        <tr @if ($cliente->status == 0) class="table-danger" @endif>
+                        <tr>
                             <td class="text-center">{{ $cliente->idCliente }}</td>
                             <td class="text-center">{{ $cliente->nombre }}</td>
                             <td class="text-center">{{ $cliente->CategoriaCliente }}</td>
                             <td class="text-center align-middle"> <!-- Alineación vertical -->
-                                @if ($cliente->status == 1)
-                                    <a href="{{ route('clientes.toggleStatus', ['id' => $cliente->idCliente]) }}"
-                                        class="btn btn-outline-secondary">Deshabilitar</a>
+                                @if ($cliente->status == 0)
+                                    <form id="habilitarForm{{ $cliente->idCliente }}"
+                                        action="{{ route('habilitar.status', ['id' => $cliente->idCliente]) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit"
+                                            class="btn btn-outline-success btn-sm mx-1 btn-habilitar">Habilitar</button>
+                                    </form>
                                 @else
-                                    <a href="{{ route('clientes.toggleStatus', ['id' => $cliente->idCliente]) }}"
-                                        class="btn btn-outline-success">Habilitar</a>
+                                    <form action="{{ route('deshabilitar.status', ['id' => $cliente->idCliente]) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <!-- Este formulario envía una solicitud PUT -->
+                                        <button type="submit"
+                                            class="btn btn-outline-secondary btn-sm mx-1">Deshabilitar</button>
+                                    </form>
                                 @endif
                                 <button type="button" class="btn btn-outline-warning btn-sm mx-1 btn-editar"
                                     data-bs-toggle="modal" data-bs-target="#editarModal{{ $cliente->idCliente }}"
                                     data-cliente-id="{{ $cliente->idCliente }}">Editar</button>
-                                @unless($proyectosAsociados)
-                                    <a href="{{ route('eliminar.cliente', ['id' => $cliente->idCliente]) }}"
-                                        class="btn btn-outline-danger btn-sm mx-1">Eliminar</a>
-                                @endunless
+                                <button type="submit" class="btn btn-outline-danger btn-sm mx-1">Eliminar</button>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
-                
+
+
             </table>
         </div>
     </form>
+
 
 
     <!-- Agregar un identificador al modal -->
@@ -165,6 +172,9 @@
             </div>
         </div>
     </div>
+
+
+
 
     <!-- Modales para editar clientes -->
     @foreach ($clientes as $cliente)
@@ -212,6 +222,7 @@
             </div>
         </div>
     @endforeach
+
 
     <!-- Script para ocultar la alerta después de 3 segundos -->
     <script>

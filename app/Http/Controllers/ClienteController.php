@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Proyecto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
@@ -49,23 +50,37 @@ class ClienteController extends Controller
         return Redirect::route('clientes.lista')->with('success', 'Cliente agregado exitosamente');
     }
 
-    public function habilitarStatus($id)
+    public function toggleStatus($id)
     {
-        $cliente = Cliente::find($id);
-        $cliente->status = 1;
-        $cliente->save();
+        $cliente = Cliente::findOrFail($id);
 
-        return Redirect::route('clientes.lista')->with('success', 'Cliente habilitado exitosamente');
+        // Verificar el método de la solicitud
+        if (request()->isMethod('get')) {
+            // Cambiar el estado del cliente
+            $cliente->status = $cliente->status == 0 ? 1 : 0;
+            $cliente->save();
+
+            // Redirigir o retornar una respuesta adecuada
+            return redirect()->back()->with('success', 'El estado del cliente se ha cambiado correctamente.');
+        } elseif (request()->isMethod('post')) {
+            // Lógica adicional para manejar solicitudes POST, si es necesario
+        }
     }
 
-    public function deshabilitarStatus($id)
+    public function eliminarCliente(Request $request, $id)
     {
-        $cliente = Cliente::find($id);
-        $cliente->status = 0;
-        $cliente->save();
+        // Aquí iría la lógica para eliminar el cliente si no tiene proyectos asociados
+        $cliente = Cliente::findOrFail($id);
+        $proyectosAsociados = Proyecto::where('idClienteProy', $id)->exists();
 
-        return Redirect::route('clientes.lista')->with('success', 'Cliente deshabilitado exitosamente');
+        if (!$proyectosAsociados) {
+            $cliente->delete();
+            return redirect()->route('clientes.lista')->with('success', 'Cliente eliminado correctamente.');
+        } else {
+            return redirect()->route('clientes.lista')->with('error', 'No se puede eliminar el cliente porque tiene proyectos asociados.');
+        }
     }
+
 
     public function editarCliente(Request $request, $id)
     {

@@ -73,6 +73,16 @@ Route::put('/status-dehabilitar/{id}', [ClienteController::class, 'deshabilitarS
     ->name('deshabilitar.status')
     ->middleware('role:SuperAdmin,Administrador');
 
+Route::match(['get', 'post'], '/clientes/{id}/toggle-status', [ClienteController::class, 'toggleStatus'])
+    ->name('clientes.toggleStatus')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::get('/eliminar-cliente/{id}', [ClienteController::class, 'eliminarCliente'])
+    ->name('eliminar.cliente')
+    ->middleware('role:SuperAdmin,Administrador');
+
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
