@@ -92,7 +92,7 @@
                 <tbody>
                     <!-- Iteración sobre los clientes -->
                     @foreach ($clientes as $cliente)
-                        <tr>
+                        <tr @if ($cliente->status == 0) class="table-danger" @endif>
                             <td class="text-center">{{ $cliente->idCliente }}</td>
                             <td class="text-center">{{ $cliente->nombre }}</td>
                             <td class="text-center">{{ $cliente->CategoriaCliente }}</td>
@@ -123,8 +123,9 @@
                             </td>
                         </tr>
                     @endforeach
+
                 </tbody>
-                
+
 
             </table>
         </div>
