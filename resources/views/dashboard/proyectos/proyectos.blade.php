@@ -119,7 +119,7 @@
                         </tr>
                     @endforeach
                 </tbody>
-                
+
 
             </table>
         </div>
@@ -181,12 +181,11 @@
                             <label for="idCliente">Cliente:</label>
                             <select class="form-control" id="idCliente" name="idCliente">
                                 <option value="">Seleccionar</option>
-                                @foreach ($clientes as $cliente)
+                                @foreach ($clientes->where('status', 1) as $cliente)
                                     <option value="{{ $cliente->idCliente }}">{{ $cliente->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>
-
 
                         <br>
                         <div class="d-flex justify-content-end">
@@ -254,12 +253,13 @@
                                 <label for="cliente{{ $proyecto->idProy }}" class="form-label">Cliente:</label>
                                 <select class="form-select" id="cliente{{ $proyecto->idProy }}" name="idCliente">
                                     <option value="">Seleccionar</option>
-                                    @foreach ($clientes as $cliente)
+                                    @foreach ($clientes->where('status', 1) as $cliente)
                                         <option value="{{ $cliente->idCliente }}"
                                             {{ $cliente->idCliente == $proyecto->idClienteProy ? 'selected' : '' }}>
                                             {{ $cliente->nombre }}</option>
                                     @endforeach
                                 </select>
+
                             </div>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">Guardar</button>

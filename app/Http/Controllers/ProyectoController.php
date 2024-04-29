@@ -14,6 +14,9 @@ class ProyectoController extends Controller
         // Obtener el término de búsqueda del formulario
         $search = $request->input('search');
 
+        // Consulta inicial para obtener todos los clientes activos
+        $clientesActivos = Cliente::where('status', 1)->pluck('idCliente');
+
         // Consulta inicial para obtener todos los proyectos
         $query = Proyecto::query();
 
@@ -24,6 +27,9 @@ class ProyectoController extends Controller
                 ->orWhere('idClienteProy', 'LIKE', '%' . $search . '%');
         }
 
+        // Aplicar filtro para mostrar solo proyectos con clientes activos
+        $query->whereIn('idClienteProy', $clientesActivos);
+
         // Obtener los proyectos filtrados y paginados
         $proyectos = $query->orderBy('idProy', 'desc')->paginate(5);
 
@@ -33,6 +39,7 @@ class ProyectoController extends Controller
         // Pasar los proyectos y clientes a la vista
         return view('dashboard.proyectos.proyectos', compact('proyectos', 'clientes'));
     }
+
 
     public function agregarProyecto(Request $request)
     {
