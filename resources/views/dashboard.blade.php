@@ -135,24 +135,27 @@
     }
 
     .button-link {
-        display: inline-block;
-        width: 200px;
-        height: 40px;
-        line-height: 40px;
-        background-color: rgba(0, 8, 44, 255);
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin: 5px;
-        transition: background-color 0.3s;
-    }
+    display: inline-block;
+    width: 200px;
+    height: 40px;
+    line-height: 40px;
+    background-color: rgba(0, 8, 44, 255);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s, border 0.3s; /* Agregamos la propiedad 'border' a la transición */
+}
 
-    .button-link:hover {
-        background-color: rgba(0, 8, 44, 255);
-    }
-    
+.button-link:hover {
+    background-color: white;
+    color: #212529;
+    border: 2px solid rgb(0, 0, 0); /* Añadimos un borde de 2px sólido de color negro al hacer hover */
+}
+
+
 </style>
 
 @section('content')
@@ -176,11 +179,12 @@
                         <div class="button-container">
                             <div class="button-link" onclick="window.location.href='/solicitud'">Solicitud de viáticos</div>
                             <div class="button-link" onclick="window.location.href='/comprobaciones'">Comprobación</div>
-                            <div class="button-link" onclick="window.location.href='/reposicion'">Reposición</div>                            
-                            <button class="button-fixed-width">Historial de gasto</button>
+                            <div class="button-link" onclick="window.location.href='/reposicion'">Reposición</div>
+                            <button class="button-link" onclick="window.location.href='/historial'">Historial de
+                                gasto</button>
                         </div>
                     </figcaption>
-                    
+
                 </figure>
             </div>
 
@@ -214,12 +218,14 @@
             <div class="col-md-4 col-sm-6">
                 <figure class="snip1321">
                     <div style="position: relative; display: inline-block;">
-                        <img src="img/modulogastos.jpg" alt="sq-sample26" style="border-radius: 8px; height: 400px; width: 100%; filter: brightness(50%);" />
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; font-size: 24px; font-family: 'Helvetica', sans-serif;">
-                          ALMACEN
+                        <img src="img/modulogastos.jpg" alt="sq-sample26"
+                            style="border-radius: 8px; height: 400px; width: 100%; filter: brightness(50%);" />
+                        <div
+                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; font-size: 24px; font-family: 'Helvetica', sans-serif;">
+                            ALMACEN
                         </div>
-                      </div>
-                      
+                    </div>
+
                     <figcaption>
                         <i class="ion-ios-box-outline"></i>
                         <h4>Almacen</h4>

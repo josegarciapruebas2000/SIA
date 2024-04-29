@@ -40,7 +40,7 @@ Route::get('/usuarios', [Usuarios::class, 'listaUsuarios'])
 
 Route::get('/RegistrarUsuario', function () {
     return view('dashboard/usuarios/alta-usuario');
-})->name('registrar.usuario')->middleware('role:SuperAdmin,Administrador');
+})->name('registrar.usuario');
 
 Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario');
 
@@ -99,6 +99,25 @@ Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProye
     ->middleware('role:SuperAdmin,Administrador');
 
 
+/* Hisotiral de gastos */
+
+Route::get('/historial', function () {
+    return view('gastos/viaticos/historial/historial');
+})->name('historial');
+
+Route::get('/historial-solicitud', function () {
+    return view('gastos/viaticos/historial/historial-solicitud');
+})->name('historial.solicitud');
+
+Route::get('/historial-comprobacion', function () {
+    return view('gastos/viaticos/historial/historial-comprobacion');
+})->name('historial.comprobacion');
+
+Route::get('/historial-reposicion', function () {
+    return view('gastos/viaticos/historial/historial-reposicion');
+})->name('historial.reposicion');
+
+
 
 
 
@@ -125,3 +144,5 @@ Route::get('/reposicion', function () {
 
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
