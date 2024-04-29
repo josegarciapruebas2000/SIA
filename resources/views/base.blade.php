@@ -188,6 +188,9 @@
                 <a class="nav-link active" href="{{ route('proyectos.lista') }}">Proyectos</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('empleados.lista') }}">Empleados</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('usuarios.lista') }}">Usuarios</a>
             </li>
         </ul>

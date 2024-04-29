@@ -6,8 +6,9 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Usuarios;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProyectoController;
+use App\Http\Controllers\EmpleadoController;
 use App\Http\Middleware\CheckRole;
-
+use App\Models\Empleado;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,39 @@ Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProye
     ->middleware('role:SuperAdmin,Administrador');
 
 
+
+/* Empleados */
+
+Route::get('/empleados', [EmpleadoController::class, 'listaEmpleados'])
+    ->name('empleados.lista')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::match(['get', 'post'], '/empleados/{id}/toggle-status', [EmpleadoController::class, 'toggleStatus'])
+    ->name('empleados.toggleStatus')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::get('/altaEmpleado', function () {
+    return view('dashboard/empleados/alta-empleado');
+})->name('alta.empleado');
+
+Route::post('/proyectos-add', [ProyectoController::class, 'agregarProyecto'])
+    ->name('add.proyectos')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::put('/proyectos-update/{id}', [ProyectoController::class, 'editarProyecto'])
+    ->name('update.proyectos')
+    ->middleware('role:SuperAdmin,Administrador');
+
+
+
+Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProyecto'])
+    ->name('proyectos.eliminar')
+    ->middleware('role:SuperAdmin,Administrador');
+
+
+
+
+
 /* Hisotiral de gastos */
 
 Route::get('/historial', function () {
@@ -144,5 +178,3 @@ Route::get('/reposicion', function () {
 
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-
