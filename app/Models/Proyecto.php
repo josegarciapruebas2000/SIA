@@ -7,5 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Proyecto extends Model
 {
-    use HasFactory;
+    protected $primaryKey = 'idProy';
+    public $timestamps = false;
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'idClienteProy', 'idCliente');
+    }
 }

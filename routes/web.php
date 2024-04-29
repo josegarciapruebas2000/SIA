@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Usuarios;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ProyectoController;
 use App\Http\Middleware\CheckRole;
 
 
@@ -65,13 +66,6 @@ Route::put('/clientes-update/{id}', [ClienteController::class, 'editarCliente'])
     ->name('update.clientes')
     ->middleware('role:SuperAdmin,Administrador');
 
-Route::put('/status-habilitar/{id}', [ClienteController::class, 'habilitarStatus'])
-    ->name('habilitar.status')
-    ->middleware('role:SuperAdmin,Administrador');
-
-Route::put('/status-dehabilitar/{id}', [ClienteController::class, 'deshabilitarStatus'])
-    ->name('deshabilitar.status')
-    ->middleware('role:SuperAdmin,Administrador');
 
 Route::match(['get', 'post'], '/clientes/{id}/toggle-status', [ClienteController::class, 'toggleStatus'])
     ->name('clientes.toggleStatus')
@@ -80,6 +74,31 @@ Route::match(['get', 'post'], '/clientes/{id}/toggle-status', [ClienteController
 Route::get('/eliminar-cliente/{id}', [ClienteController::class, 'eliminarCliente'])
     ->name('eliminar.cliente')
     ->middleware('role:SuperAdmin,Administrador');
+
+
+/* Proyectos */
+
+Route::get('/proyectos', [ProyectoController::class, 'listaProyectos'])
+    ->name('proyectos.lista')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::post('/proyectos-add', [ProyectoController::class, 'agregarProyecto'])
+    ->name('add.proyectos')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::put('/proyectos-update/{id}', [ProyectoController::class, 'editarProyecto'])
+    ->name('update.proyectos')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::match(['get', 'post'], '/proyectos/{id}/toggle-status', [ProyectoController::class, 'toggleStatus'])
+    ->name('proyectos.toggleStatus')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProyecto'])
+    ->name('proyectos.eliminar')
+    ->middleware('role:SuperAdmin,Administrador');
+
+
 
 
 

@@ -94,12 +94,15 @@
                     @foreach ($clientes as $cliente)
                         @php
                             // Verificar si el cliente tiene proyectos asociados
-                            $proyectosAsociados = App\Models\Proyecto::where('idClienteProy', $cliente->idCliente)->exists();
+                            $proyectosAsociados = App\Models\Proyecto::where(
+                                'idClienteProy',
+                                $cliente->idCliente,
+                            )->exists();
                         @endphp
                         <tr @if ($cliente->status == 0) class="table-danger" @endif>
-                            <td class="text-center">{{ $cliente->idCliente }}</td>
-                            <td class="text-center">{{ $cliente->nombre }}</td>
-                            <td class="text-center">{{ $cliente->CategoriaCliente }}</td>
+                            <td class="text-center align-middle">{{ $cliente->idCliente }}</td>
+                            <td class="text-center align-middle">{{ $cliente->nombre }}</td>
+                            <td class="text-center align-middle">{{ $cliente->CategoriaCliente }}</td>
                             <td class="text-center align-middle"> <!-- Alineación vertical -->
                                 @if ($cliente->status == 1)
                                     <a href="{{ route('clientes.toggleStatus', ['id' => $cliente->idCliente]) }}"
@@ -111,7 +114,7 @@
                                 <button type="button" class="btn btn-outline-warning btn-sm mx-1 btn-editar"
                                     data-bs-toggle="modal" data-bs-target="#editarModal{{ $cliente->idCliente }}"
                                     data-cliente-id="{{ $cliente->idCliente }}">Editar</button>
-                                @unless($proyectosAsociados)
+                                @unless ($proyectosAsociados)
                                     <a href="{{ route('eliminar.cliente', ['id' => $cliente->idCliente]) }}"
                                         class="btn btn-outline-danger btn-sm mx-1">Eliminar</a>
                                 @endunless
@@ -119,7 +122,8 @@
                         </tr>
                     @endforeach
                 </tbody>
-                
+
+
             </table>
         </div>
     </form>

@@ -185,7 +185,7 @@
                 <a class="nav-link active" href="{{ route('clientes.lista') }}">Clientes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/#">Proyectos</a>
+                <a class="nav-link active" href="{{ route('proyectos.lista') }}">Proyectos</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('usuarios.lista') }}">Usuarios</a>
