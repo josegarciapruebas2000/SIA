@@ -118,28 +118,39 @@ class Usuarios extends Controller
 
 
     public function update(Request $request, $id)
-    {
-        // Encuentra el usuario por su ID
-        $usuario = User::findOrFail($id);
+{
+    // Encuentra el usuario por su ID
+    $usuario = User::findOrFail($id);
 
-        // Actualiza los campos del usuario con los datos del formulario
-        $usuario->name = $request->input('name');
-        $usuario->email = $request->input('email');
-        $usuario->role = $request->input('role');
-        // Verifica si el checkbox de estado está marcado y actualiza el estado del usuario en consecuencia
-        $usuario->status = $request->has('status') ? 1 : 0;
+    // Valida los campos del formulario
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+        'role' => 'required|string',
+        'status' => 'required|boolean',
+        'password' => 'nullable|string|min:8',
+    ], [
+        'email.unique' => 'El correo electrónico ya está registrado por otro usuario.',
+    ]);
 
-        // Verifica si se proporcionó una nueva contraseña
-        if ($request->filled('password')) {
-            $usuario->password = bcrypt($request->input('password'));
-        }
+    // Actualiza los campos del usuario con los datos del formulario
+    $usuario->name = $request->input('name');
+    $usuario->email = $request->input('email');
+    $usuario->role = $request->input('role');
+    $usuario->status = $request->input('status');
 
-        // Guarda los cambios en la base de datos
-        $usuario->save();
-
-        // Redirecciona a alguna página después de guardar los cambios
-        return redirect()->route('usuarios.lista')->with('success', 'Usuario actualizado correctamente.');
+    // Si se proporciona una nueva contraseña, cámbiala
+    if ($request->filled('password')) {
+        $usuario->password = Hash::make($request->input('password'));
     }
+
+    // Guarda los cambios en la base de datos
+    $usuario->save();
+
+    // Redirige a alguna página después de guardar los cambios
+    return redirect()->route('usuarios.lista')->with('success', 'Usuario actualizado correctamente.');
+}
+
 
 
     public function profileUpdate(Request $request)

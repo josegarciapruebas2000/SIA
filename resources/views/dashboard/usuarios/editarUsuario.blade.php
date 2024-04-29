@@ -16,6 +16,9 @@
                 <label for="grado" class="form-label">Correo:</label>
                 <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese correo"
                     value="{{ $usuario->email }}">
+                @error('email')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
         </div>
         <br>
@@ -45,8 +48,6 @@
                     </label>
                 </div>
             </div>
-
-
         </div>
 
         <br>
