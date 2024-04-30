@@ -45,10 +45,18 @@ class ProyectoController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'monto' => 'required|numeric',
-            'moneda' => 'required|string|max:255',
-            'estado' => 'required|string|max:255',
-            'idCliente' => 'required|numeric', // Aquí estás validando el campo como 'idCliente'
+            'apellido_paterno' => 'required|string|max:255',
+            'apellido_materno' => 'nullable|string|max:255',
+            'sexo' => 'required|in:H,M',
+            'nss' => 'nullable|string|max:255',
+            'curp' => 'nullable|string|max:255',
+            'rfc' => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:255',
+            'direccion' => 'nullable|string|max:255',
+            'correo' => 'nullable|email|max:255',
+            'departamento' => 'required|string|max:255',
+            'puesto' => 'nullable|string|max:255',
+            'fecha' => 'required|date',
         ]);
 
         // Buscar el ID del cliente basado en el nombre proporcionado

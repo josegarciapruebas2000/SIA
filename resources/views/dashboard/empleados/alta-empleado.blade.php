@@ -27,11 +27,28 @@
             margin-left: auto;
             /* Centra el botón en medio */
         }
+
+        .area-container {
+            display: none;
+        }
+
+        .btn-hover-purple.btn-outline-primary:hover {
+            border-color: purple;
+            background: purple;
+            color: white;
+        }
+
+        .btn-hover-purple.btn-outline-primary {
+            color: purple;
+            border-color: purple;
+
+        }
     </style>
 
-    <h2 style="text-align: center">Reposición de gastos</h2>
+    <h2 style="text-align: center">Alta de empleados</h2>
     <br><br>
-    <form class="centered-form">
+    <form action="{{ route('add.empleado') }}" method="POST" class="centered-form">
+        @csrf
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label for="nombre" class="form-label">Nombre:</label>
@@ -51,8 +68,8 @@
                 <label for="sexo" class="form-label">Sexo:</label>
                 <select class="form-select" id="sexo" name="sexo">
                     <option value="" selected>Seleccionar</option>
-                    <option value="H">Hombre</option>
-                    <option value="M">Mujer</option>
+                    <option value="H">H</option>
+                    <option value="M">M</option>
                 </select>
             </div>
         </div>
@@ -98,28 +115,29 @@
                     <option value="Operaciones">Operaciones</option>
                 </select>
             </div>
+            <div class="col-md-4 mb-3 area-container">
+                <label for="area" class="form-label">Área:</label>
+                <select class="form-select" id="area" name="area">
+                    <option value="" selected>Seleccionar</option>
+                    <option value="SEGURIDAD">SEGURIDAD</option>
+                    <option value="SUPERVISOR">SUPERVISOR</option>
+                    <option value="ESPECIALISTA">ESPECIALISTA</option>
+                    <option value="ESPECIALIDADES">ESPECIALIDADES</option>
+                </select>
+            </div>
             <div class="col-md-4 mb-3">
                 <label for="puesto" class="form-label">Puesto:</label>
                 <select class="form-select" id="puesto" name="puesto">
                     <option value="" selected>Seleccionar</option>
-                    <option value="1">Gerente</option>
-                    <option value="2">Supervisor</option>
-                    <option value="3">Analista</option>
-                    <option value="4">Asistente</option>
                 </select>
             </div>
-            <div class="col-md-4 mb-3">
-                <label for="fecha" class="form-label">Fecha:</label>
-                <input type="text" class="form-control" id="fecha" name="fecha"
-                    value="{{ now()->format('Y-m-d') }}" readonly>
-            </div>
         </div>
-        
-
-
+        <div class="col-md-4 mb-3">
+            <label for="fecha" class="form-label">Fecha:</label>
+            <input type="text" class="form-control" id="fecha" name="fecha"
+                value="{{ now()->format('Y-m-d') }}" readonly>
+        </div>
         <br>
-
-
 
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-6">
@@ -131,17 +149,18 @@
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-start">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">
-                        <!-- Icono SVG con clase de tamaño -->
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="bi me-2" width="16"
-                            height="16">
-                            <path
-                                d="M248 8C111 8 0 119 0 256S111 504 248 504 496 393 496 256 385 8 248 8zM363 176.7c-3.7 39.2-19.9 134.4-28.1 178.3-3.5 18.6-10.3 24.8-16.9 25.4-14.4 1.3-25.3-9.5-39.3-18.7-21.8-14.3-34.2-23.2-55.3-37.2-24.5-16.1-8.6-25 5.3-39.5 3.7-3.8 67.1-61.5 68.3-66.7 .2-.7 .3-3.1-1.2-4.4s-3.6-.8-5.1-.5q-3.3 .7-104.6 69.1-14.8 10.2-26.9 9.9c-8.9-.2-25.9-5-38.6-9.1-15.5-5-27.9-7.7-26.8-16.3q.8-6.7 18.5-13.7 108.4-47.2 144.6-62.3c68.9-28.6 83.2-33.6 92.5-33.8 2.1 0 6.6 .5 9.6 2.9a10.5 10.5 0 0 1 3.5 6.7A43.8 43.8 0 0 1 363 176.7z" />
-                        </svg>
-                        <!-- Texto del botón -->
-                        Enviar comprobación
+                        Guardar información general
                     </button>
+                    <div class="col-sm-6 col-md-6 col-lg-6">
+                        <div class="d-flex justify-content-center mb-2 mb-sm-0">
+                            <a href="#">
+                                <button type="button" class="btn btn-outline-primary btn-hover-purple">Subir
+                                    archivos</button>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -151,44 +170,150 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Mensaje de confirmación</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Recordatorio</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            ¿Seguro de mandar esta reposición?
+                            Recuerde de cargar los archivos del empleado
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modalExito">Sí</button>
+                                data-bs-target="#modalExito">Ok</button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Modal 2-->
-            <div class="modal fade" id="modalExito" tabindex="-1" aria-labelledby="modalExitoLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalExitoLabel">Mensaje de confirmación</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            ¡Tu reposición de gasto ha sido enviada con éxito!
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
         </div>
     </form>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('repositorioForm');
+
+            form.addEventListener('submit', function(event) {
+                // Obtener todos los campos del formulario
+                var inputs = form.querySelectorAll('input, select');
+
+                // Verificar si algún campo obligatorio está vacío
+                var isEmpty = false;
+                inputs.forEach(function(input) {
+                    if (input.hasAttribute('required') && !input.value.trim()) {
+                        isEmpty = true;
+                        // Agregar clase de estilo para indicar campo obligatorio vacío
+                        input.classList.add('is-invalid');
+                    } else {
+                        // Remover clase de estilo de campo vacío
+                        input.classList.remove('is-invalid');
+                    }
+                });
+
+                // Detener el envío del formulario si hay campos obligatorios vacíos
+                if (isEmpty) {
+                    event.preventDefault();
+                    alert('Por favor, completa todos los campos obligatorios.');
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var departamentoSelect = document.getElementById('departamento');
+            var puestoSelect = document.getElementById('puesto');
+            var areaContainer = document.querySelector('.area-container');
+
+            // Mapeo de puestos por departamento y área
+            var puestosPorDepartamento = {
+                'RRHH': ['Recursos humanos'],
+                'Compras': ['COORDINADOR DE COMPRAS', 'AUXILIAR DE COMPRAS', 'FINANZAS', 'DPTO.LEGAL/COBRANZA'],
+                'Sistemas': ['COORDINADOR DE SISTEMAS', 'CIBER SEGURIDAD'],
+                'Calidad': ['COORDINADOR DE CALIDAD', 'AUXILIAR DE CALIDAD'],
+                'Ventas': ['GERENTE DE VENTAS', 'DPTO. LEGAL', 'LICITACIONES/VENTAS', 'SUPERVISOR',
+                    'TECNICO EN VENTAS'
+                ],
+                'Almacen': ['ENCARGADO DE ALMACEN'],
+                'Operaciones': {
+                    'GERENTE': ['GERENTE DE OPERACIONES'],
+                    'SEGURIDAD': ['COORDINADOR', 'ING. DE SEGURIDAD', 'AUXILIAR DE SEGURIDAD'],
+                    'SUPERVISOR': ['SUPERVISOR', 'CONTROL DE OBRA', 'TRAMITOLOGO/GESTOR'],
+                    'ESPECIALISTA': ['INGENIERO TIPO B', 'INGENIERO TIPO C'],
+                    'ESPECIALIDADES': ['ELECTRICO', 'CIVIL', 'MECANICO', 'DIBUJO TECNICO', 'TABLERISTA']
+                }
+            };
+
+            // Event listener para cambios en el departamento
+            departamentoSelect.addEventListener('change', function() {
+                var departamento = this.value;
+
+                // Limpiar opciones anteriores y añadir las nuevas según el departamento seleccionado
+                puestoSelect.innerHTML = '<option value="" selected>Seleccionar</option>';
+                areaContainer.style.display = 'none'; // Ocultar el campo de Área por defecto
+
+                if (departamento === 'Operaciones') {
+                    areaContainer.style.display =
+                        'block'; // Mostrar el campo de Área cuando se selecciona Operaciones
+                }
+
+                if (puestosPorDepartamento[departamento]) {
+                    if (Array.isArray(puestosPorDepartamento[departamento])) {
+                        // Si los puestos son directamente asignados al departamento
+                        puestosPorDepartamento[departamento].forEach(function(puesto) {
+                            puestoSelect.innerHTML += '<option value="' + puesto + '">' + puesto +
+                                '</option>';
+                        });
+                    } else {
+                        // Si los puestos están divididos por área
+                        var areaSelect = document.getElementById('area');
+                        var area = areaSelect.value;
+
+                        // Limpiar opciones anteriores y añadir las nuevas según el área seleccionada
+                        areaSelect.innerHTML = '<option value="" selected>Seleccionar</option>';
+                        Object.keys(puestosPorDepartamento[departamento]).forEach(function(areaKey) {
+                            areaSelect.innerHTML += '<option value="' + areaKey + '">' + areaKey +
+                                '</option>';
+                        });
+                    }
+                }
+            });
+
+            // Event listener para cambios en el área (solo para el departamento de Operaciones)
+            var areaSelect = document.getElementById('area');
+            areaSelect.addEventListener('change', function() {
+                var departamento = departamentoSelect.value;
+                var area = this.value;
+
+                // Limpiar opciones anteriores y añadir las nuevas según el área seleccionada
+                puestoSelect.innerHTML = '<option value="" selected>Seleccionar</option>';
+                puestosPorDepartamento[departamento][area].forEach(function(puesto) {
+                    puestoSelect.innerHTML += '<option value="' + puesto + '">' + puesto +
+                        '</option>';
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var guardarBtn = document.querySelector('button[type="button"].btn-primary');
+
+            guardarBtn.addEventListener('click', function(event) {
+                var inputs = document.querySelectorAll('input[type="text"], input[type="email"], select');
+                var isEmpty = false;
+
+                inputs.forEach(function(input) {
+                    if (!input.value.trim()) {
+                        isEmpty = true;
+                        input.classList.add('is-invalid');
+                    } else {
+                        input.classList.remove('is-invalid');
+                    }
+                });
+
+                if (isEmpty) {
+                    event.preventDefault();
+                    alert('Por favor, completa todos los campos.');
+                }
+            });
+        });
+    </script>
 @endsection

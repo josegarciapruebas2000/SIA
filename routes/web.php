@@ -115,6 +115,13 @@ Route::get('/altaEmpleado', function () {
     return view('dashboard/empleados/alta-empleado');
 })->name('alta.empleado');
 
+Route::post('/guardar-empleado', [EmpleadoController::class, 'agregarEmpleado'])
+    ->name('add.empleado')
+    ->middleware('role:SuperAdmin,Administrador');
+
+
+
+
 Route::post('/proyectos-add', [ProyectoController::class, 'agregarProyecto'])
     ->name('add.proyectos')
     ->middleware('role:SuperAdmin,Administrador');
