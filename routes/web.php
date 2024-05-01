@@ -119,6 +119,20 @@ Route::post('/guardar-empleado', [EmpleadoController::class, 'agregarEmpleado'])
     ->name('add.empleado')
     ->middleware('role:SuperAdmin,Administrador');
 
+Route::get('/editar-empleado/{id}', [EmpleadoController::class, 'cargarEmpleado'])
+    ->name('cargar.empleado')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::put('/update-empleado/{id}', [EmpleadoController::class, 'actualizarEmpleado'])
+    ->name('update.empleado')
+    ->middleware('role:SuperAdmin,Administrador');
+
+
+
+
+
+
+
 
 
 

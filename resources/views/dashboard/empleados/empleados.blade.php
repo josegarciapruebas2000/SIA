@@ -13,7 +13,7 @@
 </style>
 
 @section('content')
-    <h2 style="text-align: center">Empleados</h2>
+    <h2 style="text-align: center">Lista de empleados</h2>
     <br><br>
 
     <div class="row mb-3">
@@ -29,17 +29,28 @@
                 </button>
             </form>
             <br>
-            <form id="filtro-form" action="{{ route('empleados.lista') }}" method="GET" class="input-group mb-3" style="width: 30%;">
+            <form id="filtro-form" action="{{ route('empleados.lista') }}" method="GET" class="input-group mb-3"
+                style="width: 30%;">
                 <label class="input-group-text" for="filtro-departamento">Filtro por departamento:</label>
-                <select class="form-select text-capitalize" id="filtro-departamento" name="filtro_departamento" onchange="submitForm()">
-                    <option value="Todos" {{ request()->input('filtro_departamento') == 'Todos' ? 'selected' : '' }}>Todos</option>
-                    <option value="RRHH" {{ request()->input('filtro_departamento') == 'RRHH' ? 'selected' : '' }}>Rrhh</option>
-                    <option value="Compras" {{ request()->input('filtro_departamento') == 'Compras' ? 'selected' : '' }}>Compras</option>
-                    <option value="Sistemas" {{ request()->input('filtro_departamento') == 'Sistemas' ? 'selected' : '' }}>Sistemas</option>
-                    <option value="Calidad" {{ request()->input('filtro_departamento') == 'Calidad' ? 'selected' : '' }}>Calidad</option>
-                    <option value="Ventas" {{ request()->input('filtro_departamento') == 'Ventas' ? 'selected' : '' }}>Ventas</option>
-                    <option value="Almacen" {{ request()->input('filtro_departamento') == 'Almacen' ? 'selected' : '' }}>Almacen</option>
-                    <option value="Operaciones" {{ request()->input('filtro_departamento') == 'Operaciones' ? 'selected' : '' }}>Operaciones</option>
+                <select class="form-select text-capitalize" id="filtro-departamento" name="filtro_departamento"
+                    onchange="submitForm()">
+                    <option value="Todos" {{ request()->input('filtro_departamento') == 'Todos' ? 'selected' : '' }}>Todos
+                    </option>
+                    <option value="RRHH" {{ request()->input('filtro_departamento') == 'RRHH' ? 'selected' : '' }}>Rrhh
+                    </option>
+                    <option value="Compras" {{ request()->input('filtro_departamento') == 'Compras' ? 'selected' : '' }}>
+                        Compras</option>
+                    <option value="Sistemas" {{ request()->input('filtro_departamento') == 'Sistemas' ? 'selected' : '' }}>
+                        Sistemas</option>
+                    <option value="Calidad" {{ request()->input('filtro_departamento') == 'Calidad' ? 'selected' : '' }}>
+                        Calidad</option>
+                    <option value="Ventas" {{ request()->input('filtro_departamento') == 'Ventas' ? 'selected' : '' }}>
+                        Ventas</option>
+                    <option value="Almacen" {{ request()->input('filtro_departamento') == 'Almacen' ? 'selected' : '' }}>
+                        Almacen</option>
+                    <option value="Operaciones"
+                        {{ request()->input('filtro_departamento') == 'Operaciones' ? 'selected' : '' }}>Operaciones
+                    </option>
                     <!-- Agrega más opciones según tus necesidades -->
                 </select>
             </form>
@@ -123,9 +134,11 @@
                                         class="btn btn-outline-success">Habilitar</a>
                                 @endif
 
-                                <button type="button" class="btn btn-outline-warning mx-1 btn-editar"
-                                    data-bs-toggle="modal" data-bs-target="#editarModal{{ $empleado->id_Emp }}"
-                                    data-proyecto-id="{{ $empleado->id_Emp }}">Editar</button>
+                                <a href="{{ route('cargar.empleado', ['id' => $empleado->id_Emp]) }}">
+                                    <button type="button" class="btn btn-outline-warning mx-1 btn-editar"
+                                        data-bs-toggle="modal" data-bs-target="#editarModal{{ $empleado->id_Emp }}"
+                                        data-proyecto-id="{{ $empleado->id_Emp }}">Editar</button>
+                                </a>
 
                             </td>
                         </tr>
@@ -145,8 +158,8 @@
         }, 3000);
 
         // Función para enviar el formulario automáticamente
-    function submitForm() {
-        document.getElementById("filtro-form").submit();
-    }
+        function submitForm() {
+            document.getElementById("filtro-form").submit();
+        }
     </script>
 @endsection

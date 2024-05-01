@@ -45,86 +45,91 @@
         }
     </style>
 
-    <h2 style="text-align: center">Alta de empleados</h2>
+    <h2 style="text-align: center">Información del empleado</h2>
     <br><br>
-    <form action="{{ route('add.empleado') }}" method="POST" class="centered-form" id="repositorioForm">
+    <form action="{{ route('update.empleado', ['id' => $empleado->id_Emp]) }}" method="POST" class="centered-form"
+        id="repositorioForm">
         @csrf
+        @method('PUT')
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label for="nombre" class="form-label">Nombre:</label>
                 <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresar nombre"
-                    required>
+                    required value="{{ $empleado->nombre_Emp }}">
             </div>
             <div class="col-md-3 mb-3">
                 <label for="apellido_paterno" class="form-label">Apellido Paterno:</label>
                 <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno"
-                    placeholder="Ingresar apellido paterno" required>
+                    placeholder="Ingresar apellido paterno" required value="{{ $empleado->app_paterno_Emp }}">
             </div>
             <div class="col-md-3 mb-3">
                 <label for="apellido_materno" class="form-label">Apellido Materno:</label>
                 <input type="text" class="form-control" id="apellido_materno" name="apellido_materno"
-                    placeholder="Ingresar apellido materno">
+                    placeholder="Ingresar apellido materno" value="{{ $empleado->app_materno_Emp }}">
             </div>
             <div class="col-md-3 mb-3">
                 <label for="sexo" class="form-label">Sexo:</label>
                 <select class="form-select" id="sexo" name="sexo" required>
-                    <option value="" selected>Seleccionar</option>
-                    <option value="H">H</option>
-                    <option value="M">M</option>
+                    <option value="" selected disabled>Seleccionar</option>
+                    <option value="H" {{ $empleado->sexo_Emp == 'H' ? 'selected' : '' }}>H</option>
+                    <option value="M" {{ $empleado->sexo_Emp == 'M' ? 'selected' : '' }}>M</option>
                 </select>
+
             </div>
         </div>
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label for="nss" class="form-label">NSS:</label>
-                <input type="text" class="form-control" id="nss" name="nss" placeholder="Ingresar NSS"
-                    required>
+                <input type="text" class="form-control" id="nss" name="nss" placeholder="Ingresar NSS" required
+                    value="{{ $empleado->NSS_Emp }}">
             </div>
             <div class="col-md-3 mb-3">
                 <label for="curp" class="form-label">CURP:</label>
                 <input type="text" class="form-control" id="curp" name="curp" placeholder="Ingresar CURP"
-                    required>
+                    required value="{{ $empleado->curp_Emp }}">
             </div>
             <div class="col-md-3 mb-3">
                 <label for="rfc" class="form-label">RFC:</label>
-                <input type="text" class="form-control" id="rfc" name="rfc" placeholder="Ingresar RFC"
-                    required>
+                <input type="text" class="form-control" id="rfc" name="rfc" placeholder="Ingresar RFC" required
+                    value="{{ $empleado->RFC_Emp }}">
             </div>
             <div class="col-md-3 mb-3">
                 <label for="telefono" class="form-label">Teléfono:</label>
                 <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingresar teléfono"
-                    required>
+                    required value="{{ $empleado->telefono_Emp }}">
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="direccion" class="form-label">Dirección:</label>
                 <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Ingresar dirección"
-                    required>
+                    required value="{{ $empleado->direccion_Emp }}">
             </div>
             <div class="col-md-6 mb-3">
                 <label for="correo" class="form-label">Correo:</label>
                 <input type="email" class="form-control" id="correo" name="correo" placeholder="Ingresar correo"
-                    required>
+                    required value="{{ $empleado->correo_Emp }}">
             </div>
         </div>
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="departamento" class="form-label">Departamento:</label>
                 <select class="form-select" id="departamento" name="departamento" required>
-                    <option value="" selected>Seleccionar</option>
-                    <option value="RRHH">RRHH</option>
-                    <option value="Compras">Compras</option>
-                    <option value="Sistemas">Sistemas</option>
-                    <option value="Calidad">Calidad</option>
-                    <option value="Ventas">Ventas</option>
-                    <option value="Almacen">Almacen</option>
-                    <option value="Operaciones">Operaciones</option>
+                    <option value="" selected disabled>Seleccionar</option>
+                    <option value="RRHH" {{ $empleado->departamento == 'RRHH' ? 'selected' : '' }}>RRHH</option>
+                    <option value="Compras" {{ $empleado->departamento == 'Compras' ? 'selected' : '' }}>Compras</option>
+                    <option value="Sistemas" {{ $empleado->departamento == 'Sistemas' ? 'selected' : '' }}>Sistemas
+                    </option>
+                    <option value="Calidad" {{ $empleado->departamento == 'Calidad' ? 'selected' : '' }}>Calidad</option>
+                    <option value="Ventas" {{ $empleado->departamento == 'Ventas' ? 'selected' : '' }}>Ventas</option>
+                    <option value="Almacen" {{ $empleado->departamento == 'Almacen' ? 'selected' : '' }}>Almacen</option>
+                    <option value="Operaciones" {{ $empleado->departamento == 'Operaciones' ? 'selected' : '' }}>
+                        Operaciones</option>
                 </select>
             </div>
             <div class="col-md-4 mb-3 area-container">
                 <label for="area" class="form-label">Área:</label>
-                <select class="form-select" id="area" name="area" required>
+                <select class="form-select" id="area" name="area" >
                     <option value="" selected>Seleccionar</option>
                     <option value="SEGURIDAD">SEGURIDAD</option>
                     <option value="SUPERVISOR">SUPERVISOR</option>
@@ -135,22 +140,27 @@
             <div class="col-md-4 mb-3">
                 <label for="puesto" class="form-label">Puesto:</label>
                 <select class="form-select" id="puesto" name="puesto" required>
-                    <option value="" selected>Seleccionar</option>
+                    <option value="{{ $empleado->puesto_Emp }}" selected>{{ $empleado->puesto_Emp }}</option>
                 </select>
+                <h6 class="mt-2 text-muted">En caso de cambiar el puesto, vuelva a seleccionar un departamento para cargar
+                    nuevamente las listas</h6>
             </div>
+
+
         </div>
         <div class="col-md-4 mb-3">
-            <label for="fecha" class="form-label">Fecha:</label>
+            <label for="fecha" class="form-label">Fecha de registro:</label>
             <input type="text" class="form-control" id="fecha" name="fecha"
-                value="{{ now()->format('Y-m-d') }}" readonly required>
+                value="{{ $empleado->fechaAlta_Emp }}" readonly required>
         </div>
         <br>
 
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-end mb-2 mb-sm-0">
-                    <button type="button" class="btn btn-outline-danger"
-                        onclick="window.history.back();">Cancelar</button>
+                    <a href="/dashboard">
+                        <button type="button" class="btn btn-outline-danger">Cancelar</button>
+                    </a>
                 </div>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
@@ -173,7 +183,7 @@
 
             // Mapeo de puestos por departamento y área
             var puestosPorDepartamento = {
-                'RRHH': ['Recursos humanos'],
+                'RRHH': ['RECURSOS HUMANOS'],
                 'Compras': ['COORDINADOR DE COMPRAS', 'AUXILIAR DE COMPRAS', 'FINANZAS', 'DPTO.LEGAL/COBRANZA'],
                 'Sistemas': ['COORDINADOR DE SISTEMAS', 'CIBER SEGURIDAD'],
                 'Calidad': ['COORDINADOR DE CALIDAD', 'AUXILIAR DE CALIDAD'],
@@ -199,7 +209,7 @@
 
                 if (departamento === 'Operaciones') {
                     areaContainer.style.display =
-                    'block'; // Mostrar el campo de Área cuando se selecciona Operaciones
+                        'block'; // Mostrar el campo de Área cuando se selecciona Operaciones
                     areaSelect.setAttribute('required', true); // Hacer que el campo de área sea requerido
                 } else {
                     areaSelect.removeAttribute('required'); // Desactivar la validación del campo de área
