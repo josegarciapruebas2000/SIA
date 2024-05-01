@@ -129,7 +129,7 @@
             </div>
             <div class="col-md-4 mb-3 area-container">
                 <label for="area" class="form-label">Área:</label>
-                <select class="form-select" id="area" name="area" >
+                <select class="form-select" id="area" name="area">
                     <option value="" selected>Seleccionar</option>
                     <option value="SEGURIDAD">SEGURIDAD</option>
                     <option value="SUPERVISOR">SUPERVISOR</option>
@@ -158,15 +158,14 @@
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-end mb-2 mb-sm-0">
-                    <a href="/dashboard">
-                        <button type="button" class="btn btn-outline-danger">Cancelar</button>
-                    </a>
+                    <button type="button" class="btn btn-outline-danger"
+                        onclick="window.history.back();">Cancelar</button>
                 </div>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-start">
                     <button type="submit" class="btn btn-primary">
-                        Guardar información general
+                        Actualizar información general
                     </button>
                 </div>
             </div>
