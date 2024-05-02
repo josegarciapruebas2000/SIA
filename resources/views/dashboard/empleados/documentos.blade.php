@@ -148,7 +148,7 @@
                 <div class="col-md-6 mb-3">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a href="{{ route('empleados.lista') }}">
-                            <button type="button" class="btn btn-outline-danger me-md-2">Cancelar</button>
+                            <button type="button" class="btn btn-outline-secondary me-md-2">Regresar</button>
                         </a>
                     </div>
                 </div>
