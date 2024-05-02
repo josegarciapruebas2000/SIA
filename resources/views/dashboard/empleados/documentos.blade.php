@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('content')
-    <h2 class="text-center">Documentos de {{ $empleado->nombre_Emp }}</h2>
+    <h2 class="text-center">Documentos de {{ $empleadoNombre->nombre_Emp }}</h2>
     <br><br>
     <form action="{{ route('documentos.empleado.guardar', ['id' => $empleado->id_Emp]) }}" method="POST" class="centered-form"
         id="repositorioForm" enctype="multipart/form-data">

@@ -104,18 +104,19 @@ class EmpleadoController extends Controller
 
 
     public function cargarEmpleado($id)
-    {
-        $empleado = Empleado::find($id);
+{
+    $empleado = Empleado::find($id);
 
-        // Verificar si se encontró el empleado
-        if ($empleado) {
-            // Si se encontró, puedes devolver los datos del empleado
-            return view('dashboard.empleados.editar-empleado', compact('empleado'));
-        } else {
-            // Si no se encontró, puedes redirigir con un mensaje de error o manejarlo de otra manera
-            return redirect()->back()->with('error', 'Empleado no encontrado.');
-        }
+    // Verificar si se encontró el empleado
+    if ($empleado) {
+        // Si se encontró, puedes devolver los datos del empleado
+        return view('dashboard.empleados.editar-empleado', compact('empleado'));
+    } else {
+        // Si no se encontró, puedes redirigir con un mensaje de error o manejarlo de otra manera
+        return redirect()->back()->with('error', 'Empleado no encontrado.');
     }
+}
+
 
 
     public function actualizarEmpleado(Request $request, $id)
@@ -169,6 +170,7 @@ class EmpleadoController extends Controller
 
     public function documentoEmpleado($id)
     {
+        $empleadoNombre = Empleado::Find($id);
         $empleado = DocsEmpleado::find($id);
 
         // Verificar si se encontró el empleado
@@ -182,7 +184,7 @@ class EmpleadoController extends Controller
             }
 
             // Pasar los datos del empleado y los documentos a la vista
-            return view('dashboard.empleados.documentos', compact('empleado', 'docsEmpleado'));
+            return view('dashboard.empleados.documentos', compact('empleado', 'empleadoNombre', 'docsEmpleado'));
         } else {
             // Si no se encontró, puedes redirigir con un mensaje de error o manejarlo de otra manera
             return redirect()->back()->with('error', 'Empleado no encontrado.');
