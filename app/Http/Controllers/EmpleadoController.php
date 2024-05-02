@@ -104,18 +104,18 @@ class EmpleadoController extends Controller
 
 
     public function cargarEmpleado($id)
-{
-    $empleado = Empleado::find($id);
+    {
+        $empleado = Empleado::find($id);
 
-    // Verificar si se encontró el empleado
-    if ($empleado) {
-        // Si se encontró, puedes devolver los datos del empleado
-        return view('dashboard.empleados.editar-empleado', compact('empleado'));
-    } else {
-        // Si no se encontró, puedes redirigir con un mensaje de error o manejarlo de otra manera
-        return redirect()->back()->with('error', 'Empleado no encontrado.');
+        // Verificar si se encontró el empleado
+        if ($empleado) {
+            // Si se encontró, puedes devolver los datos del empleado
+            return view('dashboard.empleados.editar-empleado', compact('empleado'));
+        } else {
+            // Si no se encontró, puedes redirigir con un mensaje de error o manejarlo de otra manera
+            return redirect()->back()->with('error', 'Empleado no encontrado.');
+        }
     }
-}
 
 
 
@@ -207,16 +207,28 @@ class EmpleadoController extends Controller
             $docsEmpleado->id_Emp = $id;
         }
 
+        // Función para obtener el nombre original del archivo y guardarlo con ese nombre
+        $storeFile = function ($fieldName) use ($request, $docsEmpleado) {
+            $file = $request->file($fieldName);
+            if ($file) {
+                $fileName = $file->getClientOriginalName(); // Obtener el nombre original del archivo
+                $storedFilePath = $file->storeAs('docs', $fileName); // Guardar el archivo con el mismo nombre original
+                return $storedFilePath;
+            } else {
+                return $docsEmpleado->$fieldName; // Devolver la ruta actual si no se cargó un nuevo archivo
+            }
+        };
+
         // Actualizar los archivos en el registro existente
-        $docsEmpleado->solicitud_empleo = $request->file('solicitud_empleo') ? $request->file('solicitud_empleo')->store('docs') : $docsEmpleado->solicitud_empleo;
-        $docsEmpleado->constancia_fiscal = $request->file('constancia_fiscal') ? $request->file('constancia_fiscal')->store('docs') : $docsEmpleado->constancia_fiscal;
-        $docsEmpleado->titulo_universidad = $request->file('titulo_universidad') ? $request->file('titulo_universidad')->store('docs') : $docsEmpleado->titulo_universidad;
-        $docsEmpleado->ine = $request->file('ine') ? $request->file('ine')->store('docs') : $docsEmpleado->ine;
-        $docsEmpleado->comprobante_domicilio = $request->file('comprobante_domicilio') ? $request->file('comprobante_domicilio')->store('docs') : $docsEmpleado->comprobante_domicilio;
-        $docsEmpleado->cedula = $request->file('cedula') ? $request->file('cedula')->store('docs') : $docsEmpleado->cedula;
-        $docsEmpleado->curp = $request->file('curp') ? $request->file('curp')->store('docs') : $docsEmpleado->curp;
-        $docsEmpleado->nss = $request->file('nss') ? $request->file('nss')->store('docs') : $docsEmpleado->nss;
-        $docsEmpleado->comprobatorio_experiencia = $request->file('comprobatorio_experiencia') ? $request->file('comprobatorio_experiencia')->store('docs') : $docsEmpleado->comprobatorio_experiencia;
+        $docsEmpleado->solicitud_empleo = $storeFile('solicitud_empleo');
+        $docsEmpleado->constancia_fiscal = $storeFile('constancia_fiscal');
+        $docsEmpleado->titulo_universidad = $storeFile('titulo_universidad');
+        $docsEmpleado->ine = $storeFile('ine');
+        $docsEmpleado->comprobante_domicilio = $storeFile('comprobante_domicilio');
+        $docsEmpleado->cedula = $storeFile('cedula');
+        $docsEmpleado->curp = $storeFile('curp');
+        $docsEmpleado->nss = $storeFile('nss');
+        $docsEmpleado->comprobatorio_experiencia = $storeFile('comprobatorio_experiencia');
 
         // Guardar los cambios en la base de datos
         $docsEmpleado->save();
