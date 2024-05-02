@@ -128,6 +128,16 @@ Route::put('/update-empleado/{id}', [EmpleadoController::class, 'actualizarEmple
     ->middleware('role:SuperAdmin,Administrador');
 
 
+Route::get('/archivo-empleado/{id}', [EmpleadoController::class, 'documentoEmpleado'])
+    ->name('documentos.empleado')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::post('/documento-empleado/{id}', [EmpleadoController::class, 'addDocumentoEmpleado'])
+    ->name('documentos.empleado.guardar')
+    ->middleware('role:SuperAdmin,Administrador');
+
+Route::get('/documentos/empleado/{id}/descargar/{tipo}', [EmpleadoController::class, 'descargarDocumento'])
+    ->name('documentos.empleado.descargar');
 
 
 

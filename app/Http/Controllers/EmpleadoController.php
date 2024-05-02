@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empleado;
+use App\Models\DocsEmpleado;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class EmpleadoController extends Controller
 {
@@ -89,9 +91,16 @@ class EmpleadoController extends Controller
         // Guarda el empleado en la base de datos
         $empleado->save();
 
-        // Devuelve una respuesta JSON indicando éxito
-        return redirect()->route('empleados.lista')->with('success', 'Se agrego el empleado correctamente.');
+        // Después de guardar el empleado, crea una fila en la tabla docsEmpleado
+        $docsEmpleado = new DocsEmpleado();
+        $docsEmpleado->id_Emp = $empleado->id_Emp; // Asigna el ID del empleado
+        $docsEmpleado->save();
+
+        // Devuelve una respuesta de redirección con un mensaje de éxito
+        return redirect()->route('empleados.lista')->with('success', 'Se agregó el empleado correctamente.');
     }
+
+
 
 
     public function cargarEmpleado($id)
@@ -155,5 +164,112 @@ class EmpleadoController extends Controller
 
         // Redirige a la página de lista de empleados con un mensaje de éxito
         return redirect()->route('empleados.lista')->with('success', 'Los datos del empleado se han actualizado correctamente.');
+    }
+
+
+    public function documentoEmpleado($id)
+    {
+        $empleado = DocsEmpleado::find($id);
+
+        // Verificar si se encontró el empleado
+        if ($empleado) {
+            // Obtener los documentos asociados al empleado
+            $docsEmpleado = DocsEmpleado::where('id_Emp', $id)->first();
+
+            // Si no hay documentos asociados, crear una instancia vacía
+            if (!$docsEmpleado) {
+                $docsEmpleado = new DocsEmpleado();
+            }
+
+            // Pasar los datos del empleado y los documentos a la vista
+            return view('dashboard.empleados.documentos', compact('empleado', 'docsEmpleado'));
+        } else {
+            // Si no se encontró, puedes redirigir con un mensaje de error o manejarlo de otra manera
+            return redirect()->back()->with('error', 'Empleado no encontrado.');
+        }
+    }
+
+
+
+
+
+
+    public function addDocumentoEmpleado(Request $request, $id)
+    {
+        // Obtener el registro existente de DocsEmpleado asociado al empleado
+        $docsEmpleado = DocsEmpleado::where('id_Emp', $id)->first();
+
+        // Si no hay un registro existente, crear uno nuevo
+        if (!$docsEmpleado) {
+            $docsEmpleado = new DocsEmpleado();
+            $docsEmpleado->id_Emp = $id;
+        }
+
+        // Actualizar los archivos en el registro existente
+        $docsEmpleado->solicitud_empleo = $request->file('solicitud_empleo') ? $request->file('solicitud_empleo')->store('docs') : $docsEmpleado->solicitud_empleo;
+        $docsEmpleado->constancia_fiscal = $request->file('constancia_fiscal') ? $request->file('constancia_fiscal')->store('docs') : $docsEmpleado->constancia_fiscal;
+        $docsEmpleado->titulo_universidad = $request->file('titulo_universidad') ? $request->file('titulo_universidad')->store('docs') : $docsEmpleado->titulo_universidad;
+        $docsEmpleado->ine = $request->file('ine') ? $request->file('ine')->store('docs') : $docsEmpleado->ine;
+        $docsEmpleado->comprobante_domicilio = $request->file('comprobante_domicilio') ? $request->file('comprobante_domicilio')->store('docs') : $docsEmpleado->comprobante_domicilio;
+        $docsEmpleado->cedula = $request->file('cedula') ? $request->file('cedula')->store('docs') : $docsEmpleado->cedula;
+        $docsEmpleado->curp = $request->file('curp') ? $request->file('curp')->store('docs') : $docsEmpleado->curp;
+        $docsEmpleado->nss = $request->file('nss') ? $request->file('nss')->store('docs') : $docsEmpleado->nss;
+        $docsEmpleado->comprobatorio_experiencia = $request->file('comprobatorio_experiencia') ? $request->file('comprobatorio_experiencia')->store('docs') : $docsEmpleado->comprobatorio_experiencia;
+
+        // Guardar los cambios en la base de datos
+        $docsEmpleado->save();
+
+        // Redirigir con un mensaje de éxito
+        return redirect()->back()->with('success', 'Documentos actualizados correctamente.');
+    }
+
+
+    public function descargarDocumento($id, $tipo)
+    {
+        // Obtener el nombre de la columna en función del tipo de documento
+        $columnaDocumento = $this->getColumnaDocumento($tipo);
+
+        // Obtener el documento del empleado desde la base de datos
+        $documento = DocsEmpleado::where('id_Emp', $id)->value($columnaDocumento);
+
+        // Verificar si se encontró el documento y si existe
+        if ($documento) {
+            // Devolver el archivo para descargar
+            return response()->download(storage_path('app/' . $documento));
+        } else {
+            // Si no se encuentra el documento, redirigir o mostrar un mensaje de error
+            return redirect()->back()->with('error', 'El documento solicitado no está disponible.');
+        }
+    }
+
+    // Método para obtener el nombre de la columna del documento en función del tipo
+    private function getColumnaDocumento($tipo)
+    {
+        // Aquí puedes definir la lógica para mapear el tipo de documento a la columna correspondiente
+        // Por ejemplo, si el tipo es 'solicitud_empleo', devolverías el nombre de la columna correspondiente a esa solicitud
+        // Debes implementar este método según la estructura de tu base de datos
+        // Por ejemplo:
+        switch ($tipo) {
+            case 'solicitud_empleo':
+                return 'solicitud_empleo';
+            case 'constancia_fiscal':
+                return 'constancia_fiscal';
+            case 'titulo_universidad':
+                return 'titulo_universidad';
+            case 'ine':
+                return 'ine';
+            case 'comprobante_domicilio':
+                return 'comprobante_domicilio';
+            case 'cedula':
+                return 'cedula';
+            case 'curp':
+                return 'curp';
+            case 'nss':
+                return 'nss';
+            case 'comprobatorio_experiencia':
+                return 'comprobatorio_experiencia';
+            default:
+                return null;
+        }
     }
 }
