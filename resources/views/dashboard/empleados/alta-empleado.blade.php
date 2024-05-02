@@ -78,8 +78,9 @@
             <div class="col-md-3 mb-3">
                 <label for="nss" class="form-label">NSS:</label>
                 <input type="text" class="form-control" id="nss" name="nss" placeholder="Ingresar NSS"
-                    required>
+                    maxlength="11" pattern="\d*" title="Ingrese 11 números" required>
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="curp" class="form-label">CURP:</label>
                 <input type="text" class="form-control" id="curp" name="curp" placeholder="Ingresar CURP"
@@ -93,8 +94,9 @@
             <div class="col-md-3 mb-3">
                 <label for="telefono" class="form-label">Teléfono:</label>
                 <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingresar teléfono"
-                    required>
+                    maxlength="10" required>
             </div>
+
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
@@ -199,7 +201,7 @@
 
                 if (departamento === 'Operaciones') {
                     areaContainer.style.display =
-                    'block'; // Mostrar el campo de Área cuando se selecciona Operaciones
+                        'block'; // Mostrar el campo de Área cuando se selecciona Operaciones
                     areaSelect.setAttribute('required', true); // Hacer que el campo de área sea requerido
                 } else {
                     areaSelect.removeAttribute('required'); // Desactivar la validación del campo de área

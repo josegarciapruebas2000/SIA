@@ -80,7 +80,7 @@
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label for="nss" class="form-label">NSS:</label>
-                <input type="text" class="form-control" id="nss" name="nss" placeholder="Ingresar NSS" required
+                <input type="text" class="form-control" id="nss" name="nss" placeholder="Ingresar NSS" required maxlength="11" 
                     value="{{ $empleado->NSS_Emp }}">
             </div>
             <div class="col-md-3 mb-3">
@@ -95,7 +95,7 @@
             </div>
             <div class="col-md-3 mb-3">
                 <label for="telefono" class="form-label">Teléfono:</label>
-                <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingresar teléfono"
+                <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingresar teléfono" maxlength="10" 
                     required value="{{ $empleado->telefono_Emp }}">
             </div>
         </div>
