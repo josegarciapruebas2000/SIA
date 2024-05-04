@@ -45,29 +45,20 @@ class ProyectoController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'apellido_paterno' => 'required|string|max:255',
-            'apellido_materno' => 'nullable|string|max:255',
-            'sexo' => 'required|in:H,M',
-            'nss' => 'nullable|string|max:255',
-            'curp' => 'nullable|string|max:255',
-            'rfc' => 'nullable|string|max:255',
-            'telefono' => 'nullable|string|max:255',
-            'direccion' => 'nullable|string|max:255',
-            'correo' => 'nullable|email|max:255',
-            'departamento' => 'required|string|max:255',
-            'puesto' => 'nullable|string|max:255',
-            'fecha' => 'required|date',
+            'monto' => 'required|numeric',
+            'moneda' => 'required|string|max:3',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio', // Validar que la fecha de fin sea posterior o igual a la fecha de inicio
+            'idCliente' => 'required|exists:clientes,idCliente', // Validar que el ID del cliente exista en la tabla clientes
         ]);
-
-        // Buscar el ID del cliente basado en el nombre proporcionado
-        $idCliente = Cliente::where('nombre', $request->input('nombreCliente'))->value('idCliente');
 
         // Crear el proyecto y guardar el ID del cliente
         $proyecto = new Proyecto;
         $proyecto->nombreProy = $request->input('nombre');
         $proyecto->montoProy = $request->input('monto');
         $proyecto->monedaProy = $request->input('moneda');
-        $proyecto->estadoProy = $request->input('estado');
+        $proyecto->fechaInicio = $request->input('fecha_inicio'); // Guardar la fecha de inicio
+        $proyecto->fechaFin = $request->input('fecha_fin'); // Guardar la fecha de fin
         $proyecto->idClienteProy = $request->input('idCliente'); // Guardar el ID del cliente
         $proyecto->status = 1;
 
@@ -76,14 +67,16 @@ class ProyectoController extends Controller
         return redirect()->route('proyectos.lista')->with('success', 'Proyecto agregado exitosamente');
     }
 
+
     public function editarProyecto(Request $request, $id)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
             'monto' => 'required|numeric',
             'moneda' => 'required|string|max:255',
-            'estado' => 'required|string|max:255',
             'idCliente' => 'required|numeric',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
         ]);
 
         $proyecto = Proyecto::findOrFail($id);
@@ -91,13 +84,15 @@ class ProyectoController extends Controller
         $proyecto->nombreProy = $request->input('nombre');
         $proyecto->montoProy = $request->input('monto');
         $proyecto->monedaProy = $request->input('moneda');
-        $proyecto->estadoProy = $request->input('estado');
+        $proyecto->fechaInicio = $request->input('fecha_inicio');
+        $proyecto->fechaFin = $request->input('fecha_fin');
         $proyecto->idClienteProy = $request->input('idCliente');
 
         $proyecto->update();
 
         return Redirect::route('proyectos.lista')->with('success', 'Proyecto actualizado exitosamente');
     }
+
 
     public function toggleStatus($id)
     {

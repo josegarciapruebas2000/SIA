@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('proyectos', function (Blueprint $table) {
-            $table->string('status')->default('proyectos')->after('estadoProy');
+            $table->string('status')->default('proyectos')->after('fechaFin');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('proyectos', function (Blueprint $table) {
-            $table->string('status')->default('proyectos')->after('estadoProy');
+            $table->string('status')->default('proyectos')->after('fechaFin');
         });
     }
 };

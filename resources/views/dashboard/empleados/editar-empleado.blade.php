@@ -116,6 +116,7 @@
                 <label for="departamento" class="form-label">Departamento:</label>
                 <select class="form-select" id="departamento" name="departamento" required>
                     <option value="" selected disabled>Seleccionar</option>
+                    <option value="Administrativo" {{ $empleado->departamento == 'Administrativo' ? 'selected' : '' }}>Administrativo</option>
                     <option value="RRHH" {{ $empleado->departamento == 'RRHH' ? 'selected' : '' }}>RRHH</option>
                     <option value="Compras" {{ $empleado->departamento == 'Compras' ? 'selected' : '' }}>Compras</option>
                     <option value="Sistemas" {{ $empleado->departamento == 'Sistemas' ? 'selected' : '' }}>Sistemas
@@ -182,6 +183,7 @@
 
             // Mapeo de puestos por departamento y área
             var puestosPorDepartamento = {
+                'Administrativo': ['ADMINISTRATIVO'],
                 'RRHH': ['RECURSOS HUMANOS'],
                 'Compras': ['COORDINADOR DE COMPRAS', 'AUXILIAR DE COMPRAS', 'FINANZAS', 'DPTO.LEGAL/COBRANZA'],
                 'Sistemas': ['COORDINADOR DE SISTEMAS', 'CIBER SEGURIDAD'],
@@ -193,7 +195,7 @@
                 'Operaciones': {
                     'SEGURIDAD': ['COORDINADOR', 'ING. DE SEGURIDAD', 'AUXILIAR DE SEGURIDAD'],
                     'SUPERVISOR': ['SUPERVISOR', 'CONTROL DE OBRA', 'TRAMITOLOGO/GESTOR'],
-                    'ESPECIALISTA': ['INGENIERO TIPO B', 'INGENIERO TIPO C'],
+                    'ESPECIALISTA': ['INGENIERO TIPO A', 'INGENIERO TIPO B', 'INGENIERO TIPO C'],
                     'ESPECIALIDADES': ['ELECTRICO', 'CIVIL', 'MECANICO', 'DIBUJO TECNICO', 'TABLERISTA']
                 }
             };

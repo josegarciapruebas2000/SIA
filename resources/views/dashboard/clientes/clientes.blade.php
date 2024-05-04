@@ -151,6 +151,7 @@
                                 <option value="CFE">CFE</option>
                                 <option value="Pemex">Pemex</option>
                                 <option value="Privada">Privada</option>
+                                <option value="Privada">Gobierno</option>
                             </select>
                         </div>
                         <br>

@@ -115,6 +115,7 @@
                 <label for="departamento" class="form-label">Departamento:</label>
                 <select class="form-select" id="departamento" name="departamento" required>
                     <option value="" selected>Seleccionar</option>
+                    <option value="Administrativo">Administrativo</option>
                     <option value="RRHH">RRHH</option>
                     <option value="Compras">Compras</option>
                     <option value="Sistemas">Sistemas</option>
@@ -175,7 +176,8 @@
 
             // Mapeo de puestos por departamento y área
             var puestosPorDepartamento = {
-                'RRHH': ['Recursos humanos'],
+                'Administrativo': ['ADMINISTRATIVO'],
+                'RRHH': ['RECURSOS HUMANOS'],
                 'Compras': ['COORDINADOR DE COMPRAS', 'AUXILIAR DE COMPRAS', 'FINANZAS', 'DPTO.LEGAL/COBRANZA'],
                 'Sistemas': ['COORDINADOR DE SISTEMAS', 'CIBER SEGURIDAD'],
                 'Calidad': ['COORDINADOR DE CALIDAD', 'AUXILIAR DE CALIDAD'],
@@ -186,7 +188,7 @@
                 'Operaciones': {
                     'SEGURIDAD': ['COORDINADOR', 'ING. DE SEGURIDAD', 'AUXILIAR DE SEGURIDAD'],
                     'SUPERVISOR': ['SUPERVISOR', 'CONTROL DE OBRA', 'TRAMITOLOGO/GESTOR'],
-                    'ESPECIALISTA': ['INGENIERO TIPO B', 'INGENIERO TIPO C'],
+                    'ESPECIALISTA': ['INGENIERO TIPO A', 'INGENIERO TIPO B', 'INGENIERO TIPO C'],
                     'ESPECIALIDADES': ['ELECTRICO', 'CIVIL', 'MECANICO', 'DIBUJO TECNICO', 'TABLERISTA']
                 }
             };

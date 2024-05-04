@@ -86,7 +86,8 @@
                         <th scope="col" class="text-center">Nombre</th>
                         <th scope="col" class="text-center">Monto</th>
                         <th scope="col" class="text-center">Moneda</th>
-                        <th scope="col" class="text-center">Estado</th>
+                        <th scope="col" class="text-center">Inicio</th>
+                        <th scope="col" class="text-center">Fin</th>
                         <th scope="col" class="text-center">Cliente</th>
                         <th scope="col" class="text-center">Acciones</th>
                     </tr>
@@ -100,7 +101,8 @@
                             <td class="text-center align-middle">{{ $proyecto->nombreProy }}</td>
                             <td class="text-center align-middle">{{ $proyecto->montoProy }}</td>
                             <td class="text-center align-middle">{{ $proyecto->monedaProy }}</td>
-                            <td class="text-center align-middle">{{ $proyecto->estadoProy }}</td>
+                            <td class="text-center align-middle">{{ $proyecto->fechaInicio }}</td>
+                            <td class="text-center align-middle">{{ $proyecto->fechaFin }}</td>
                             <td class="text-center align-middle">{{ $proyecto->cliente->nombre }}</td>
                             <td class="text-center align-middle"> <!-- Alineación vertical -->
                                 @if ($proyecto->status == 1)
@@ -143,7 +145,7 @@
                         @csrf
                         <div class="form-group">
                             <label for="nombre">Nombre:</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre">
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
                         </div>
                         <br>
                         <div class="row mb-3">
@@ -172,14 +174,37 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="estado">Estado:</label>
-                            <input type="text" class="form-control" id="estado" name="estado">
+                        <br>
+                        <div class="row mb-3">
+                            <div class="col text-center">
+                                <label for="generacion" class="form-label">Periodo:</label>
+                            </div>
                         </div>
+                        <div class="row mb-3">
+                            <div class="col" style="text-align: center;">
+                                <label for="fecha_inicio" class="form-label">Inicio:</label>
+                                <div class="input-group">
+                                    <input id="fecha_inicio" type="text" class="form-control"
+                                        placeholder="Seleccione una fecha" name="fecha_inicio"
+                                        value="{{ old('fecha_inicio') }}"
+                                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                </div>
+                            </div>
+                            <div class="col" style="text-align: center;">
+                                <label for="fecha_fin" class="form-label">Fin:</label>
+                                <div class="input-group">
+                                    <input id="fecha_fin" type="text" class="form-control"
+                                        placeholder="Seleccione una fecha" name="fecha_fin"
+                                        value="{{ old('fecha_fin') }}"
+                                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                </div>
+                            </div>
+                        </div>
+
                         <br>
                         <div class="form-group">
                             <label for="idCliente">Cliente:</label>
-                            <select class="form-control" id="idCliente" name="idCliente">
+                            <select class="form-control" id="idCliente" name="idCliente" required>
                                 <option value="">Seleccionar</option>
                                 @foreach ($clientes->where('status', 1) as $cliente)
                                     <option value="{{ $cliente->idCliente }}">{{ $cliente->nombre }}</option>
@@ -189,7 +214,7 @@
 
                         <br>
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-primary" onclick="guardarProyecto()">Guardar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
                             <button type="button" class="btn btn-secondary ms-2"
                                 data-bs-dismiss="modal">Cancelar</button>
                         </div>
@@ -244,11 +269,36 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="estado{{ $proyecto->idProy }}" class="form-label">Estado:</label>
-                                <input type="text" class="form-control" id="estado{{ $proyecto->idProy }}"
-                                    name="estado" value="{{ $proyecto->estadoProy }}">
+                            <br>
+
+                            <div class="row mb-3">
+                                <div class="col text-center">
+                                    <label for="generacion" class="form-label">Periodo:</label>
+                                </div>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col" style="text-align: center;">
+                                    <label for="fecha_inicio" class="form-label">Inicio:</label>
+                                    <div class="input-group">
+                                        <input id="fecha_inicio" type="text" class="form-control"
+                                            placeholder="Seleccione una fecha" name="fecha_inicio"
+                                            value="{{ $proyecto->fechaInicio }}"
+                                            style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                    </div>
+                                </div>
+                                <div class="col" style="text-align: center;">
+                                    <label for="fecha_fin" class="form-label">Fin:</label>
+                                    <div class="input-group">
+                                        <input id="fecha_fin" type="text" class="form-control"
+                                            placeholder="Seleccione una fecha" name="fecha_fin"
+                                            value="{{ $proyecto->fechaFin }}"
+                                            style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+
                             <div class="mb-3">
                                 <label for="cliente{{ $proyecto->idProy }}" class="form-label">Cliente:</label>
                                 <select class="form-select" id="cliente{{ $proyecto->idProy }}" name="idCliente">
@@ -285,9 +335,9 @@
             var nombreProyecto = document.getElementById('nombre').value;
             var montoProyecto = document.getElementById('monto').value;
             var monedaProyecto = document.getElementById('moneda').value;
-            var estadoProyecto = document.getElementById('estado').value;
-            var idClienteProyecto = document.getElementById('idCliente')
-                .value; // Aquí estás obteniendo el valor del campo ID del cliente
+            var fechaInicioProyecto = document.getElementById('fecha_inicio').value;
+            var fechaFinProyecto = document.getElementById('fecha_fin').value;
+            var idClienteProyecto = document.getElementById('idCliente').value;
             var errorMensaje = document.getElementById('errorMensaje');
 
             // Reiniciar el mensaje de error
@@ -315,17 +365,22 @@
                 return;
             }
 
-            // Validar el campo de estado
-            if (estadoProyecto.trim() === '') {
-                errorMensaje.innerHTML = 'Por favor ingrese el estado del proyecto';
+            // Validar los campos de fecha de inicio y fin
+            if (fechaInicioProyecto.trim() === '') {
+                errorMensaje.innerHTML = 'Por favor ingrese la fecha de inicio del proyecto';
+                errorMensaje.style.display = 'block';
+                return;
+            }
+
+            if (fechaFinProyecto.trim() === '') {
+                errorMensaje.innerHTML = 'Por favor ingrese la fecha de fin del proyecto';
                 errorMensaje.style.display = 'block';
                 return;
             }
 
             // Validar el campo de ID del cliente
-            if (idClienteProyecto.trim() === '') { // Aquí debes verificar si el ID del cliente está vacío
-                errorMensaje.innerHTML =
-                    'Por favor seleccione un cliente para el proyecto';
+            if (idClienteProyecto.trim() === '') {
+                errorMensaje.innerHTML = 'Por favor seleccione un cliente para el proyecto';
                 errorMensaje.style.display = 'block';
                 return;
             }
@@ -333,5 +388,26 @@
             // Si todas las validaciones pasan, enviar el formulario
             document.getElementById('formularioProyecto').submit();
         }
+    </script>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+    <script>
+        // Inicializar Flatpickr en español
+        flatpickr("#fecha_inicio", {
+            dateFormat: "Y-m-d",
+            locale: "es",
+            onClose: function(selectedDates) {
+                // Configurar la fecha mínima para la fecha de fin
+                if (selectedDates.length > 0) {
+                    flatpickr("#fecha_fin", {
+                        minDate: selectedDates[0],
+                        dateFormat: "Y-m-d",
+                        locale: "es"
+                    });
+                }
+            }
+        });
     </script>
 @endsection
