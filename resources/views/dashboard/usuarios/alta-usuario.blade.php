@@ -18,7 +18,8 @@
             </div>
             <div class="col">
                 <label for="email" class="form-label">Correo:</label>
-                <input type="text" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Ingrese correo" value="{{ old('email') }}">
+                <input type="text" class="form-control @error('email') is-invalid @enderror" id="email"
+                    name="email" placeholder="Ingrese correo" value="{{ old('email') }}">
                 @error('email')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -32,11 +33,13 @@
                 <label for="role" class="form-label">Rol:</label>
                 <select class="form-control @error('role') is-invalid @enderror" name="role">
                     <option value="">Seleccione una opción</option>
-                    <option value="Gerencia" {{ old('role') == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>                    
-                    <option value="Gerente de ventas" {{ old('role') == 'Gerente de ventas' ? 'selected' : '' }}>Gerente de ventas</option>
+                    <option value="Gerencia" {{ old('role') == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>
+                    <option value="Gerente de ventas" {{ old('role') == 'Gerente de ventas' ? 'selected' : '' }}>Gerente de
+                        ventas</option>
                     <option value="Empleado" {{ old('role') == 'Empleado' ? 'selected' : '' }}>Empleado</option>
                     <option value="Contadora" {{ old('role') == 'Contadora' ? 'selected' : '' }}>Contador</option>
-                    <option value="Recursos Humanos" {{ old('role') == 'Recursos Humanos' ? 'selected' : '' }}>Recursos Humanos</option>
+                    <option value="Recursos Humanos" {{ old('role') == 'Recursos Humanos' ? 'selected' : '' }}>Recursos
+                        Humanos</option>
                     <option value="SuperAdmin" {{ old('role') == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>
                 </select>
                 @error('role')
@@ -50,7 +53,8 @@
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="estado"
                         onchange="changeLabelText()">
-                    <label class="form-check-label btn btn-outline-secondary btn-sm" id="switchLabel" for="flexSwitchCheckDefault">Deshabilitado</label>
+                    <label class="form-check-label btn btn-outline-secondary btn-sm" id="switchLabel"
+                        for="flexSwitchCheckDefault">Deshabilitado</label>
                 </div>
             </div>
         </div>
@@ -58,7 +62,8 @@
         <div class="row mb-3">
             <div class="col">
                 <label for="password" class="form-label">Contraseña:</label>
-                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Ingrese contraseña">
+                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password"
+                    name="password" placeholder="Ingrese contraseña">
                 @error('password')
                     <div class="invalid-feedback">
                         {{ $message }}
@@ -74,6 +79,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="col">
+            <label for="revisor" class="form-label">Revisor:</label>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="revisorSwitch" name="revisorSwitch"
+                    onchange="changeRevisorLabelText()">
+                <label class="form-check-label btn btn-outline-secondary btn-sm" id="revisorSwitchLabel"
+                    for="revisorSwitch">No</label>
+            </div>
+        </div>
+
+
         <br><br>
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-6">
@@ -115,6 +132,16 @@
             } else {
                 passwordError.style.display = 'none';
                 return true; // Permitir el envío del formulario
+            }
+        }
+
+        function changeRevisorLabelText() {
+            var revisorSwitchLabel = document.getElementById('revisorSwitchLabel');
+            var revisorSwitch = document.getElementById('revisorSwitch');
+            if (revisorSwitch.checked) {
+                revisorSwitchLabel.innerText = 'Sí';
+            } else {
+                revisorSwitchLabel.innerText = 'No';
             }
         }
     </script>

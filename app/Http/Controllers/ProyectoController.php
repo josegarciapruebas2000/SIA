@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proyecto;
+use App\Models\ProyectoUsuario;
 use App\Models\Cliente;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
@@ -36,8 +38,15 @@ class ProyectoController extends Controller
         // Obtener todos los clientes disponibles
         $clientes = Cliente::all();
 
+        // Obtener solo los usuarios con status 1
+        $usuarios = User::where('status', 1)->get();
+
+        //Obtener lista de la tabla pivote proyecto_usuario
+        $pivotes = ProyectoUsuario::all();
+
+
         // Pasar los proyectos y clientes a la vista
-        return view('dashboard.proyectos.proyectos', compact('proyectos', 'clientes'));
+        return view('dashboard.proyectos.proyectos', compact('proyectos', 'clientes', 'usuarios', 'pivotes'));
     }
 
 
@@ -50,6 +59,8 @@ class ProyectoController extends Controller
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio', // Validar que la fecha de fin sea posterior o igual a la fecha de inicio
             'idCliente' => 'required|exists:clientes,idCliente', // Validar que el ID del cliente exista en la tabla clientes
+            'usuarios' => 'required|array', // Asegúrate de que el campo usuarios sea un array
+            'usuarios.*' => 'exists:users,id', // Validar que cada usuario seleccionado exista en la tabla users
         ]);
 
         // Crear el proyecto y guardar el ID del cliente
@@ -64,8 +75,14 @@ class ProyectoController extends Controller
 
         $proyecto->save();
 
+        // Guardar los usuarios seleccionados en la tabla proyecto_usuario
+        foreach ($request->input('usuarios') as $usuarioId) {
+            $proyecto->usuarios()->attach($usuarioId);
+        }
+
         return redirect()->route('proyectos.lista')->with('success', 'Proyecto agregado exitosamente');
     }
+
 
 
     public function editarProyecto(Request $request, $id)

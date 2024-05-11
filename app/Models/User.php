@@ -41,4 +41,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Relación muchos a muchos con la tabla pivote proyecto_usuario
+    public function proyectos()
+    {
+        return $this->belongsToMany(Proyecto::class, 'proyecto_usuario', 'idUsuario', 'idProyecto');
+    }
 }

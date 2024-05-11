@@ -11,26 +11,39 @@ use Illuminate\Support\Facades\Hash;
 class Usuarios extends Controller
 {
     public function listaUsuarios(Request $request)
-    {
-        // Obtener el ID del usuario que inició sesión
-        $userId = Auth::id();
+{
+    // Obtener el ID del usuario que inició sesión
+    $userId = Auth::id();
 
-        // Obtener el término de búsqueda del formulario
-        $searchTerm = $request->input('search');
+    // Obtener el término de búsqueda del formulario
+    $searchTerm = $request->input('search');
 
-        // Consulta de búsqueda con cláusula OR para buscar en múltiples columnas
-        $users = User::where('id', '!=', $userId)
-            ->where(function ($query) use ($searchTerm) {
-                $query->where('id', 'like', "%$searchTerm%")
-                    ->orWhere('name', 'like', "%$searchTerm%")
-                    ->orWhere('email', 'like', "%$searchTerm%");
-            })
-            ->orderBy('id', 'desc')
-            ->paginate(5);
+    // Obtener el filtro seleccionado
+    $filter = $request->input('filter');
 
-        // Pasar la lista de usuarios a la vista
-        return view('dashboard.usuarios.usuarios', compact('users'));
+    // Consulta de búsqueda con cláusula OR para buscar en múltiples columnas
+    $users = User::where('id', '!=', $userId)
+        ->where(function ($query) use ($searchTerm) {
+            $query->where('id', 'like', "%$searchTerm%")
+                ->orWhere('name', 'like', "%$searchTerm%")
+                ->orWhere('email', 'like', "%$searchTerm%");
+        });
+
+    // Aplicar filtro según la opción seleccionada
+    if ($filter == 'activos') {
+        $users->where('status', 1);
+    } elseif ($filter == 'inactivos') {
+        $users->where('status', 0);
+    } elseif ($filter == 'revisores') {
+        $users->where('revisor', 1);
     }
+
+    $users = $users->orderBy('id', 'desc')->paginate(5);
+
+    // Pasar la lista de usuarios a la vista
+    return view('dashboard.usuarios.usuarios', compact('users'));
+}
+
 
 
 
@@ -72,14 +85,20 @@ class Usuarios extends Controller
         $user->email = $request->input('email');
         // Determinar el estado
         $estado = $request->has('estado') ? 1 : 0;
+        $user->status = $estado;
+
+        // Determinar si es revisor
+        $revisor = $request->has('revisorSwitch') ? 1 : 0;
+        $user->revisor = $revisor;
+
         $user->password = Hash::make($request->input('password'));
         $user->role = $request->input('role');
-        $user->status = $estado;
         $user->save();
 
         // Redirigir a alguna vista o ruta después de guardar el usuario
         return redirect()->route('usuarios.lista')->with('success', 'Usuario creado exitosamente');
     }
+
 
 
 
@@ -118,38 +137,46 @@ class Usuarios extends Controller
 
 
     public function update(Request $request, $id)
-{
-    // Encuentra el usuario por su ID
-    $usuario = User::findOrFail($id);
+    {
+        // Encuentra el usuario por su ID
+        $usuario = User::findOrFail($id);
 
-    // Valida los campos del formulario
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-        'role' => 'required|string',
-        'status' => 'required|boolean',
-        'password' => 'nullable|string|min:8',
-    ], [
-        'email.unique' => 'El correo electrónico ya está registrado por otro usuario.',
-    ]);
+        // Imprime los datos recibidos del formulario para depuración
+        //dd($request->all());
 
-    // Actualiza los campos del usuario con los datos del formulario
-    $usuario->name = $request->input('name');
-    $usuario->email = $request->input('email');
-    $usuario->role = $request->input('role');
-    $usuario->status = $request->input('status');
+        // Valida los campos del formulario
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'role' => 'required|string',
+            'password' => 'nullable|string|min:8',
+        ], [
+            'email.unique' => 'El correo electrónico ya está registrado por otro usuario.',
+        ]);
 
-    // Si se proporciona una nueva contraseña, cámbiala
-    if ($request->filled('password')) {
-        $usuario->password = Hash::make($request->input('password'));
+        // Actualiza los campos del usuario con los datos del formulario
+        $usuario->name = $request->input('name');
+        $usuario->email = $request->input('email');
+        $usuario->role = $request->input('role');
+
+        // Si el estado no se recibe en la solicitud, establecerlo en 0
+        $usuario->status = $request->has('status') ? $request->input('status') : 0;
+
+        // Si el revisor no se recibe en la solicitud, establecerlo en 0
+        $usuario->revisor = $request->has('revisorSwitch') ? $request->input('revisorSwitch') : 0;
+
+        // Si se proporciona una nueva contraseña, cámbiala
+        if ($request->filled('password')) {
+            $usuario->password = Hash::make($request->input('password'));
+        }
+
+        // Guarda los cambios en la base de datos
+        $usuario->save();
+
+        // Redirige a alguna página después de guardar los cambios
+        return redirect()->route('usuarios.lista')->with('success', 'Usuario actualizado correctamente.');
     }
 
-    // Guarda los cambios en la base de datos
-    $usuario->save();
-
-    // Redirige a alguna página después de guardar los cambios
-    return redirect()->route('usuarios.lista')->with('success', 'Usuario actualizado correctamente.');
-}
 
 
 

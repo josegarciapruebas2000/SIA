@@ -7,6 +7,7 @@ use App\Http\Controllers\Usuarios;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\SolicitudController;
 use App\Http\Middleware\CheckRole;
 use App\Models\Empleado;
 
@@ -141,25 +142,17 @@ Route::get('/documentos/empleado/{id}/descargar/{tipo}', [EmpleadoController::cl
 
 
 
+/* Solicitud de gastos */
 
 
 
-
-
-Route::post('/proyectos-add', [ProyectoController::class, 'agregarProyecto'])
-    ->name('add.proyectos')
+Route::get('/solicitud', [SolicitudController::class, 'solicitud'])
+    ->name('solicitud')
     ->middleware('role:SuperAdmin,Administrador');
 
-Route::put('/proyectos-update/{id}', [ProyectoController::class, 'editarProyecto'])
-    ->name('update.proyectos')
-    ->middleware('role:SuperAdmin,Administrador');
-
-
-
-Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProyecto'])
-    ->name('proyectos.eliminar')
-    ->middleware('role:SuperAdmin,Administrador');
-
+/*Route::get('/solicitud', function () {
+    return view('gastos/viaticos/solicitud');
+})->name('solicitud');*/
 
 
 
@@ -191,9 +184,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-Route::get('/solicitud', function () {
-    return view('gastos/viaticos/solicitud');
-})->name('solicitud');
+
 
 Route::get('/comprobaciones', function () {
     return view('gastos/viaticos/comprobaciones');

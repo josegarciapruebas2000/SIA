@@ -11,14 +11,16 @@
                     oninput="this.value = this.value.toUpperCase()">
             </div>
             <div class="col">
-                <label for="grupo" class="form-label">Proyecto:</label>
-                <select class="form-control">
-                    <option>Seleccione una opción</option>
-                    <option>Proyecto 1</option>
-                    <option>Proyecto 2</option>
-                    <option>Proyecto 3</option>
+                <label for="proyecto" class="form-label">Proyecto:</label>
+                <select class="form-control" name="proyecto">
+                    <option value="">Seleccione un proyecto</option>
+                    @foreach($proyectos as $proyecto)
+                        <option value="{{ $proyecto->idProy }}">{{ $proyecto->nombreProy }}</option>
+                    @endforeach
                 </select>
             </div>
+            
+            
 
         </div>
         <br>
@@ -38,18 +40,18 @@
         </div>
         <div class="row mb-3">
             <div class="col" style="text-align: center;">
-                <label for="fecha_sesion" class="form-label">Inicio:</label>
+                <label for="fecha_inicio" class="form-label">Inicio:</label>
                 <div class="input-group">
-                    <input id="fecha_sesion" type="text" class="form-control" placeholder="Seleccione una fecha"
-                        name="fecha_sesion" value="{{ old('fecha_sesion') }}"
+                    <input id="fecha_inicio" type="text" class="form-control" placeholder="Seleccione una fecha"
+                        name="fecha_inicio" value="{{ old('fecha_inicio') }}"
                         style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
                 </div>
             </div>
             <div class="col" style="text-align: center;">
-                <label for="fecha_sesion" class="form-label">Fin:</label>
+                <label for="fecha_fin" class="form-label">Fin:</label>
                 <div class="input-group">
-                    <input id="fecha_sesion" type="text" class="form-control" placeholder="Seleccione una fecha"
-                        name="fecha_sesion" value="{{ old('fecha_sesion') }}"
+                    <input id="fecha_fin" type="text" class="form-control" placeholder="Seleccione una fecha"
+                        name="fecha_fin" value="{{ old('fecha_fin') }}"
                         style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
                 </div>
             </div>
@@ -60,15 +62,16 @@
 
         <div class="row mb-3">
             <div class="col">
-                <label for="grado" class="form-label">Revisor:</label>
-                <select class="form-control">
-                    <option>Seleccione una opción</option>
-                    <option>Revisor 1</option>
-                    <option>Revisor 2</option>
-                    <option>Revisor 3</option>
+                <label for="revisor" class="form-label">Revisor:</label>
+                <select class="form-control" id="revisor" name="revisor">
+                    <option value="">Seleccione una opción</option>
+                    @foreach($revisores as $revisor)
+                        <option value="{{ $revisor->id }}">{{ $revisor->name }}</option>
+                    @endforeach
                 </select>
-
             </div>
+            
+            
             <div class="col">
                 <label for="grado" class="form-label">Total:</label>
                 <div class="input-group mb-3">
@@ -114,8 +117,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Mensaje de confirmación</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             ¡Tu solicitud ha sido enviada con éxito!
@@ -136,9 +138,19 @@
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script>
         // Inicializar Flatpickr en español
-        flatpickr("#fecha_sesion", {
+        flatpickr("#fecha_inicio", {
             dateFormat: "Y-m-d",
-            locale: "es", // Establecer el idioma a español
+            locale: "es",
+            onClose: function(selectedDates) {
+                // Configurar la fecha mínima para la fecha de fin
+                if (selectedDates.length > 0) {
+                    flatpickr("#fecha_fin", {
+                        minDate: selectedDates[0],
+                        dateFormat: "Y-m-d",
+                        locale: "es"
+                    });
+                }
+            }
         });
     </script>
 @endsection

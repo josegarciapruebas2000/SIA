@@ -187,7 +187,7 @@
                                     <input id="fecha_inicio" type="text" class="form-control"
                                         placeholder="Seleccione una fecha" name="fecha_inicio"
                                         value="{{ old('fecha_inicio') }}"
-                                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required>
                                 </div>
                             </div>
                             <div class="col" style="text-align: center;">
@@ -196,7 +196,7 @@
                                     <input id="fecha_fin" type="text" class="form-control"
                                         placeholder="Seleccione una fecha" name="fecha_fin"
                                         value="{{ old('fecha_fin') }}"
-                                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required>
                                 </div>
                             </div>
                         </div>
@@ -211,6 +211,34 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <br>
+
+                        <div class="form-group">
+                            <label for="usuarios">Asignar proyecto a usuarios:</label>
+                            <button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#usuariosCollapse" aria-expanded="false"
+                                aria-controls="usuariosCollapse">
+                                <i class="fas fa-users me-2"></i> Seleccionar usuarios
+                            </button>
+                            <div class="collapse" id="usuariosCollapse">
+                                <div class="list-group mt-3" style="max-height: 200px; overflow-y: auto;">
+                                    @foreach ($usuarios->where('status', 1) as $usuario)
+                                        <div class="list-group-item border-0">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox"
+                                                    value="{{ $usuario->id }}" id="usuario{{ $usuario->id }}"
+                                                    name="usuarios[]">
+                                                <label class="form-check-label ms-2" for="usuario{{ $usuario->id }}">
+                                                    {{ $usuario->name }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
 
                         <br>
                         <div class="d-flex justify-content-end">
@@ -311,6 +339,38 @@
                                 </select>
 
                             </div>
+
+                            <br>
+
+                            <div class="form-group">
+                                <label for="usuarios">Usuarios asociados:</label>
+                                <button class="btn btn-success btn-sm" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#usuariosCollapse" aria-expanded="false"
+                                    aria-controls="usuariosCollapse">
+                                    <i class="fas fa-users me-2"></i> Ver usuarios
+                                </button>
+                                <div class="collapse" id="usuariosCollapse">
+                                    <div class="list-group mt-3" style="max-height: 200px; overflow-y: auto;">
+                                        @foreach ($pivotes->where('idProyecto', $proyecto->idProy) as $pivot)
+                                            @php
+                                                $usuario = $usuarios->where('id', $pivot->idUsuario)->first();
+                                            @endphp
+                                            <div class="card mb-3">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{ $usuario->name }}</h5>
+                                                    <h6 class="card-subtitle mb-2 text-muted">{{ $usuario->email }}</h6>
+                                                    <p class="card-text">Rol: {{ $usuario->role }}</p>
+                                                    <!-- Agrega más campos aquí según tu modelo de usuario -->
+                                                </div>
+                                            </div>
+                                        @endforeach
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <br>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-primary">Guardar</button>
                                 <button type="button" class="btn btn-secondary ms-2"

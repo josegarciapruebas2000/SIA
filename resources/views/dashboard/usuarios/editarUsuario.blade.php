@@ -42,12 +42,13 @@
                 <label for="estado" class="form-label">Estado:</label>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="status"
-                        value="1" {{ $usuario->status == 1 ? 'checked' : '' }} onchange="changeLabelText()">
+                        value="1" {{ $usuario->status == 1 ? 'checked' : '' }}>
                     <label class="form-check-label" for="flexSwitchCheckDefault" id="switchLabel">
                         {{ $usuario->status == 1 ? 'Habilitado' : 'Deshabilitado' }}
                     </label>
                 </div>
             </div>
+
         </div>
 
         <br>
@@ -64,6 +65,23 @@
                 <p style="font-size: 14px; color: #666;">Deje este campo en blanco para mantener la contraseña actual.</p>
             </div>
         </div>
+
+        <div class="col">
+            <label for="revisorSwitch" class="form-label">Revisor:</label>
+            <div class="form-check form-switch">
+                <!-- Checkbox que enviará el valor 1 cuando esté marcado -->
+                <input class="form-check-input" type="checkbox" id="revisorSwitch" value="1" name="revisorSwitch"
+                    {{ $usuario->revisor ? 'checked' : '' }}>
+
+                <!-- Etiqueta para mostrar el estado del checkbox -->
+                <label class="form-check-label btn btn-outline-secondary btn-sm" id="revisorSwitchLabel"
+                    for="revisorSwitch">
+                    {{ $usuario->revisor ? 'Sí' : 'No' }}
+                </label>
+            </div>
+        </div>
+
+
 
 
         <br><br>
