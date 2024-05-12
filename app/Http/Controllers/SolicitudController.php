@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Proyecto;
 use App\Models\User;
+use App\Models\SolicitudViaticos;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,5 +26,36 @@ class SolicitudController extends Controller
 
 
         return view('gastos.viaticos.solicitud', compact('proyectos', 'revisores'));
+    }
+
+    public function guardarSolicitud(Request $request)
+    {
+        $request->validate([
+            'solicitud' => 'required|string|max:30',
+            'proyecto' => 'required|exists:PROYECTOS,idProy',
+            'comentario' => 'required|string|max:40',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after:fecha_inicio',
+            'revisor' => 'required|exists:users,id',
+            'total_via' => 'required|numeric', // Agregar la validación para el campo total_via
+        ]);
+
+        // Obtener el ID del usuario autenticado
+        $user_id = Auth::id();
+
+        // Guardar la solicitud en la base de datos
+        $solicitud = new SolicitudViaticos();
+        $solicitud->nombreSolicitud = $request->input('solicitud');
+        $solicitud->idProy_via = $request->input('proyecto');
+        $solicitud->comentario_via = $request->input('comentario');
+        $solicitud->solicitudfecha_via = $request->input('fecha_inicio');
+        $solicitud->solFinalFecha_via = $request->input('fecha_fin');
+        $solicitud->revisor_id = $request->input('revisor');
+        $solicitud->total_via = $request->input('total_via'); // Asignar el valor del campo total_via
+        $solicitud->user_id = $user_id; // Asignar el ID del usuario autenticado
+        $solicitud->save();
+
+        // Redirigir al dashboard con el mensaje de éxito
+        return redirect()->route('dashboard')->with(['showConfirmationModal' => true, 'success' => '¡Tu solicitud ha sido enviada con éxito!']);
     }
 }

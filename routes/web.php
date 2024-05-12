@@ -106,49 +106,54 @@ Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProye
 
 Route::get('/empleados', [EmpleadoController::class, 'listaEmpleados'])
     ->name('empleados.lista')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 Route::match(['get', 'post'], '/empleados/{id}/toggle-status', [EmpleadoController::class, 'toggleStatus'])
     ->name('empleados.toggleStatus')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 Route::get('/altaEmpleado', function () {
     return view('dashboard/empleados/alta-empleado');
-})->name('alta.empleado');
+})->name('alta.empleado')
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 Route::post('/guardar-empleado', [EmpleadoController::class, 'agregarEmpleado'])
     ->name('add.empleado')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 Route::get('/editar-empleado/{id}', [EmpleadoController::class, 'cargarEmpleado'])
     ->name('cargar.empleado')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 Route::put('/update-empleado/{id}', [EmpleadoController::class, 'actualizarEmpleado'])
     ->name('update.empleado')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 
 Route::get('/archivo-empleado/{id}', [EmpleadoController::class, 'documentoEmpleado'])
     ->name('documentos.empleado')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 Route::post('/documento-empleado/{id}', [EmpleadoController::class, 'addDocumentoEmpleado'])
     ->name('documentos.empleado.guardar')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 Route::get('/documentos/empleado/{id}/descargar/{tipo}', [EmpleadoController::class, 'descargarDocumento'])
-    ->name('documentos.empleado.descargar');
+    ->name('documentos.empleado.descargar')
+    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
 
 
 
 /* Solicitud de gastos */
 
 
-
 Route::get('/solicitud', [SolicitudController::class, 'solicitud'])
     ->name('solicitud')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Empleado');
+
+Route::post('/guardar-solicitud', [SolicitudController::class, 'guardarSolicitud'])
+    ->name('guardar.solicitud')
+    ->middleware('role:SuperAdmin,Administrador,Empleado');
 
 /*Route::get('/solicitud', function () {
     return view('gastos/viaticos/solicitud');

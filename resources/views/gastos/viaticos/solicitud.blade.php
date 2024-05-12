@@ -3,24 +3,26 @@
 @section('content')
     <h2 style="text-align: center">Solicitud de Viáticos</h2>
     <br><br>
-    <form class="centered-form">
+    <form class="centered-form" action="{{ route('guardar.solicitud') }}" method="POST">
+        @csrf
         <div class="row mb-3">
             <div class="col">
                 <label for="grado" class="form-label">Crear nueva solicitud:</label>
                 <input type="text" class="form-control" id="solicitud" name="solicitud" placeholder="Ingrese solicitud"
-                    oninput="this.value = this.value.toUpperCase()">
+                    oninput="this.value = this.value.toUpperCase()" required>
             </div>
             <div class="col">
                 <label for="proyecto" class="form-label">Proyecto:</label>
-                <select class="form-control" name="proyecto">
+                <select class="form-control" name="proyecto" required>
                     <option value="">Seleccione un proyecto</option>
-                    @foreach($proyectos as $proyecto)
+                    @foreach ($proyectos as $proyecto)
                         <option value="{{ $proyecto->idProy }}">{{ $proyecto->nombreProy }}</option>
                     @endforeach
                 </select>
+
             </div>
-            
-            
+
+
 
         </div>
         <br>
@@ -29,7 +31,7 @@
             <div class="col">
                 <label for="tutor" class="form-label">Comentario:</label>
                 <input type="text" class="form-control" id="comentario" name="comentario"
-                    placeholder="Ingrese comentarios">
+                    placeholder="Ingrese comentarios" required>
             </div>
         </div>
         <br>
@@ -44,7 +46,7 @@
                 <div class="input-group">
                     <input id="fecha_inicio" type="text" class="form-control" placeholder="Seleccione una fecha"
                         name="fecha_inicio" value="{{ old('fecha_inicio') }}"
-                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required>
                 </div>
             </div>
             <div class="col" style="text-align: center;">
@@ -52,7 +54,7 @@
                 <div class="input-group">
                     <input id="fecha_fin" type="text" class="form-control" placeholder="Seleccione una fecha"
                         name="fecha_fin" value="{{ old('fecha_fin') }}"
-                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                        style="border-top-right-radius: 0; border-bottom-right-radius: 0;" required>
                 </div>
             </div>
         </div>
@@ -63,22 +65,23 @@
         <div class="row mb-3">
             <div class="col">
                 <label for="revisor" class="form-label">Revisor:</label>
-                <select class="form-control" id="revisor" name="revisor">
+                <select class="form-control" id="revisor" name="revisor" required>
                     <option value="">Seleccione una opción</option>
-                    @foreach($revisores as $revisor)
+                    @foreach ($revisores as $revisor)
                         <option value="{{ $revisor->id }}">{{ $revisor->name }}</option>
                     @endforeach
                 </select>
             </div>
-            
-            
+
+
             <div class="col">
                 <label for="grado" class="form-label">Total:</label>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text">$</span>
                     </div>
-                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    <input type="text" class="form-control" id="total_via" name="total_via"
+                        placeholder="Ingrese el total de viáticos" required>
                 </div>
             </div>
 
@@ -98,7 +101,7 @@
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-start">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <!-- Icono SVG con clase de tamaño -->
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="bi me-2" width="16"
                             height="16">
@@ -109,25 +112,7 @@
                         Enviar solicitud
                     </button>
                 </div>
-            </div>
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Mensaje de confirmación</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            ¡Tu solicitud ha sido enviada con éxito!
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </div>           
 
 
         </div>
@@ -152,5 +137,6 @@
                 }
             }
         });
+
     </script>
 @endsection

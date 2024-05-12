@@ -1,5 +1,7 @@
 @extends('base')
 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
     @import url(https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css);
     @import url(https://fonts.googleapis.com/css?family=Raleway:400,500,800);
@@ -247,7 +249,37 @@
     </div>
 @endsection
 
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Mensaje de confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ session('success') }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts de Bootstrap (jQuery primero, luego Popper.js y finalmente Bootstrap JS) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <script>
+    $(document).ready(function() {
+        @if(session()->has('success'))
+            $('#exampleModal').modal('show');
+        @endif
+    });
+
     /* Demo purposes only */
     $(".hover").mouseleave(
         function() {
