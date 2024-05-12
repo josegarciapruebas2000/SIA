@@ -185,26 +185,26 @@
                     'data-fin'));
 
                 if (fechaInicioSeleccionada.getTime() < fechaInicioProyecto.getTime() || fechaFinSeleccionada.getTime() >
-    fechaFinProyecto.getTime() || fechaInicioSeleccionada.getTime() > fechaFinProyecto.getTime()) {
-    // Obtener las fechas en el formato deseado
-    var fechaInicioSeleccionadaFormatted = fechaInicioSeleccionada.toISOString().split('T')[0];
-    var fechaFinSeleccionadaFormatted = fechaFinSeleccionada.toISOString().split('T')[0];
-    var fechaInicioProyectoFormatted = fechaInicioProyecto.toISOString().split('T')[0];
-    var fechaFinProyectoFormatted = fechaFinProyecto.toISOString().split('T')[0];
+                    fechaFinProyecto.getTime() || fechaInicioSeleccionada.getTime() > fechaFinProyecto.getTime()) {
+                    // Obtener las fechas en el formato deseado
+                    var fechaInicioSeleccionadaFormatted = fechaInicioSeleccionada.toISOString().split('T')[0];
+                    var fechaFinSeleccionadaFormatted = fechaFinSeleccionada.toISOString().split('T')[0];
+                    var fechaInicioProyectoFormatted = fechaInicioProyecto.toISOString().split('T')[0];
+                    var fechaFinProyectoFormatted = fechaFinProyecto.toISOString().split('T')[0];
 
-    var mensajeError = 'El período seleccionado (' + fechaInicioSeleccionadaFormatted + ' - ' +
-        fechaFinSeleccionadaFormatted + ') ';
-    mensajeError += 'debe estar dentro del rango del proyecto (' + fechaInicioProyectoFormatted +
-        ' - ' + fechaFinProyectoFormatted + ').';
+                    var mensajeError = 'El período seleccionado (' + fechaInicioSeleccionadaFormatted + ' - ' +
+                        fechaFinSeleccionadaFormatted + ') ';
+                    mensajeError += 'debe estar dentro del rango del proyecto (' + fechaInicioProyectoFormatted +
+                        ' - ' + fechaFinProyectoFormatted + ').';
 
-    // Mostrar el mensaje en el modal
-    document.getElementById('mensajePeriodo').innerText = mensajeError;
-    $('#periodoModal').modal('show');
+                    // Mostrar el mensaje en el modal
+                    document.getElementById('mensajePeriodo').innerText = mensajeError;
+                    $('#periodoModal').modal('show');
 
-    // Limpiar las fechas seleccionadas
-    document.getElementById('fecha_inicio').value = "";
-    document.getElementById('fecha_fin').value = "";
-}
+                    // Limpiar las fechas seleccionadas
+                    document.getElementById('fecha_inicio').value = "";
+                    document.getElementById('fecha_fin').value = "";
+                }
 
             }
         }
