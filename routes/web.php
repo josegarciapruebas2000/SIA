@@ -162,6 +162,25 @@ Route::post('/guardar-solicitud', [SolicitudController::class, 'guardarSolicitud
 
 
 
+/* Autorización */
+
+Route::get('/autorizar', function () {
+    return view('gastos/viaticos/autorizar');
+})->name('autorizar');
+
+Route::get('/autorizarViatico', function () {
+    return view('gastos/viaticos/autorizarViatico');
+})->name('autorizarViatico');
+
+Route::get('/autorizarComprobacion', function () {
+    return view('gastos/viaticos/autorizarComprobacion');
+})->name('autorizarComprobacion');
+
+Route::get('/autorizarReposicion', function () {
+    return view('gastos/viaticos/autorizarReposicion');
+})->name('autorizarReposicion');
+
+
 /* Hisotiral de gastos */
 
 Route::get('/historial', function () {

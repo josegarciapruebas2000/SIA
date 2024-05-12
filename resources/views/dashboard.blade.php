@@ -179,6 +179,7 @@
                         <h4>Gastos</h4>
                         <br>
                         <div class="button-container">
+                            <div class="button-link" onclick="window.location.href='/autorizar'">Autorización</div>
                             <div class="button-link" onclick="window.location.href='/solicitud'">Solicitud de viáticos</div>
                             <div class="button-link" onclick="window.location.href='/comprobaciones'">Comprobación</div>
                             <div class="button-link" onclick="window.location.href='/reposicion'">Reposición</div>
