@@ -11,16 +11,18 @@
             <div class="col">
                 <label for="grado" class="form-label">Crear nueva solicitud:</label>
                 <input type="text" class="form-control" id="solicitud" name="solicitud" placeholder="Ingrese solicitud"
-                    oninput="this.value = this.value.toUpperCase()" required>
+                    required>
             </div>
             <div class="col">
                 <label for="proyecto" class="form-label">Proyecto:</label>
-                <select class="form-control" name="proyecto" required>
+                <select class="form-control" name="proyecto" id="proyecto" required>
                     <option value="">Seleccione un proyecto</option>
                     @foreach ($proyectos as $proyecto)
-                        <option value="{{ $proyecto->idProy }}">{{ $proyecto->nombreProy }}</option>
+                        <option value="{{ $proyecto->idProy }}" data-inicio="{{ $proyecto->fechaInicio }}"
+                            data-fin="{{ $proyecto->fechaFin }}">{{ $proyecto->nombreProy }}</option>
                     @endforeach
                 </select>
+
 
             </div>
 
@@ -121,7 +123,8 @@
 
 
         <!-- Modal para mostrar el mensaje de alerta -->
-        <div class="modal fade" id="periodoModal" tabindex="-1" aria-labelledby="periodoModalLabel" aria-hidden="true">
+        <div class="modal fade" id="periodoModal" tabindex="-1" aria-labelledby="periodoModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -166,28 +169,46 @@
         });
 
 
+        document.getElementById('proyecto').addEventListener('change', function() {
+            validarPeriodo();
+        });
+
         function validarPeriodo() {
-            var fechaInicio = new Date(document.getElementById('fecha_inicio').value);
-            var fechaFin = new Date(document.getElementById('fecha_fin').value);
+            var proyectoSelect = document.getElementById('proyecto');
+            var fechaInicioSeleccionada = new Date(document.getElementById('fecha_inicio').value);
+            var fechaFinSeleccionada = new Date(document.getElementById('fecha_fin').value);
 
-            var fechaInicioProyecto = new Date("{{ $proyecto->fechaInicio }}");
-            var fechaFinProyecto = new Date("{{ $proyecto->fechaFin }}");
+            if (proyectoSelect.value !== '') {
+                var fechaInicioProyecto = new Date(proyectoSelect.options[proyectoSelect.selectedIndex].getAttribute(
+                    'data-inicio'));
+                var fechaFinProyecto = new Date(proyectoSelect.options[proyectoSelect.selectedIndex].getAttribute(
+                    'data-fin'));
 
-            if (fechaInicio < fechaInicioProyecto || fechaFin > fechaFinProyecto) {
-                var mensajeError = 'El período seleccionado (' + fechaInicio.toLocaleDateString() + ' - ' + fechaFin
-                    .toLocaleDateString() + ') ';
-                mensajeError += 'debe estar dentro del rango del proyecto (' + fechaInicioProyecto.toLocaleDateString() +
-                    ' - ' + fechaFinProyecto.toLocaleDateString() + ').';
+                if (fechaInicioSeleccionada.getTime() < fechaInicioProyecto.getTime() || fechaFinSeleccionada.getTime() >
+    fechaFinProyecto.getTime() || fechaInicioSeleccionada.getTime() > fechaFinProyecto.getTime()) {
+    // Obtener las fechas en el formato deseado
+    var fechaInicioSeleccionadaFormatted = fechaInicioSeleccionada.toISOString().split('T')[0];
+    var fechaFinSeleccionadaFormatted = fechaFinSeleccionada.toISOString().split('T')[0];
+    var fechaInicioProyectoFormatted = fechaInicioProyecto.toISOString().split('T')[0];
+    var fechaFinProyectoFormatted = fechaFinProyecto.toISOString().split('T')[0];
 
-                // Mostrar el mensaje en el modal
-                document.getElementById('mensajePeriodo').innerText = mensajeError;
-                $('#periodoModal').modal('show');
+    var mensajeError = 'El período seleccionado (' + fechaInicioSeleccionadaFormatted + ' - ' +
+        fechaFinSeleccionadaFormatted + ') ';
+    mensajeError += 'debe estar dentro del rango del proyecto (' + fechaInicioProyectoFormatted +
+        ' - ' + fechaFinProyectoFormatted + ').';
 
-                // Limpiar las fechas seleccionadas
-                document.getElementById('fecha_inicio').value = "";
-                document.getElementById('fecha_fin').value = "";
+    // Mostrar el mensaje en el modal
+    document.getElementById('mensajePeriodo').innerText = mensajeError;
+    $('#periodoModal').modal('show');
+
+    // Limpiar las fechas seleccionadas
+    document.getElementById('fecha_inicio').value = "";
+    document.getElementById('fecha_fin').value = "";
+}
+
             }
         }
+
 
         document.getElementById('fecha_inicio').onchange = validarPeriodo;
         document.getElementById('fecha_fin').onchange = validarPeriodo;
