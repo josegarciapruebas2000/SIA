@@ -1,5 +1,7 @@
 @extends('base')
 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 @section('content')
     <h2 style="text-align: center">Solicitud de Viáticos</h2>
     <br><br>
@@ -112,11 +114,36 @@
                         Enviar solicitud
                     </button>
                 </div>
-            </div>           
+            </div>
 
 
         </div>
+
+
+        <!-- Modal para mostrar el mensaje de alerta -->
+        <div class="modal fade" id="periodoModal" tabindex="-1" aria-labelledby="periodoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="periodoModalLabel">Alerta de período</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="mensajePeriodo"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
+
+    <!-- Scripts de Bootstrap (jQuery primero, luego Popper.js y finalmente Bootstrap JS) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -138,5 +165,31 @@
             }
         });
 
+
+        function validarPeriodo() {
+            var fechaInicio = new Date(document.getElementById('fecha_inicio').value);
+            var fechaFin = new Date(document.getElementById('fecha_fin').value);
+
+            var fechaInicioProyecto = new Date("{{ $proyecto->fechaInicio }}");
+            var fechaFinProyecto = new Date("{{ $proyecto->fechaFin }}");
+
+            if (fechaInicio < fechaInicioProyecto || fechaFin > fechaFinProyecto) {
+                var mensajeError = 'El período seleccionado (' + fechaInicio.toLocaleDateString() + ' - ' + fechaFin
+                    .toLocaleDateString() + ') ';
+                mensajeError += 'debe estar dentro del rango del proyecto (' + fechaInicioProyecto.toLocaleDateString() +
+                    ' - ' + fechaFinProyecto.toLocaleDateString() + ').';
+
+                // Mostrar el mensaje en el modal
+                document.getElementById('mensajePeriodo').innerText = mensajeError;
+                $('#periodoModal').modal('show');
+
+                // Limpiar las fechas seleccionadas
+                document.getElementById('fecha_inicio').value = "";
+                document.getElementById('fecha_fin').value = "";
+            }
+        }
+
+        document.getElementById('fecha_inicio').onchange = validarPeriodo;
+        document.getElementById('fecha_fin').onchange = validarPeriodo;
     </script>
 @endsection

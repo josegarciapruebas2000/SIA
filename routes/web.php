@@ -181,6 +181,9 @@ Route::get('/autorizarReposicion', function () {
 })->name('autorizarReposicion');
 
 
+
+
+
 /* Hisotiral de gastos */
 
 Route::get('/historial', function () {
