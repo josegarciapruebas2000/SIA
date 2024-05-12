@@ -27,17 +27,21 @@
             <div class="col">
                 <label for="rol" class="form-label">Rol:</label>
                 <select class="form-control" name="role" id="role">
-                    <option value="Gerencia" {{ $usuario->role == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>
-                    <option value="Gerente de ventas" {{ $usuario->role == 'Gerente de ventas' ? 'selected' : '' }}>Gerente
-                        de ventas</option>
+                    <option value="Calidad" {{ $usuario->role == 'Calidad' ? 'selected' : '' }}>Calidad</option>
+                    <option value="Ciberseguridad" {{ $usuario->role == 'Ciberseguridad' ? 'selected' : '' }}>Ciberseguridad
+                    </option>
+                    <option value="Contador" {{ $usuario->role == 'Contador' ? 'selected' : '' }}>Contador</option>
                     <option value="Empleado" {{ $usuario->role == 'Empleado' ? 'selected' : '' }}>Empleado</option>
-                    <option value="Contadora" {{ $usuario->role == 'Contadora' ? 'selected' : '' }}>Contador</option>
+                    <option value="Gerencia" {{ $usuario->role == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>
+                    <option value="Gerente de Ventas" {{ $usuario->role == 'Gerente de Ventas' ? 'selected' : '' }}>Gerente
+                        de ventas</option>
+                    <option value="Gerente General" {{ $usuario->role == 'Gerente General' ? 'selected' : '' }}>Gerente
+                        General</option>
                     <option value="Recursos Humanos" {{ $usuario->role == 'Recursos Humanos' ? 'selected' : '' }}>Recursos
                         Humanos</option>
                     <option value="SuperAdmin" {{ $usuario->role == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>
                 </select>
             </div>
-
             <div class="col">
                 <label for="estado" class="form-label">Estado:</label>
                 <div class="form-check form-switch">

@@ -30,18 +30,29 @@
         <br>
         <div class="row mb-3">
             <div class="col">
-                <label for="role" class="form-label">Rol:</label>
-                <select class="form-control @error('role') is-invalid @enderror" name="role">
-                    <option value="">Seleccione una opción</option>
-                    <option value="Gerencia" {{ old('role') == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>
-                    <option value="Gerente de ventas" {{ old('role') == 'Gerente de ventas' ? 'selected' : '' }}>Gerente de
-                        ventas</option>
-                    <option value="Empleado" {{ old('role') == 'Empleado' ? 'selected' : '' }}>Empleado</option>
-                    <option value="Contadora" {{ old('role') == 'Contadora' ? 'selected' : '' }}>Contador</option>
-                    <option value="Recursos Humanos" {{ old('role') == 'Recursos Humanos' ? 'selected' : '' }}>Recursos
-                        Humanos</option>
-                    <option value="SuperAdmin" {{ old('role') == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>
-                </select>
+                <div class="mb-3">
+                    <label for="role" class="form-label">Rol:</label>
+                    <select class="form-control @error('role') is-invalid @enderror" name="role">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Calidad" {{ old('role') == 'Calidad' ? 'selected' : '' }}>Calidad</option>
+                        <option value="Ciberseguridad" {{ old('role') == 'Ciberseguridad' ? 'selected' : '' }}>
+                            Ciberseguridad</option>
+                        <option value="Contadora" {{ old('role') == 'Contadora' ? 'selected' : '' }}>Contador</option>
+                        <option value="Empleado" {{ old('role') == 'Empleado' ? 'selected' : '' }}>Empleado</option>
+                        <option value="Gerencia" {{ old('role') == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>
+                        <option value="Gerente de Ventas" {{ old('role') == 'Gerente de Ventas' ? 'selected' : '' }}>
+                            Gerente de Ventas</option>
+                        <option value="Gerente General" {{ old('role') == 'Gerente General' ? 'selected' : '' }}>Gerente
+                            General</option>
+                        <option value="Recursos Humanos" {{ old('role') == 'Recursos Humanos' ? 'selected' : '' }}>Recursos
+                            Humanos</option>
+                        <option value="SuperAdmin" {{ old('role') == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>
+                    </select>
+                    @error('role')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 @error('role')
                     <div class="invalid-feedback">
                         {{ $message }}
