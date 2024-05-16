@@ -131,7 +131,7 @@
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-start">
-                    <button type="submit" class="btn btn-primary" onclick="return validateForm()">
+                    <button type="button" class="btn btn-primary" onclick="validateAndSubmit()">
                         Guardar
                     </button>
                 </div>

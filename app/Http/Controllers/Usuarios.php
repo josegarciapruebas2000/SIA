@@ -182,6 +182,8 @@ class Usuarios extends Controller
             $usuario->password = Hash::make($request->input('password'));
         }
 
+        $usuario->nivel = $request->input('nivel') ?? 0;
+
         // Guarda los cambios en la base de datos
         $usuario->save();
 
