@@ -48,6 +48,7 @@
                             Humanos</option>
                         <option value="SuperAdmin" {{ old('role') == 'SuperAdmin' ? 'selected' : '' }}>SuperAdmin</option>
                     </select>
+                    </select>
                     @error('role')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -90,28 +91,47 @@
                 </div>
             </div>
         </div>
+        <br>
 
-        <div class="col">
-            <label for="revisor" class="form-label">Revisor:</label>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="revisorSwitch" name="revisorSwitch"
-                    onchange="changeRevisorLabelText()">
-                <label class="form-check-label btn btn-outline-secondary btn-sm" id="revisorSwitchLabel"
-                    for="revisorSwitch">No</label>
+        <div class="row mb-3">
+            <div class="col">
+                <label for="revisor" class="form-label">Revisor:</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="revisorSwitch" name="revisorSwitch"
+                        onchange="changeRevisorLabelText()">
+                    <label class="form-check-label btn btn-outline-secondary btn-sm" id="revisorSwitchLabel"
+                        for="revisorSwitch">No</label>
+                </div>
+            </div>
+
+            <div class="col" id="nivelRow" style="display: none;">
+                <label for="nivel" class="form-label">Nivel:</label>
+                <div class="input-group mb-3">
+                    <select class="form-select" id="nivel" name="nivel" aria-label="Nivel">
+                        <option value="">Selecciona un nivel</option>
+                        <option value="1">Nivel 1</option>
+                        <option value="2">Nivel 2</option>
+                        <option value="3">Nivel 3</option>
+                    </select>
+                    <div id="nivelError" class="invalid-feedback" style="display: none;">
+                        Por favor, selecciona un nivel si activas la opción de revisor.
+                    </div>
+                </div>
             </div>
         </div>
 
 
-        <br><br>
+        <br>
         <div class="row">
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-end mb-2 mb-sm-0">
-                    <button type="button" class="btn btn-outline-danger" onclick="window.history.back()">Cancelar</button>
+                    <button type="button" class="btn btn-outline-danger"
+                        onclick="window.history.back()">Cancelar</button>
                 </div>
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-start">
-                    <button type="submit" class="btn btn-primary" onclick="return validatePassword()">
+                    <button type="submit" class="btn btn-primary" onclick="return validateForm()">
                         Guardar
                     </button>
                 </div>
@@ -120,6 +140,25 @@
     </form>
 
     <script>
+        function validateForm() {
+            var revisorSwitch = document.getElementById('revisorSwitch');
+            var nivelSelect = document.getElementById('nivel');
+
+            // Si el interruptor del revisor está activado y no se ha seleccionado un nivel, muestra un mensaje de error
+            if (revisorSwitch.checked && nivelSelect.value === '') {
+                document.getElementById('nivelError').style.display = 'block';
+                return false; // Evitar que se envíe el formulario
+            }
+
+            // Oculta el mensaje de error si se selecciona un nivel
+            document.getElementById('nivelError').style.display = 'none';
+
+            // Aquí puedes agregar más validaciones si las necesitas
+
+            // Retorna true para enviar el formulario
+            return true;
+        }
+
         function changeLabelText() {
             var switchLabel = document.getElementById('switchLabel');
             var switchInput = document.getElementById('flexSwitchCheckDefault');
@@ -149,10 +188,15 @@
         function changeRevisorLabelText() {
             var revisorSwitchLabel = document.getElementById('revisorSwitchLabel');
             var revisorSwitch = document.getElementById('revisorSwitch');
+            var nivelRow = document.getElementById('nivelRow');
             if (revisorSwitch.checked) {
                 revisorSwitchLabel.innerText = 'Sí';
+                nivelRow.style.display = 'block';
+                document.getElementById('nivel').disabled = false;
             } else {
                 revisorSwitchLabel.innerText = 'No';
+                nivelRow.style.display = 'none';
+                document.getElementById('nivel').disabled = true;
             }
         }
     </script>

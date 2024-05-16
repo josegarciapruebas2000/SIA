@@ -94,35 +94,39 @@
                 </thead>
 
                 <tbody>
-                    <!-- Iteración sobre los proyectos -->
-                    @foreach ($proyectos as $proyecto)
-                        <tr @if ($proyecto->status == 0) class="table-danger" @endif>
-                            <td class="text-center align-middle">{{ $proyecto->idProy }}</td>
-                            <td class="text-center align-middle">{{ $proyecto->nombreProy }}</td>
-                            <td class="text-center align-middle">{{ $proyecto->montoProy }}</td>
-                            <td class="text-center align-middle">{{ $proyecto->monedaProy }}</td>
-                            <td class="text-center align-middle">{{ $proyecto->fechaInicio }}</td>
-                            <td class="text-center align-middle">{{ $proyecto->fechaFin }}</td>
-                            <td class="text-center align-middle">{{ $proyecto->cliente->nombre }}</td>
-                            <td class="text-center align-middle"> <!-- Alineación vertical -->
-                                @if ($proyecto->status == 1)
-                                    <a href="{{ route('proyectos.toggleStatus', ['id' => $proyecto->idProy]) }}"
-                                        class="btn btn-outline-secondary">Deshabilitar</a>
-                                @else
-                                    <a href="{{ route('proyectos.toggleStatus', ['id' => $proyecto->idProy]) }}"
-                                        class="btn btn-outline-success">Habilitar</a>
-                                @endif
-                                <button type="button" class="btn btn-outline-warning btn-sm mx-1 btn-editar"
-                                    data-bs-toggle="modal" data-bs-target="#editarModal{{ $proyecto->idProy }}"
-                                    data-proyecto-id="{{ $proyecto->idProy }}">Editar</button>
-                                <a href="{{ route('proyectos.eliminar', ['id' => $proyecto->idProy]) }}"
-                                    class="btn btn-outline-danger btn-sm mx-1">Eliminar</a>
-                            </td>
+                    @if ($proyectos->isEmpty())
+                        <tr>
+                            <td colspan="8" class="text-center">No hay datos disponibles.</td>
                         </tr>
-                    @endforeach
+                    @else
+                        <!-- Iteración sobre los proyectos -->
+                        @foreach ($proyectos as $proyecto)
+                            <tr @if ($proyecto->status == 0) class="table-danger" @endif>
+                                <td class="text-center align-middle">{{ $proyecto->idProy }}</td>
+                                <td class="text-center align-middle">{{ $proyecto->nombreProy }}</td>
+                                <td class="text-center align-middle">{{ $proyecto->montoProy }}</td>
+                                <td class="text-center align-middle">{{ $proyecto->monedaProy }}</td>
+                                <td class="text-center align-middle">{{ $proyecto->fechaInicio }}</td>
+                                <td class="text-center align-middle">{{ $proyecto->fechaFin }}</td>
+                                <td class="text-center align-middle">{{ $proyecto->cliente->nombre }}</td>
+                                <td class="text-center align-middle"> <!-- Alineación vertical -->
+                                    @if ($proyecto->status == 1)
+                                        <a href="{{ route('proyectos.toggleStatus', ['id' => $proyecto->idProy]) }}"
+                                            class="btn btn-outline-secondary">Deshabilitar</a>
+                                    @else
+                                        <a href="{{ route('proyectos.toggleStatus', ['id' => $proyecto->idProy]) }}"
+                                            class="btn btn-outline-success">Habilitar</a>
+                                    @endif
+                                    <button type="button" class="btn btn-outline-warning btn-sm mx-1 btn-editar"
+                                        data-bs-toggle="modal" data-bs-target="#editarModal{{ $proyecto->idProy }}"
+                                        data-proyecto-id="{{ $proyecto->idProy }}">Editar</button>
+                                    <a href="{{ route('proyectos.eliminar', ['id' => $proyecto->idProy]) }}"
+                                        class="btn btn-outline-danger btn-sm mx-1">Eliminar</a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
-
-
             </table>
         </div>
     </form>

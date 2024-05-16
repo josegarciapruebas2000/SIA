@@ -90,37 +90,43 @@
                 </thead>
 
                 <tbody>
-                    <!-- Iteración sobre los clientes -->
-                    @foreach ($clientes as $cliente)
-                        @php
-                            // Verificar si el cliente tiene proyectos asociados
-                            $proyectosAsociados = App\Models\Proyecto::where(
-                                'idClienteProy',
-                                $cliente->idCliente,
-                            )->exists();
-                        @endphp
-                        <tr @if ($cliente->status == 0) class="table-danger" @endif>
-                            <td class="text-center align-middle">{{ $cliente->idCliente }}</td>
-                            <td class="text-center align-middle">{{ $cliente->nombre }}</td>
-                            <td class="text-center align-middle">{{ $cliente->CategoriaCliente }}</td>
-                            <td class="text-center align-middle"> <!-- Alineación vertical -->
-                                @if ($cliente->status == 1)
-                                    <a href="{{ route('clientes.toggleStatus', ['id' => $cliente->idCliente]) }}"
-                                        class="btn btn-outline-secondary">Deshabilitar</a>
-                                @else
-                                    <a href="{{ route('clientes.toggleStatus', ['id' => $cliente->idCliente]) }}"
-                                        class="btn btn-outline-success">Habilitar</a>
-                                @endif
-                                <button type="button" class="btn btn-outline-warning btn-sm mx-1 btn-editar"
-                                    data-bs-toggle="modal" data-bs-target="#editarModal{{ $cliente->idCliente }}"
-                                    data-cliente-id="{{ $cliente->idCliente }}">Editar</button>
-                                @unless ($proyectosAsociados)
-                                    <a href="{{ route('eliminar.cliente', ['id' => $cliente->idCliente]) }}"
-                                        class="btn btn-outline-danger btn-sm mx-1">Eliminar</a>
-                                @endunless
-                            </td>
+                    @if ($clientes->isEmpty())
+                        <tr>
+                            <td colspan="8" class="text-center">No hay datos disponibles.</td>
                         </tr>
-                    @endforeach
+                    @else
+                        <!-- Iteración sobre los clientes -->
+                        @foreach ($clientes as $cliente)
+                            @php
+                                // Verificar si el cliente tiene proyectos asociados
+                                $proyectosAsociados = App\Models\Proyecto::where(
+                                    'idClienteProy',
+                                    $cliente->idCliente,
+                                )->exists();
+                            @endphp
+                            <tr @if ($cliente->status == 0) class="table-danger" @endif>
+                                <td class="text-center align-middle">{{ $cliente->idCliente }}</td>
+                                <td class="text-center align-middle">{{ $cliente->nombre }}</td>
+                                <td class="text-center align-middle">{{ $cliente->CategoriaCliente }}</td>
+                                <td class="text-center align-middle"> <!-- Alineación vertical -->
+                                    @if ($cliente->status == 1)
+                                        <a href="{{ route('clientes.toggleStatus', ['id' => $cliente->idCliente]) }}"
+                                            class="btn btn-outline-secondary">Deshabilitar</a>
+                                    @else
+                                        <a href="{{ route('clientes.toggleStatus', ['id' => $cliente->idCliente]) }}"
+                                            class="btn btn-outline-success">Habilitar</a>
+                                    @endif
+                                    <button type="button" class="btn btn-outline-warning btn-sm mx-1 btn-editar"
+                                        data-bs-toggle="modal" data-bs-target="#editarModal{{ $cliente->idCliente }}"
+                                        data-cliente-id="{{ $cliente->idCliente }}">Editar</button>
+                                    @unless ($proyectosAsociados)
+                                        <a href="{{ route('eliminar.cliente', ['id' => $cliente->idCliente]) }}"
+                                            class="btn btn-outline-danger btn-sm mx-1">Eliminar</a>
+                                    @endunless
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
 
 

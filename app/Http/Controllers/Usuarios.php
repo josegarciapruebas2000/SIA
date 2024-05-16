@@ -11,38 +11,38 @@ use Illuminate\Support\Facades\Hash;
 class Usuarios extends Controller
 {
     public function listaUsuarios(Request $request)
-{
-    // Obtener el ID del usuario que inició sesión
-    $userId = Auth::id();
+    {
+        // Obtener el ID del usuario que inició sesión
+        $userId = Auth::id();
 
-    // Obtener el término de búsqueda del formulario
-    $searchTerm = $request->input('search');
+        // Obtener el término de búsqueda del formulario
+        $searchTerm = $request->input('search');
 
-    // Obtener el filtro seleccionado
-    $filter = $request->input('filter');
+        // Obtener el filtro seleccionado
+        $filter = $request->input('filter');
 
-    // Consulta de búsqueda con cláusula OR para buscar en múltiples columnas
-    $users = User::where('id', '!=', $userId)
-        ->where(function ($query) use ($searchTerm) {
-            $query->where('id', 'like', "%$searchTerm%")
-                ->orWhere('name', 'like', "%$searchTerm%")
-                ->orWhere('email', 'like', "%$searchTerm%");
-        });
+        // Consulta de búsqueda con cláusula OR para buscar en múltiples columnas
+        $users = User::where('id', '!=', $userId)
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('id', 'like', "%$searchTerm%")
+                    ->orWhere('name', 'like', "%$searchTerm%")
+                    ->orWhere('email', 'like', "%$searchTerm%");
+            });
 
-    // Aplicar filtro según la opción seleccionada
-    if ($filter == 'activos') {
-        $users->where('status', 1);
-    } elseif ($filter == 'inactivos') {
-        $users->where('status', 0);
-    } elseif ($filter == 'revisores') {
-        $users->where('revisor', 1);
+        // Aplicar filtro según la opción seleccionada
+        if ($filter == 'activos') {
+            $users->where('status', 1);
+        } elseif ($filter == 'inactivos') {
+            $users->where('status', 0);
+        } elseif ($filter == 'revisores') {
+            $users->where('revisor', 1);
+        }
+
+        $users = $users->orderBy('id', 'desc')->paginate(5);
+
+        // Pasar la lista de usuarios a la vista
+        return view('dashboard.usuarios.usuarios', compact('users'));
     }
-
-    $users = $users->orderBy('id', 'desc')->paginate(5);
-
-    // Pasar la lista de usuarios a la vista
-    return view('dashboard.usuarios.usuarios', compact('users'));
-}
 
 
 
@@ -89,7 +89,18 @@ class Usuarios extends Controller
 
         // Determinar si es revisor
         $revisor = $request->has('revisorSwitch') ? 1 : 0;
+
+        // Si el valor de revisor no se recibe en la solicitud, establecerlo en 0
+        if ($revisor === 0) {
+            $revisor = 0;
+        }
+
         $user->revisor = $revisor;
+
+        // Determinar el nivel
+        $nivel = $request->filled('nivel') ? $request->input('nivel') : 0;
+
+        $user->nivel = $nivel;
 
         $user->password = Hash::make($request->input('password'));
         $user->role = $request->input('role');
@@ -98,6 +109,7 @@ class Usuarios extends Controller
         // Redirigir a alguna vista o ruta después de guardar el usuario
         return redirect()->route('usuarios.lista')->with('success', 'Usuario creado exitosamente');
     }
+
 
 
 

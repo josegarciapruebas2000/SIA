@@ -141,41 +141,49 @@
                 </thead>
 
                 <tbody>
-                    <!-- Iteración sobre los proyectos -->
-                    @foreach ($empleados as $empleado)
-                        <tr @if ($empleado->status == 0) class="table-danger" @endif>
-                            <td class="text-center align-middle">{{ $empleado->id_Emp }}</td>
-                            <td class="text-center align-middle"> {{ $empleado->nombre_Emp }}
-                                {{ $empleado->app_paterno_Emp }} {{ $empleado->app_materno_Emp }}</td>
-                            <td class="text-center align-middle">{{ $empleado->puesto_Emp }}</td>
-                            <td class="text-center align-middle"> <!-- Alineación vertical -->
-                                @if ($empleado->status == 1)
-                                    <a href="{{ route('empleados.toggleStatus', ['id' => $empleado->id_Emp]) }}"
-                                        class="btn btn-outline-secondary">Deshabilitar</a>
-                                @else
-                                    <a href="{{ route('empleados.toggleStatus', ['id' => $empleado->id_Emp]) }}"
-                                        class="btn btn-outline-success">Habilitar</a>
-                                @endif
-
-                                <a style="text-decoration: none;"
-                                    href="{{ route('cargar.empleado', ['id' => $empleado->id_Emp]) }}">
-                                    <button type="button" class="btn btn-outline-warning mx-1 btn-editar">Editar</button>
-                                </a>
-
-                                <a href="{{ route('documentos.empleado', ['id' => $empleado->id_Emp]) }}"
-                                    class="icon-button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24"
-                                        height="24">
-                                        <path
-                                            d="M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z" />
-                                    </svg>
-                                </a>
-
-
-
-                            </td>
+                    <!-- Iteración sobre los usuarios o mensaje de no hay datos -->
+                    @if ($empleados->isEmpty())
+                        <tr>
+                            <td colspan="6" class="text-center">No hay datos disponibles.</td>
                         </tr>
-                    @endforeach
+                    @else
+                        <!-- Iteración sobre los proyectos -->
+                        @foreach ($empleados as $empleado)
+                            <tr @if ($empleado->status == 0) class="table-danger" @endif>
+                                <td class="text-center align-middle">{{ $empleado->id_Emp }}</td>
+                                <td class="text-center align-middle"> {{ $empleado->nombre_Emp }}
+                                    {{ $empleado->app_paterno_Emp }} {{ $empleado->app_materno_Emp }}</td>
+                                <td class="text-center align-middle">{{ $empleado->puesto_Emp }}</td>
+                                <td class="text-center align-middle"> <!-- Alineación vertical -->
+                                    @if ($empleado->status == 1)
+                                        <a href="{{ route('empleados.toggleStatus', ['id' => $empleado->id_Emp]) }}"
+                                            class="btn btn-outline-secondary">Deshabilitar</a>
+                                    @else
+                                        <a href="{{ route('empleados.toggleStatus', ['id' => $empleado->id_Emp]) }}"
+                                            class="btn btn-outline-success">Habilitar</a>
+                                    @endif
+
+                                    <a style="text-decoration: none;"
+                                        href="{{ route('cargar.empleado', ['id' => $empleado->id_Emp]) }}">
+                                        <button type="button"
+                                            class="btn btn-outline-warning mx-1 btn-editar">Editar</button>
+                                    </a>
+
+                                    <a href="{{ route('documentos.empleado', ['id' => $empleado->id_Emp]) }}"
+                                        class="icon-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24"
+                                            height="24">
+                                            <path
+                                                d="M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z" />
+                                        </svg>
+                                    </a>
+
+
+
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
 
 
