@@ -21,12 +21,18 @@ class SolicitudController extends Controller
             $query->where('idUsuario', $user->id);
         })->where('status', 1)->get();
 
-        // Obtener los revisores activos
-        $revisores = User::where('revisor', '1')->where('status', 1)->get();
+        // Determinar el nivel de revisores a mostrar basado en el nivel del usuario autenticado
+        $nivelRevisor = $user->nivel + 1;
 
+        // Obtener los revisores activos según el nivel del usuario autenticado
+        $revisores = User::where('revisor', '1')
+            ->where('status', 1)
+            ->where('nivel', $nivelRevisor)
+            ->get();
 
         return view('gastos.viaticos.solicitud', compact('proyectos', 'revisores'));
     }
+
 
     public function guardarSolicitud(Request $request)
     {
