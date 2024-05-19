@@ -7,14 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class SolicitudViaticos extends Model
 {
+    use HasFactory;
 
-    protected $table = 'solicitudViaticos'; // Aquí especifica el nombre de tu tabla correctamente
-
+    protected $table = 'solicitudviaticos'; // Asegúrate de que el nombre de la tabla sea correcto
     protected $primaryKey = 'FOLIO_via';
     public $timestamps = false;
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function proyecto()
+    {
+        return $this->belongsTo(Proyecto::class, 'idProy_via', 'idProy');
     }
 }

@@ -104,6 +104,8 @@ class Usuarios extends Controller
 
         $user->password = Hash::make($request->input('password'));
         $user->role = $request->input('role');
+
+
         $user->save();
 
         // Redirigir a alguna vista o ruta después de guardar el usuario

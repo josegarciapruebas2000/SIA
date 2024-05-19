@@ -149,11 +149,11 @@ Route::get('/documentos/empleado/{id}/descargar/{tipo}', [EmpleadoController::cl
 
 Route::get('/solicitud', [SolicitudController::class, 'solicitud'])
     ->name('solicitud')
-    ->middleware('role:SuperAdmin,Administrador,Empleado');
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contadora,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 Route::post('/guardar-solicitud', [SolicitudController::class, 'guardarSolicitud'])
     ->name('guardar.solicitud')
-    ->middleware('role:SuperAdmin,Administrador,Empleado');
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contadora,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 /*Route::get('/solicitud', function () {
     return view('gastos/viaticos/solicitud');
@@ -164,9 +164,7 @@ Route::post('/guardar-solicitud', [SolicitudController::class, 'guardarSolicitud
 
 /* Autorización */
 
-Route::get('/autorizar', function () {
-    return view('gastos/viaticos/autorizar');
-})->name('autorizar');
+Route::get('/autorizar', [SolicitudController::class, 'autorizarVerSolicitudes'])->name('autorizar');
 
 Route::get('/autorizarViatico', function () {
     return view('gastos/viaticos/autorizarViatico');

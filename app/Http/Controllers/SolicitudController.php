@@ -16,22 +16,29 @@ class SolicitudController extends Controller
         // Obtener el usuario autenticado
         $user = Auth::user();
 
-        // Obtener los proyectos asociados al usuario autenticado
-        $proyectos = Proyecto::whereHas('usuarios', function ($query) use ($user) {
-            $query->where('idUsuario', $user->id);
-        })->where('status', 1)->get();
+        // Si el usuario es SuperAdmin, obtener todos los proyectos y todos los revisores
+        if ($user->role === 'SuperAdmin') {
+            $proyectos = Proyecto::where('status', 1)->get();
+            $revisores = User::where('revisor', '1')->where('status', 1)->get();
+        } else {
+            // Obtener los proyectos asociados al usuario autenticado
+            $proyectos = Proyecto::whereHas('usuarios', function ($query) use ($user) {
+                $query->where('idUsuario', $user->id);
+            })->where('status', 1)->get();
 
-        // Determinar el nivel de revisores a mostrar basado en el nivel del usuario autenticado
-        $nivelRevisor = $user->nivel + 1;
+            // Determinar el nivel de revisores a mostrar basado en el nivel del usuario autenticado
+            $nivelRevisor = $user->nivel + 1;
 
-        // Obtener los revisores activos según el nivel del usuario autenticado
-        $revisores = User::where('revisor', '1')
-            ->where('status', 1)
-            ->where('nivel', $nivelRevisor)
-            ->get();
+            // Obtener los revisores activos según el nivel del usuario autenticado
+            $revisores = User::where('revisor', '1')
+                ->where('status', 1)
+                ->where('nivel', $nivelRevisor)
+                ->get();
+        }
 
         return view('gastos.viaticos.solicitud', compact('proyectos', 'revisores'));
     }
+
 
 
     public function guardarSolicitud(Request $request)
@@ -63,5 +70,24 @@ class SolicitudController extends Controller
 
         // Redirigir al dashboard con el mensaje de éxito
         return redirect()->route('dashboard')->with(['showConfirmationModal' => true, 'success' => '¡Tu solicitud ha sido enviada con éxito!']);
+    }
+
+    public function autorizarVerSolicitudes()
+    {
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Si el usuario es SuperAdmin, obtener todas las solicitudes
+        if ($user->role === 'SuperAdmin') {
+            $solicitudes = SolicitudViaticos::with('proyecto')->get();
+        } else {
+            // Obtener las solicitudes de viáticos asociadas al usuario autenticado como revisor
+            $solicitudes = SolicitudViaticos::with('proyecto')
+                ->where('revisor_id', $user->id)
+                ->get();
+        }
+
+        // Pasar las solicitudes a la vista
+        return view('gastos.viaticos.autorizar', compact('solicitudes'));
     }
 }

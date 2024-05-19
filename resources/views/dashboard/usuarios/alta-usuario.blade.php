@@ -131,7 +131,7 @@
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-start">
-                    <button type="button" class="btn btn-primary" onclick="validateAndSubmit()">
+                    <button type="submit" class="btn btn-primary">
                         Guardar
                     </button>
                 </div>
@@ -143,6 +143,19 @@
         function validateForm() {
             var revisorSwitch = document.getElementById('revisorSwitch');
             var nivelSelect = document.getElementById('nivel');
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirm_password').value;
+            var passwordError = document.getElementById('passwordError');
+
+            // Reinicia los mensajes de error
+            passwordError.style.display = 'none';
+            document.getElementById('nivelError').style.display = 'none';
+
+            // Validar las contraseñas
+            if (password.length < 8 || password !== confirmPassword) {
+                passwordError.style.display = 'block';
+                return false; // Evitar que se envíe el formulario
+            }
 
             // Si el interruptor del revisor está activado y no se ha seleccionado un nivel, muestra un mensaje de error
             if (revisorSwitch.checked && nivelSelect.value === '') {
@@ -150,14 +163,13 @@
                 return false; // Evitar que se envíe el formulario
             }
 
-            // Oculta el mensaje de error si se selecciona un nivel
-            document.getElementById('nivelError').style.display = 'none';
-
             // Aquí puedes agregar más validaciones si las necesitas
 
-            // Retorna true para enviar el formulario
+            // Retorna true para enviar el formulario si todas las validaciones pasan
             return true;
         }
+
+
 
         function changeLabelText() {
             var switchLabel = document.getElementById('switchLabel');
@@ -168,20 +180,6 @@
             } else {
                 switchLabel.innerText = 'Deshabilitado';
                 switchInput.value = 0; // Si está deshabilitado, establece el valor en 0
-            }
-        }
-
-        function validatePassword() {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm_password').value;
-            const passwordError = document.getElementById('passwordError');
-
-            if (password.length < 8 || password !== confirmPassword) {
-                passwordError.style.display = 'block';
-                return false; // Evitar que se envíe el formulario
-            } else {
-                passwordError.style.display = 'none';
-                return true; // Permitir el envío del formulario
             }
         }
 
