@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Proyecto;
 use App\Models\User;
 use App\Models\SolicitudViaticos;
+use App\Models\ComentarioRevisor;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,8 +68,6 @@ class SolicitudController extends Controller
         $solicitud->revisor_id = $request->input('revisor');
         $solicitud->total_via = $request->input('total_via'); // Asignar el valor del campo total_via
         $solicitud->user_id = $user_id; // Asignar el ID del usuario autenticado
-        $solicitud->comentarioRevisor = null; // Asignar el ID del usuario autenticado
-        $solicitud->fechaRevisor = null; // Asignar el ID del usuario autenticado
         $solicitud->save();
 
         // Redirigir al dashboard con el mensaje de éxito
@@ -106,12 +106,12 @@ class SolicitudController extends Controller
             return redirect()->route('error.403');
         }
 
+        $comentarios = ComentarioRevisor::all();
+
         // Pasar la solicitud y sus relaciones a la vista
-        return view('gastos.viaticos.autorizarViatico', compact('solicitud'));
+        return view('gastos.viaticos.autorizarViatico', compact('solicitud','comentarios'));
     }
 
 
-    public function agregarComentarioRevisor() {
-        
-    }
+    
 }

@@ -61,15 +61,19 @@
     <div style="border: 2px solid #2e2d2d92; padding: 20px; margin: 20px; border-radius: 8px;">
         <h4 style="text-align: inherit"><strong>Solicitud de viaticos</strong></h4>
         <br>
-        <form class="centered-form">
+        <div class="centered-form">
             <div class="row mb-3">
                 <div class="col">
+                    <label for="grupo" class="form-label"><strong>Folio:</strong>
+                        {{ $solicitud->FOLIO_via }}</label>
+                    <br>
                     <label for="grupo" class="form-label"><strong>Proyecto:</strong>
                         {{ $solicitud->proyecto->nombreProy }}</label>
                     <br>
                     <label for="grupo" class="form-label"><strong>Usuario:</strong> {{ $solicitud->user->name }}</label>
                     <br>
-                    <label for="grupo" class="form-label"><strong>Comentario:</strong> {{ $solicitud->comentario_via }}</label>
+                    <label for="grupo" class="form-label"><strong>Comentario:</strong>
+                        {{ $solicitud->comentario_via }}</label>
                     <br>
                     <label for="grupo" class="form-label"><strong>Periodo:</strong> {{ $solicitud->solicitudfecha_via }}
                         <strong>-</strong> {{ $solicitud->solFinalFecha_via }}</label>
@@ -77,17 +81,25 @@
             </div>
 
             <div class="row mb-2">
-                <label for="tutor" class="form-label"><strong>Comentario de revisor:</strong></label>
-                <div class="col">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="comentario" name="comentario" placeholder="Ingrese un comentario antes de aceptar o rechazar" required>
-                        <button type="button" class="btn btn-primary d-block d-sm-inline-block" id="btnAgregar">Agregar</button>
+                <form action="{{ route('comentarios_revisor.agregar') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="idRevisor" value="{{ auth()->user()->id }}">
+                    <!-- Verifica que auth()->user()->idRevisor está disponible -->
+                    <input type="hidden" name="folioSoli" value="{{ $solicitud->FOLIO_via }}">
+                    <!-- Verifica que $solicitud->FOLIO_via está disponible -->
+                    <label for="comentarioRevisor" class="form-label"><strong>Comentario de revisor:</strong></label>
+                    <div class="col">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="comentarioRevisor" name="comentario"
+                                placeholder="Ingrese un comentario antes de aceptar o rechazar" required>
+                            <button type="submit" class="btn btn-primary d-block d-sm-inline-block">Agregar</button>
+                        </div>
                     </div>
-                </div>                
-
+                    <br>
+                </form>
                 <div class="col">
                     <div class="d-flex justify-content-center justify-content-sm-end align-items-center">
-                        <button type="submit" class="btn btn-primary me-2" data-bs-toggle="modal"
+                        <button type="button    " class="btn btn-primary me-2" data-bs-toggle="modal"
                             data-bs-target="#exampleModal">
                             <!-- Icono SVG con clase de tamaño y color blanco -->
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="bi me-2" width="24"
@@ -108,7 +120,7 @@
             <br>
 
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped text-center align-middle">
                     <thead class="table-header">
                         <tr>
                             <th scope="col" style="background-color: #4772C6; color: white; border-radius: 8px 0 0 0;">
@@ -120,30 +132,28 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if ($comentarios->isEmpty())
                         <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                            <td colspan="4">No hay datos disponibles.</td>
                         </tr>
+                        @else
+                        @foreach ($comentarios as $comentario)
                         <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
+                            <td>{{ $comentario->revisor->name }}</td>
+                            <td>{{ $comentario->revisor->nivel }}</td>
+                            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">{{ $comentario->comentario }}</td>
+                            <td>{{ date('d/m/Y', strtotime($comentario->fecha_hora)) }}
+                                ({{ date('H:i', strtotime($comentario->fecha_hora)) }})
+                            </td>
                         </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>Larry</td>
-                            <td>the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
+                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
+            
 
 
-
-        </form>
+        </div>
     </div>
 @endsection

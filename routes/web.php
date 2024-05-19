@@ -8,6 +8,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\SolicitudController;
+use App\Http\Controllers\ComentarioRevisorController;
 use App\Http\Middleware\CheckRole;
 use App\Models\Empleado;
 
@@ -169,6 +170,9 @@ Route::get('/autorizar', [SolicitudController::class, 'autorizarVerSolicitudes']
 
 Route::get('/autorizarViatico/{id}', [SolicitudController::class, 'revisarAutorizacionSolicitud'])->name('revisarAutorizacionSolicitud')
     ->middleware('nivelOrole:1,2,3,SuperAdmin');
+
+
+Route::post('/comentarios_revisor', [ComentarioRevisorController::class, 'agregarComentarioRevisor'])->name('comentarios_revisor.agregar');
 
 
 
