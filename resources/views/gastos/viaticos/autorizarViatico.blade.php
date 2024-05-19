@@ -104,9 +104,9 @@
             <table class="table table-striped">
                 <thead class="table-header">
                     <tr>
-                        <th scope="col" style="background-color: #4772C6; color: white; border-radius: 8px 0 0 0;">ID
+                        <th scope="col" style="background-color: #4772C6; color: white; border-radius: 8px 0 0 0;">Revisor
                         </th>
-                        <th scope="col" style="background-color: #4772C6; color: white;">Revisor</th>
+                        <th scope="col" style="background-color: #4772C6; color: white;">Nivel</th>
                         <th scope="col" style="background-color: #4772C6; color: white;">Comentario</th>
                         <th scope="col" style="background-color: #4772C6; color: white; border-radius: 0 8px 0 0;">Fecha
                             y hora</th>
