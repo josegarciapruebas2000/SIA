@@ -66,6 +66,8 @@ class SolicitudController extends Controller
         $solicitud->revisor_id = $request->input('revisor');
         $solicitud->total_via = $request->input('total_via'); // Asignar el valor del campo total_via
         $solicitud->user_id = $user_id; // Asignar el ID del usuario autenticado
+        $solicitud->comentarioRevisor = null; // Asignar el ID del usuario autenticado
+        $solicitud->fechaRevisor = null; // Asignar el ID del usuario autenticado
         $solicitud->save();
 
         // Redirigir al dashboard con el mensaje de éxito
@@ -89,5 +91,27 @@ class SolicitudController extends Controller
 
         // Pasar las solicitudes a la vista
         return view('gastos.viaticos.autorizar', compact('solicitudes'));
+    }
+
+    public function revisarAutorizacionSolicitud($id)
+    {
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Obtener la solicitud especificada por ID
+        $solicitud = SolicitudViaticos::with('proyecto', 'user')->findOrFail($id);
+
+        // Verificar si el usuario tiene permiso para ver la solicitud
+        if ($user->role !== 'SuperAdmin' && $solicitud->revisor_id !== $user->id) {
+            return redirect()->route('error.403');
+        }
+
+        // Pasar la solicitud y sus relaciones a la vista
+        return view('gastos.viaticos.autorizarViatico', compact('solicitud'));
+    }
+
+
+    public function agregarComentarioRevisor() {
+        
     }
 }

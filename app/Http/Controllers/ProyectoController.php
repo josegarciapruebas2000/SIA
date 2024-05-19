@@ -38,8 +38,10 @@ class ProyectoController extends Controller
         // Obtener todos los clientes disponibles
         $clientes = Cliente::all();
 
-        // Obtener solo los usuarios con status 1
-        $usuarios = User::where('status', 1)->get();
+        // Obtener solo los usuarios que no tengan el rol de SuperAdmin y con status 1
+        $usuarios = User::where('status', 1)
+            ->where('role', '!=', 'SuperAdmin')
+            ->get();
 
         //Obtener lista de la tabla pivote proyecto_usuario
         $pivotes = ProyectoUsuario::all();

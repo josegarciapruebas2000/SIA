@@ -167,10 +167,11 @@ Route::post('/guardar-solicitud', [SolicitudController::class, 'guardarSolicitud
 Route::get('/autorizar', [SolicitudController::class, 'autorizarVerSolicitudes'])->name('autorizar')
     ->middleware('nivelOrole:1,2,3,SuperAdmin');
 
+Route::get('/autorizarViatico/{id}', [SolicitudController::class, 'revisarAutorizacionSolicitud'])->name('revisarAutorizacionSolicitud')
+    ->middleware('nivelOrole:1,2,3,SuperAdmin');
 
-Route::get('/autorizarViatico', function () {
-    return view('gastos/viaticos/autorizarViatico');
-})->name('autorizarViatico');
+
+
 
 Route::get('/autorizarComprobacion', function () {
     return view('gastos/viaticos/autorizarComprobacion');

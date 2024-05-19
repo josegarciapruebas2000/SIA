@@ -58,18 +58,23 @@
     <h2 style="text-align: center">Autorización - Resumen</h2>
     <br><br>
     <div class="container">
-        <div class="btn-group" role="group" aria-label="Filter Options">
-            <button type="button" class="btn btn-outline-primary filter-btn active custom-color"
-                data-target="solicitud">Solicitud</button>
-            <button type="button" class="btn btn-outline-primary filter-btn custom-color"
-                data-target="comprobacion">Comprobación</button>
-            <button type="button" class="btn btn-outline-primary filter-btn custom-color"
-                data-target="reposicion">Reposición</button>
+        <div class="row">
+            <div class="col-12">
+                <div class="btn-group d-flex flex-wrap" role="group" aria-label="Filter Options">
+                    <button type="button" class="btn btn-outline-primary filter-btn active custom-color flex-fill mb-2"
+                        data-target="solicitud">Solicitud</button>
+                    <button type="button" class="btn btn-outline-primary filter-btn custom-color flex-fill mb-2"
+                        data-target="comprobacion">Comprobación</button>
+                    <button type="button" class="btn btn-outline-primary filter-btn custom-color flex-fill mb-2"
+                        data-target="reposicion">Reposición</button>
+                </div>
+            </div>
         </div>
     </div>
+
     <br>
 
-    <div class="table-container active-table" id="solicitud-table">
+    <div class="table-responsive table-container active-table" id="solicitud-table">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -81,29 +86,38 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($solicitudes as $solicitud)
+                <!-- Iteración sobre los usuarios o mensaje de no hay datos -->
+                @if ($solicitudes->isEmpty())
                     <tr>
-                        <td scope="row">{{ $solicitud->nombreSolicitud }}</td>
-                        <td>{{ $solicitud->proyecto->nombreProy }}</td>
-                        <td>{{ $solicitud->total_via }}</td>
-                        <td>{{ $solicitud->solicitudfecha_via }} - {{ $solicitud->solFinalFecha_via }}</td>
-                        <td>
-                            <a style="text-decoration: none;" href="{{ route('autorizarViatico') }}">
-                                <button type="button" class="btn btn-lg btn-primary" disabled>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24"
-                                        height="24">
-                                        <path fill="#ffffff"
-                                            d="M216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                    </svg>
-                                </button>
-                            </a>
-                            <button type="button" class="btn btn-success">3/3</button>
-                        </td>
+                        <td colspan="6" class="text-center">No hay datos disponibles.</td>
                     </tr>
-                @endforeach
+                @else
+                    @foreach ($solicitudes as $solicitud)
+                        <tr>
+                            <td scope="row">{{ $solicitud->nombreSolicitud }}</td>
+                            <td>{{ $solicitud->proyecto->nombreProy }}</td>
+                            <td>{{ $solicitud->total_via }}</td>
+                            <td>{{ $solicitud->solicitudfecha_via }} - {{ $solicitud->solFinalFecha_via }}</td>
+                            <td>
+                                <a style="text-decoration: none;"
+                                    href="{{ route('revisarAutorizacionSolicitud', ['id' => $solicitud->FOLIO_via]) }}">
+                                    <button type="button" class="btn btn-lg btn-primary" disabled>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24"
+                                            height="24">
+                                            <path fill="#ffffff"
+                                                d="M216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+                                        </svg>
+                                    </button>
+                                </a>
+                                <button type="button" class="btn btn-success">3/3</button>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
     </div>
+
 
 
 
