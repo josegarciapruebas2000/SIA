@@ -89,8 +89,11 @@ class SolicitudController extends Controller
                 ->get();
         }
 
-        // Pasar las solicitudes a la vista
-        return view('gastos.viaticos.autorizar', compact('solicitudes'));
+        // Calcular la suma de total_via
+        $totalSum = $solicitudes->sum('total_via');
+
+        // Pasar las solicitudes y la suma total a la vista
+        return view('gastos.viaticos.autorizar', compact('solicitudes', 'totalSum'));
     }
 
     public function revisarAutorizacionSolicitud($id)
@@ -109,9 +112,6 @@ class SolicitudController extends Controller
         $comentarios = ComentarioRevisor::all();
 
         // Pasar la solicitud y sus relaciones a la vista
-        return view('gastos.viaticos.autorizarViatico', compact('solicitud','comentarios'));
+        return view('gastos.viaticos.autorizarViatico', compact('solicitud', 'comentarios'));
     }
-
-
-    
 }

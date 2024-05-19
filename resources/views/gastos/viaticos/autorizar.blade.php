@@ -95,17 +95,14 @@
                     @foreach ($solicitudes as $solicitud)
                         <tr>
                             <td scope="row">{{ $solicitud->nombreSolicitud }}</td>
-                            <td>{{ $solicitud->proyecto->nombreProy }}</td>
-                            <td>{{ $solicitud->total_via }}</td>
+                            <td>{{ $solicitud->user->name }}</td>
+                            <td>$ {{ number_format($solicitud->total_via, 2) }}</td>
                             <td>{{ $solicitud->solicitudfecha_via }} - {{ $solicitud->solFinalFecha_via }}</td>
                             <td>
-                                <a style="text-decoration: none;"
-                                    href="{{ route('revisarAutorizacionSolicitud', ['id' => $solicitud->FOLIO_via]) }}">
+                                <a style="text-decoration: none;" href="{{ route('revisarAutorizacionSolicitud', ['id' => $solicitud->FOLIO_via]) }}">
                                     <button type="button" class="btn btn-lg btn-primary" disabled>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24"
-                                            height="24">
-                                            <path fill="#ffffff"
-                                                d="M216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24">
+                                            <path fill="#ffffff" d="M216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
                                         </svg>
                                     </button>
                                 </a>
@@ -113,8 +110,16 @@
                             </td>
                         </tr>
                     @endforeach
+                    <!-- Agregar la fila con la suma total -->
+                    <tr>
+                        <td></td>
+                        <td colspan="1" class="text-end font-weight-bold" style="font-weight: bold;">Total de viáticos:</td>
+                        <td class="text-left font-weight-bold" style="font-weight: bold;">$ {{ number_format($totalSum, 2) }}</td>
+                        <td colspan="2"></td>
+                    </tr>
                 @endif
             </tbody>
+            
         </table>
     </div>
 

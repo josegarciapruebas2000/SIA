@@ -126,6 +126,7 @@
                             <th scope="col" style="background-color: #4772C6; color: white; border-radius: 8px 0 0 0;">
                                 Revisor</th>
                             <th scope="col" style="background-color: #4772C6; color: white;">Nivel</th>
+                            <th scope="col" style="background-color: #4772C6; color: white;">Rol</th>
                             <th scope="col" style="background-color: #4772C6; color: white;">Comentario</th>
                             <th scope="col" style="background-color: #4772C6; color: white; border-radius: 0 8px 0 0;">
                                 Fecha y hora</th>
@@ -141,6 +142,7 @@
                         <tr>
                             <td>{{ $comentario->revisor->name }}</td>
                             <td>{{ $comentario->revisor->nivel }}</td>
+                            <td>{{ $comentario->revisor->role }}</td>
                             <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">{{ $comentario->comentario }}</td>
                             <td>{{ date('d/m/Y', strtotime($comentario->fecha_hora)) }}
                                 ({{ date('H:i', strtotime($comentario->fecha_hora)) }})
