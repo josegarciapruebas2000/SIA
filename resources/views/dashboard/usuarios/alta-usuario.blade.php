@@ -37,7 +37,7 @@
                         <option value="Calidad" {{ old('role') == 'Calidad' ? 'selected' : '' }}>Calidad</option>
                         <option value="Ciberseguridad" {{ old('role') == 'Ciberseguridad' ? 'selected' : '' }}>
                             Ciberseguridad</option>
-                        <option value="Contadora" {{ old('role') == 'Contadora' ? 'selected' : '' }}>Contador</option>
+                        <option value="Contador" {{ old('role') == 'Contador' ? 'selected' : '' }}>Contador</option>
                         <option value="Empleado" {{ old('role') == 'Empleado' ? 'selected' : '' }}>Empleado</option>
                         <option value="Gerencia" {{ old('role') == 'Gerencia' ? 'selected' : '' }}>Gerencia</option>
                         <option value="Gerente de Ventas" {{ old('role') == 'Gerente de Ventas' ? 'selected' : '' }}>
