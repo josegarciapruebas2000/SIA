@@ -137,7 +137,7 @@
                     <tbody>
                         @if ($comentarios->isEmpty())
                             <tr>
-                                <td colspan="4">No hay datos disponibles.</td>
+                                <td colspan="5">No hay datos disponibles.</td>
                             </tr>
                         @else
                             @foreach ($comentarios as $comentario)

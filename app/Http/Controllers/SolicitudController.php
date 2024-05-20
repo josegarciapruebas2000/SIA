@@ -58,6 +58,9 @@ class SolicitudController extends Controller
         // Obtener el ID del usuario autenticado
         $user_id = Auth::id();
 
+        // Obtener el revisor
+        $revisor = User::findOrFail($request->input('revisor'));
+
         // Guardar la solicitud en la base de datos
         $solicitud = new SolicitudViaticos();
         $solicitud->nombreSolicitud = $request->input('solicitud');
@@ -65,14 +68,19 @@ class SolicitudController extends Controller
         $solicitud->comentario_via = $request->input('comentario');
         $solicitud->solicitudfecha_via = $request->input('fecha_inicio');
         $solicitud->solFinalFecha_via = $request->input('fecha_fin');
-        $solicitud->revisor_id = $request->input('revisor');
+        $solicitud->revisor_id = $revisor->id;
         $solicitud->total_via = $request->input('total_via'); // Asignar el valor del campo total_via
         $solicitud->user_id = $user_id; // Asignar el ID del usuario autenticado
+
+        // Asignar el nivel basado en el revisor
+        $solicitud->nivel = $revisor->nivel;
+
         $solicitud->save();
 
         // Redirigir al dashboard con el mensaje de éxito
         return redirect()->route('dashboard')->with(['showConfirmationModal' => true, 'success' => '¡Tu solicitud ha sido enviada con éxito!']);
     }
+
 
     public function autorizarVerSolicitudes()
     {
@@ -86,13 +94,8 @@ class SolicitudController extends Controller
             // Obtener el nivel del usuario autenticado
             $nivelUsuario = $user->nivel;
 
-            // Obtener todos los usuarios que tienen el mismo nivel que el usuario autenticado y que sean revisores
-            $revisores = User::where('revisor', 1)
-                ->where('nivel', $nivelUsuario)
-                ->get();
-
-            // Obtener todas las solicitudes asociadas a los revisores con el mismo nivel
-            $solicitudes = SolicitudViaticos::whereIn('revisor_id', $revisores->pluck('id'))
+            // Obtener las solicitudes de viáticos asociadas al nivel del usuario autenticado
+            $solicitudes = SolicitudViaticos::where('nivel', $nivelUsuario)
                 ->with('proyecto')
                 ->get();
         }
@@ -105,6 +108,8 @@ class SolicitudController extends Controller
     }
 
 
+
+
     public function revisarAutorizacionSolicitud($id)
     {
         // Obtener el usuario autenticado
@@ -114,10 +119,10 @@ class SolicitudController extends Controller
         $solicitud = SolicitudViaticos::with('proyecto', 'user')->findOrFail($id);
 
         // Verificar si el usuario tiene permiso para ver la solicitud
-        if ($user->role !== 'SuperAdmin' && $solicitud->revisor_id !== $user->id) {
+        /*if ($user->role !== 'SuperAdmin' && $solicitud->revisor_id !== $user->id) {
             return redirect()->route('error.403');
-        }
-
+        }*/
+        
         // Filtrar los comentarios que tienen el mismo folio
         $comentarios = ComentarioRevisor::where('folioSoli', $solicitud->FOLIO_via)->get();
 
@@ -150,6 +155,9 @@ class SolicitudController extends Controller
                     $solicitud->aceptadoNivel3 = $estado;
                     break;
             }
+
+            // Incrementar el nivel
+            $solicitud->nivel = $solicitud->nivel + 1;
 
             // Guardar los cambios en la base de datos
             $solicitud->save();

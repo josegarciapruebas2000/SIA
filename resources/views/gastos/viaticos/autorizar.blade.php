@@ -86,53 +86,61 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Iteración sobre las solicitudes -->
-                @foreach ($solicitudes as $solicitud)
+                @if($solicitudes->isEmpty())
                     <tr>
-                        <td scope="row">{{ $solicitud->nombreSolicitud }}</td>
-                        <td>{{ $solicitud->proyecto->nombreProy }}</td>
-                        <td>$ {{ $solicitud->total_via }}</td>
-                        <td>{{ $solicitud->solicitudfecha_via }} - {{ $solicitud->solFinalFecha_via }}</td>
-                        <td>
-                            <a style="text-decoration: none;" href="{{ route('revisarAutorizacionSolicitud', ['id' => $solicitud->FOLIO_via]) }}">
-                                <button type="button" class="btn btn-lg btn-primary" disabled>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24">
-                                        <path fill="#ffffff" d="M216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
-                                    </svg>
-                                </button>
-                            </a>
-                            
-                            @if ($solicitud->aceptadoNivel1 == 2 || $solicitud->aceptadoNivel2 == 2 || $solicitud->aceptadoNivel3 == 2)
-                                <button type="button" class="btn btn-danger">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="20" height="20 ">
-                                        <!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free -->
-                                        <path fill="#ffffff"
-                                            d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
-                                    </svg>
-                                </button>
-                            @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel1 == 1)
-                                <button type="button" class="btn btn-success">3/3</button>
-                            @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 1)
-                                <button type="button" class="btn btn-success">3/3</button>
-                            @elseif ($solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel1 == 0)
-                                <button type="button" class="btn btn-primary">2/3</button>
-                            @elseif ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1)
-                                <button type="button" class="btn btn-primary">2/3</button>
-                            @elseif ($solicitud->aceptadoNivel1 == 1)
-                                <button type="button" class="btn btn-dark">1/3</button>
-                            @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 0 && $solicitud->aceptadoNivel1 == 0)
-                                <button type="button" class="btn btn-success">3/3</button>
-                            @else
-                                <button type="button" class="btn btn-warning">Pendiente</button>
-                            @endif
-                        </td>
+                        <td colspan="5" class="text-center">No hay datos disponibles</td>
                     </tr>
-                @endforeach
+                @else
+                    @foreach ($solicitudes as $solicitud)
+                        <tr>
+                            <td scope="row">{{ $solicitud->nombreSolicitud }}</td>
+                            <td>{{ $solicitud->user->name }}</td>
+                            <td>$ {{ number_format($solicitud->total_via, 2) }}</td>
+                            <td>{{ $solicitud->solicitudfecha_via }} - {{ $solicitud->solFinalFecha_via }}</td>
+                            <td>
+                                <a style="text-decoration: none;" href="{{ route('revisarAutorizacionSolicitud', ['id' => $solicitud->FOLIO_via]) }}">
+                                    <button type="button" class="btn btn-lg btn-primary" disabled>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24">
+                                            <path fill="#ffffff" d="M216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                                        </svg>
+                                    </button>
+                                </a>
+        
+                                @if ($solicitud->aceptadoNivel1 == 2 || $solicitud->aceptadoNivel2 == 2 || $solicitud->aceptadoNivel3 == 2)
+                                    <button type="button" class="btn btn-danger">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="20" height="20">
+                                            <path fill="#ffffff" d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
+                                        </svg>
+                                    </button>
+                                @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel1 == 1)
+                                    <button type="button" class="btn btn-success">3/3</button>
+                                @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 1)
+                                    <button type="button" class="btn btn-success">3/3</button>
+                                @elseif ($solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel1 == 0)
+                                    <button type="button" class="btn btn-primary">2/3</button>
+                                @elseif ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1)
+                                    <button type="button" class="btn btn-primary">2/3</button>
+                                @elseif ($solicitud->aceptadoNivel1 == 1)
+                                    <button type="button" class="btn btn-dark">1/3</button>
+                                @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 0 && $solicitud->aceptadoNivel1 == 0)
+                                    <button type="button" class="btn btn-success">3/3</button>
+                                @else
+                                    <button type="button" class="btn btn-warning">Pendiente</button>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                    <!-- Agregar la fila con la suma total -->
+                    <tr>
+                        <td></td>
+                        <td colspan="1" class="text-end font-weight-bold" style="font-weight: bold;">Total de viáticos:</td>
+                        <td class="text-left font-weight-bold" style="font-weight: bold;">$ {{ number_format($totalSum, 2) }}</td>
+                        <td colspan="2"></td>
+                    </tr>
+                @endif
             </tbody>
-            
-
-
         </table>
+        
     </div>
 
 
