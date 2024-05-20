@@ -174,6 +174,8 @@ Route::get('/autorizarViatico/{id}', [SolicitudController::class, 'revisarAutori
 
 Route::post('/comentarios_revisor', [ComentarioRevisorController::class, 'agregarComentarioRevisor'])->name('comentarios_revisor.agregar');
 
+Route::post('/actualizar-estado/{id}', [SolicitudController::class, 'actualizarEstado'])->name('actualizar_estado');
+
 
 
 

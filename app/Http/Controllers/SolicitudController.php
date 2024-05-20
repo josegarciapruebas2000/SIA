@@ -83,9 +83,17 @@ class SolicitudController extends Controller
         if ($user->role === 'SuperAdmin') {
             $solicitudes = SolicitudViaticos::with('proyecto')->get();
         } else {
-            // Obtener las solicitudes de viáticos asociadas al usuario autenticado como revisor
-            $solicitudes = SolicitudViaticos::with('proyecto')
-                ->where('revisor_id', $user->id)
+            // Obtener el nivel del usuario autenticado
+            $nivelUsuario = $user->nivel;
+
+            // Obtener todos los usuarios que tienen el mismo nivel que el usuario autenticado y que sean revisores
+            $revisores = User::where('revisor', 1)
+                ->where('nivel', $nivelUsuario)
+                ->get();
+
+            // Obtener todas las solicitudes asociadas a los revisores con el mismo nivel
+            $solicitudes = SolicitudViaticos::whereIn('revisor_id', $revisores->pluck('id'))
+                ->with('proyecto')
                 ->get();
         }
 
@@ -95,6 +103,7 @@ class SolicitudController extends Controller
         // Pasar las solicitudes y la suma total a la vista
         return view('gastos.viaticos.autorizar', compact('solicitudes', 'totalSum'));
     }
+
 
     public function revisarAutorizacionSolicitud($id)
     {
@@ -109,9 +118,45 @@ class SolicitudController extends Controller
             return redirect()->route('error.403');
         }
 
-        $comentarios = ComentarioRevisor::all();
+        // Filtrar los comentarios que tienen el mismo folio
+        $comentarios = ComentarioRevisor::where('folioSoli', $solicitud->FOLIO_via)->get();
 
         // Pasar la solicitud y sus relaciones a la vista
         return view('gastos.viaticos.autorizarViatico', compact('solicitud', 'comentarios'));
+    }
+
+    public function actualizarEstado($id, Request $request)
+    {
+        // Obtener la solicitud especificada por ID
+        $solicitud = SolicitudViaticos::findOrFail($id);
+
+        // Obtener el nivel del usuario autenticado
+        $nivelUsuario = Auth::user()->nivel;
+
+        // Verificar que el nivel del usuario sea válido (1, 2 o 3)
+        if ($nivelUsuario >= 1 && $nivelUsuario <= 3) {
+            // Verificar si se está aceptando o rechazando
+            $estado = $request->estado == 'aceptar' ? 1 : 2;
+
+            // Actualizar el campo correspondiente según el nivel del usuario
+            switch ($nivelUsuario) {
+                case 1:
+                    $solicitud->aceptadoNivel1 = $estado;
+                    break;
+                case 2:
+                    $solicitud->aceptadoNivel2 = $estado;
+                    break;
+                case 3:
+                    $solicitud->aceptadoNivel3 = $estado;
+                    break;
+            }
+
+            // Guardar los cambios en la base de datos
+            $solicitud->save();
+
+            return redirect()->back()->with('success', 'El estado se actualizó correctamente.');
+        } else {
+            return redirect()->back()->with('error', 'El nivel del usuario no es válido.');
+        }
     }
 }
