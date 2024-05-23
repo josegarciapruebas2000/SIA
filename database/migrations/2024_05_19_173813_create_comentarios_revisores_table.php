@@ -23,7 +23,7 @@ return new class extends Migration
 
             // Definimos las llaves foráneas
             $table->foreign('idRevisor')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('folioSoli')->references('FOLIO_via')->on('solicitudviaticos')->onDelete('cascade');
+            $table->foreign('folioSoli')->references('FOLIO_via')->on('solicitudViaticos')->onDelete('cascade');
         });
     }
 
