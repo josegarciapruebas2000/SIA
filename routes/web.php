@@ -193,6 +193,8 @@ Route::get('/autorizarReposicion', function () {
 
 /* Hisotiral de gastos */
 
+
+
 Route::get('/historial', function () {
     return view('gastos/viaticos/historial/historial');
 })->name('historial');
@@ -234,3 +236,11 @@ Route::get('/reposicion', function () {
 
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+
+
+
+
+Route::get('/pruebasPDF', function () {
+    return view('gastos/viaticos/pruebas');
+})->name('pruebas');

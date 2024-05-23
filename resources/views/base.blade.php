@@ -85,7 +85,7 @@
         }
 
         #sidebar a:hover {
-            background-color: #495057;
+            background-color: #574949;
         }
 
         .logo-container {
