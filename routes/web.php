@@ -9,6 +9,8 @@ use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\ComentarioRevisorController;
+use App\Http\Controllers\NotificacionController;
+use App\Http\Controllers\ComprobacionesController;
 use App\Http\Middleware\CheckRole;
 use App\Models\Empleado;
 
@@ -193,15 +195,18 @@ Route::get('/autorizarReposicion', function () {
 
 /* Hisotiral de gastos */
 
+Route::get('/historial', [SolicitudController::class, 'historialVer'])
+    ->name('historial')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
+
+Route::get('/historial-solicitud/{id}', [SolicitudController::class, 'historialSolicitud'])
+    ->name('historial.solicitud')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 
-Route::get('/historial', function () {
-    return view('gastos/viaticos/historial/historial');
-})->name('historial');
 
-Route::get('/historial-solicitud', function () {
-    return view('gastos/viaticos/historial/historial-solicitud');
-})->name('historial.solicitud');
+
+
 
 Route::get('/historial-comprobacion', function () {
     return view('gastos/viaticos/historial/historial-comprobacion');
@@ -218,17 +223,24 @@ Route::get('/historial-reposicion', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->name('dashboard');
+})->name('dashboard')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 
+Route::post('/notificaciones/{id}/marcar-como-leida', [NotificacionController::class, 'marcarComoLeida'])->name('notificaciones.marcarComoLeida');
 
-Route::get('/comprobaciones', function () {
-    return view('gastos/viaticos/comprobaciones');
-})->name('comprobaciones');
 
-Route::get('/comprobacion', function () {
-    return view('gastos/viaticos/comprobacion');
-})->name('comprobacion');
+/* Comprobaciones */
+
+
+Route::get('/comprobaciones', [ComprobacionesController::class, 'listaComprobaciones'])
+->name('comprobaciones.lista');
+
+
+Route::get('/comprobacion/{id}', [ComprobacionesController::class, 'verComprobacion'])
+->name('ver.comprobacion');
+
+
 
 Route::get('/reposicion', function () {
     return view('gastos/viaticos/reposicion');

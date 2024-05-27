@@ -162,7 +162,7 @@
                                                 <span class="input-group-text">$</span>
                                             </div>
                                             <input type="number" class="form-control" id="monto" name="monto"
-                                                aria-label="Amount (to the nearest dollar)">
+                                                aria-label="Amount (to the nearest dollar)" required>
                                         </div>
                                     </div>
                                 </div>

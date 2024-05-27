@@ -85,7 +85,7 @@
         }
 
         #sidebar a:hover {
-            background-color: #574949;
+            background-color: #5c745c;
         }
 
         .logo-container {
@@ -127,7 +127,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a id="dashboard-title" class="navbar-brand" style="color: #343a4000">Dashboard</a>
+            <a id="dashboard-title" class="navbar-brand" style="color: #1a1a1b00">Dashboard</a>
             <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 24px; height: 24px;">
                     <path
@@ -135,37 +135,129 @@
                         fill="currentColor" />
                 </svg>
             </button>
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto flex-column flex-sm-row align-items-center">
                 @if (session('user'))
                     <li class="nav-item">
-                        <a class="nav-link" style="color: #ffffff" id="navbarDropdownMenuLink" role="button"
-                            aria-expanded="false">
+                        <a class="nav-link text-white" id="navbarUser" role="button" aria-expanded="false">
                             {{ session('user')->name }} ({{ session('user')->role }})
                         </a>
                     </li>
                 @endif
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown d-none d-sm-block">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Notificaciones
+                        @if ($notificaciones !== null)
+                            @php
+                                $unreadCount = $notificaciones->count();
+                            @endphp
+                            @if ($unreadCount > 0)
+                                <span class="badge bg-danger ms-2">{{ $unreadCount }}</span>
+                            @endif
+                        @endif
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Notificación 1</a></li>
-                        <li><a class="dropdown-item" href="#">Notificación 2</a></li>
-                        <li><a class="dropdown-item" href="#">Notificación 3</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end p-0 overflow-auto"
+                        aria-labelledby="navbarDropdownMenuLink" style="min-width: 300px; max-height: 300px;">
+                        @if ($notificaciones !== null && $unreadCount > 0)
+                            <li
+                                class="dropdown-header bg-light d-flex justify-content-between align-items-center px-3 py-2">
+                                <span>Notificaciones</span>
+                                <span class="badge bg-primary">{{ $unreadCount }}</span>
+                            </li>
+                            @foreach ($notificaciones as $notificacion)
+                                <li class="dropdown-item d-flex flex-column align-items-start px-3 py-2">
+                                    <h6 style="font-weight: bold !important;">{{ $notificacion->titulo }}</h6>
+                                    <span>{{ $notificacion->mensaje }}</span>
+                                    <form action="{{ route('notificaciones.marcarComoLeida', $notificacion->id) }}"
+                                        method="POST" class="mb-0 mt-2">
+                                        @csrf
+                                        <button type="submit"
+                                            class="btn btn-link p-0 m-0 text-decoration-none text-primary">Marcar como
+                                            leída</button>
+                                    </form>
+                                </li>
+                                @if (!$loop->last)
+                                    <li>
+                                        <hr class="dropdown-divider my-0">
+                                    </li>
+                                @endif
+                            @endforeach
+                        @else
+                            <li><a class="dropdown-item text-muted text-center py-3" href="#">No hay
+                                    notificaciones disponibles</a></li>
+                        @endif
                     </ul>
                 </li>
+            
+                <li class="nav-item dropdown d-sm-none">
+                    <a class="nav-link" href="#" id="navbarDropdownMenuLinkMobile" role="button"
+                        data-bs-toggle="modal" data-bs-target="#notificationsModal">
+                        Notificaciones
+                        @if ($notificaciones !== null)
+                            @php
+                                $unreadCount = $notificaciones->count();
+                            @endphp
+                            @if ($unreadCount > 0)
+                                <span class="badge bg-danger ms-2">{{ $unreadCount }}</span>
+                            @endif
+                        @endif
+                    </a>
+                </li>
+            
+                <div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="notificationsModalLabel">Notificaciones</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group">
+                                    @if ($notificaciones !== null && $unreadCount > 0)
+                                        @foreach ($notificaciones as $notificacion)
+                                            <li class="list-group-item">
+                                                <h3 style="font-weight: bold !important;">{{ $notificacion->titulo }}</h3>
+                                                {{ $notificacion->mensaje }}
+                                            </li>
+                                            <li class="list-group-item">
+                                                <form
+                                                    action="{{ route('notificaciones.marcarComoLeida', $notificacion->id) }}"
+                                                    method="POST" class="mb-0">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="btn btn-link p-0 text-decoration-none text-primary">Marcar
+                                                        como leída</button>
+                                                </form>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li class="list-group-item">No hay notificaciones disponibles</li>
+                                    @endif
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarProfile" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Perfil
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfile">
                         <li><a class="dropdown-item" href="{{ route('profile') }}">Editar Perfil</a></li>
                         <li><a class="dropdown-item" href="{{ route('login') }}">Cerrar Sesión</a></li>
                     </ul>
                 </li>
             </ul>
+            
+
+
         </div>
     </nav>
 

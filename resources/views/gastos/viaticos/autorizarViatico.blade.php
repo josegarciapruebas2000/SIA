@@ -1,5 +1,9 @@
 @extends('base')
 
+@php
+    use Carbon\Carbon;
+@endphp
+
 <style>
     body,
     html {
@@ -75,8 +79,10 @@
                     <label for="grupo" class="form-label"><strong>Comentario:</strong>
                         {{ $solicitud->comentario_via }}</label>
                     <br>
-                    <label for="grupo" class="form-label"><strong>Periodo:</strong> {{ $solicitud->solicitudfecha_via }}
-                        <strong>-</strong> {{ $solicitud->solFinalFecha_via }}</label>
+                    <label for="grupo" class="form-label"><strong>Periodo:</strong>
+                        {{ Carbon::parse($solicitud->solicitudfecha_via)->translatedFormat('d \\ F \\ Y') }}
+                        <strong> - </strong>
+                        {{ Carbon::parse($solicitud->solFinalFecha_via)->translatedFormat('d \\ F \\ Y') }}</label>
                 </div>
             </div>
 
@@ -97,24 +103,29 @@
                     </div>
                     <br>
                 </form>
-                <div class="col">
-                    <!-- Botón para aceptar -->
-                    <form method="POST" action="{{ route('actualizar_estado', ['id' => $solicitud->FOLIO_via]) }}">
-                        @csrf
-                        <button type="submit" name="estado" value="aceptar" class="btn btn-primary me-2">
-                            Aceptar
-                        </button>
-                    </form>
-                
-                    <!-- Botón para rechazar -->
-                    <form method="POST" action="{{ route('actualizar_estado', ['id' => $solicitud->FOLIO_via]) }}">
-                        @csrf
-                        <button type="submit" name="estado" value="rechazar" class="btn btn-danger">
-                            Rechazar
-                        </button>
-                    </form>
+                <div class="col text-end">
+                    <div class="d-flex justify-content-end flex-wrap">
+                        <!-- Botón para aceptar -->
+                        <form method="POST" action="{{ route('actualizar_estado', ['id' => $solicitud->FOLIO_via]) }}"
+                            class="me-2 mb-2">
+                            @csrf
+                            <button type="submit" name="estado" value="aceptar" class="btn btn-primary">
+                                Aceptar
+                            </button>
+                        </form>
+
+                        <!-- Botón para rechazar -->
+                        <form method="POST" action="{{ route('actualizar_estado', ['id' => $solicitud->FOLIO_via]) }}"
+                            class="mb-2">
+                            @csrf
+                            <button type="submit" name="estado" value="rechazar" class="btn btn-danger">
+                                Rechazar
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                
+
+
 
             </div>
 
@@ -157,8 +168,28 @@
                 </table>
             </div>
 
-
-
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+        
+        @if(session('error'))
+            Swal.fire({
+                icon: 'warning',
+                title: 'No has agregado comentarios',
+                text: '{{ session('error') }}',
+            });
+        @endif
+
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: '{{ session('success') }}',
+            });
+        @endif
+    </script>
+    
 @endsection

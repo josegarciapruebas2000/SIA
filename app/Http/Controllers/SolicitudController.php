@@ -6,6 +6,8 @@ use App\Models\Proyecto;
 use App\Models\User;
 use App\Models\SolicitudViaticos;
 use App\Models\ComentarioRevisor;
+use App\Models\Notificacion;
+use Carbon\Carbon;
 
 
 use Illuminate\Http\Request;
@@ -77,6 +79,20 @@ class SolicitudController extends Controller
 
         $solicitud->save();
 
+        // Crear una nueva notificación 
+        $contenido = "Tienes una nueva solicitud por aprobar del folio {$solicitud->FOLIO_via}";
+        $notificacion = new Notificacion([
+            'titulo' => 'Nueva solicitud', // Asignar un título a la notificación
+            'mensaje' => $contenido, // Asignar el contenido como el mensaje de la notificación
+            'leida' => false,
+            'nivel' => $revisor->nivel, // Asignar el nivel del revisor a la notificación
+            'folio_via' => $solicitud->FOLIO_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
+        ]);
+
+
+        // Guardar la notificación
+        $notificacion->save();
+
         // Redirigir al dashboard con el mensaje de éxito
         return redirect()->route('dashboard')->with(['showConfirmationModal' => true, 'success' => '¡Tu solicitud ha sido enviada con éxito!']);
     }
@@ -87,15 +103,18 @@ class SolicitudController extends Controller
         // Obtener el usuario autenticado
         $user = Auth::user();
 
-        // Si el usuario es SuperAdmin, obtener todas las solicitudes
+        // Si el usuario es SuperAdmin, obtener todas las solicitudes que no sean de nivel 4
         if ($user->role === 'SuperAdmin') {
-            $solicitudes = SolicitudViaticos::with('proyecto')->get();
+            $solicitudes = SolicitudViaticos::where('nivel', '<>', 4)
+                ->with('proyecto')
+                ->get();
         } else {
             // Obtener el nivel del usuario autenticado
             $nivelUsuario = $user->nivel;
 
-            // Obtener las solicitudes de viáticos asociadas al nivel del usuario autenticado
+            // Obtener las solicitudes de viáticos asociadas al nivel del usuario autenticado y que no sean de nivel 4
             $solicitudes = SolicitudViaticos::where('nivel', $nivelUsuario)
+                ->where('nivel', '<>', 4)
                 ->with('proyecto')
                 ->get();
         }
@@ -110,6 +129,124 @@ class SolicitudController extends Controller
 
 
 
+
+    public function actualizarEstado($id, Request $request)
+    {
+        // Obtener la solicitud especificada por ID
+        $solicitud = SolicitudViaticos::findOrFail($id);
+
+        // Validar si el usuario ha agregado un comentario
+        $comentarioUsuario = $this->validarComentarioUsuario($solicitud->FOLIO_via);
+
+        if (!$comentarioUsuario) {
+            // El usuario no ha agregado un comentario, puedes devolver un mensaje de error o tomar alguna acción
+            return redirect()->back()->with('error', 'Debes agregar un comentario antes de aceptar o rechazar la solicitud.');
+        }
+
+        // Obtener el nivel del usuario autenticado
+        $nivelUsuario = auth()->user()->nivel;
+
+        // Determinar si el usuario es SuperAdmin
+        $esSuperAdmin = auth()->user()->role === 'SuperAdmin';
+
+        // Verificar que el nivel del usuario sea válido (0, 1, 2 o 3)
+        if ($esSuperAdmin || ($nivelUsuario >= 1 && $nivelUsuario <= 3)) {
+            // Verificar si se está aceptando o rechazando
+            if ($request->estado == 'rechazar') {
+                // Establecer el estado de rechazo
+                $estado = 2;  // Asumiendo que 2 representa 'rechazado'
+                // Actualizar el nivel a 4 en caso de rechazo
+                $solicitud->nivel = 4;
+                $mensaje = 'Se ha rechazado correctamente.';
+            } else {
+                // Establecer el estado de aceptación
+                $estado = 1;  // Asumiendo que 1 representa 'aceptado'
+                // Incrementar el nivel solo si no se rechaza
+                if (!$esSuperAdmin || $esSuperAdmin) {
+                    $solicitud->nivel = $solicitud->nivel + 1;
+                }
+                $mensaje = 'Se ha aceptado correctamente.';
+            }
+
+            // Actualizar los campos aceptadoNivelX dependiendo del nivel del usuario
+            if ($esSuperAdmin) {
+                // El SuperAdmin puede actualizar cualquier nivel
+                if ($solicitud->aceptadoNivel1 == 0) {
+                    $solicitud->aceptadoNivel1 = $estado;
+                } elseif ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 0) {
+                    $solicitud->aceptadoNivel2 = $estado;
+                } elseif ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel3 == 0) {
+                    $solicitud->aceptadoNivel3 = $estado;
+                }
+            } else {
+                // Actualizar el campo correspondiente según el nivel del usuario
+                switch ($nivelUsuario) {
+                    case 1:
+                        $solicitud->aceptadoNivel1 = $estado;
+                        break;
+                    case 2:
+                        if ($solicitud->aceptadoNivel1 == 1) {
+                            $solicitud->aceptadoNivel2 = $estado;
+                        }
+                        break;
+                    case 3:
+                        if ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1) {
+                            $solicitud->aceptadoNivel3 = $estado;
+                        }
+                        break;
+                }
+            }
+
+            // Guardar los cambios en la base de datos
+            $solicitud->save();
+
+            // Obtener el nivel siguiente
+            $siguienteNivel = $solicitud->nivel;
+
+            // Eliminar las notificaciones existentes con el mismo folio de solicitud de viáticos
+            Notificacion::where('folio_via', $solicitud->FOLIO_via)->delete();
+
+            // Verificar si el siguiente nivel es menor que 4 para guardar la notificación
+            if ($siguienteNivel < 4) {
+                // Crear una nueva notificación 
+                $contenido = "Tienes una nueva solicitud por aprobar del folio {$solicitud->FOLIO_via}";
+                $notificacion = new Notificacion([
+                    'titulo' => 'Nueva solicitud', // Asignar un título a la notificación
+                    'mensaje' => $contenido, // Asignar el contenido como el mensaje de la notificación
+                    'leida' => false,
+                    'nivel' => $siguienteNivel, // Asignar el siguiente nivel
+                    'folio_via' => $solicitud->FOLIO_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
+                ]);
+
+                // Guardar la notificación
+                $notificacion->save();
+            }
+
+
+            return redirect()->route('autorizar')->with('success', $mensaje);
+        } else {
+            return redirect()->back()->with('error', 'El nivel del usuario no es válido.');
+        }
+    }
+
+
+
+
+    public function validarComentarioUsuario($folioSoli)
+    {
+        // Obtenemos el ID del usuario autenticado
+        $idUsuario = auth()->user()->id;
+
+        // Buscamos si existe un comentario del usuario en la tabla comentarios_revisores
+        $comentario = ComentarioRevisor::where('idRevisor', $idUsuario)
+            ->where('folioSoli', $folioSoli)
+            ->exists();
+
+        return $comentario;
+    }
+
+
+
     public function revisarAutorizacionSolicitud($id)
     {
         // Obtener el usuario autenticado
@@ -120,9 +257,9 @@ class SolicitudController extends Controller
 
         // Verificar si el usuario tiene permiso para ver la solicitud
         /*if ($user->role !== 'SuperAdmin' && $solicitud->revisor_id !== $user->id) {
-            return redirect()->route('error.403');
-        }*/
-        
+        return redirect()->route('error.403');
+    }*/
+
         // Filtrar los comentarios que tienen el mismo folio
         $comentarios = ComentarioRevisor::where('folioSoli', $solicitud->FOLIO_via)->get();
 
@@ -130,41 +267,30 @@ class SolicitudController extends Controller
         return view('gastos.viaticos.autorizarViatico', compact('solicitud', 'comentarios'));
     }
 
-    public function actualizarEstado($id, Request $request)
+
+
+
+    //Historial de gastos:
+
+    public function historialVer()
     {
-        // Obtener la solicitud especificada por ID
-        $solicitud = SolicitudViaticos::findOrFail($id);
+        // Obtener todas las solicitudes ordenadas por FOLIO_via de manera descendente y paginadas
+        $solicitudes = SolicitudViaticos::orderBy('FOLIO_via', 'desc')->paginate(10); // Ajusta el número 10 según tus necesidades
 
-        // Obtener el nivel del usuario autenticado
-        $nivelUsuario = Auth::user()->nivel;
+        // Pasar las solicitudes filtradas a la vista
+        return view('gastos.viaticos.historial.historial', compact('solicitudes'));
+    }
 
-        // Verificar que el nivel del usuario sea válido (1, 2 o 3)
-        if ($nivelUsuario >= 1 && $nivelUsuario <= 3) {
-            // Verificar si se está aceptando o rechazando
-            $estado = $request->estado == 'aceptar' ? 1 : 2;
 
-            // Actualizar el campo correspondiente según el nivel del usuario
-            switch ($nivelUsuario) {
-                case 1:
-                    $solicitud->aceptadoNivel1 = $estado;
-                    break;
-                case 2:
-                    $solicitud->aceptadoNivel2 = $estado;
-                    break;
-                case 3:
-                    $solicitud->aceptadoNivel3 = $estado;
-                    break;
-            }
+    public function historialSolicitud($id)
+    {
+        // Obtener todas las solicitudes ordenadas por FOLIO_via de manera descendente y paginadas
+        $solicitud = SolicitudViaticos::find($id);
 
-            // Incrementar el nivel
-            $solicitud->nivel = $solicitud->nivel + 1;
+        // Filtrar los comentarios que tienen el mismo folio
+        $comentarios = ComentarioRevisor::where('folioSoli', $solicitud->FOLIO_via)->get();
 
-            // Guardar los cambios en la base de datos
-            $solicitud->save();
-
-            return redirect()->back()->with('success', 'El estado se actualizó correctamente.');
-        } else {
-            return redirect()->back()->with('error', 'El nivel del usuario no es válido.');
-        }
+        // Pasar las solicitudes filtradas a la vista
+        return view('gastos.viaticos.historial.historial-solicitud', compact('solicitud', 'comentarios'));
     }
 }

@@ -1,5 +1,9 @@
 @extends('base')
 
+@php
+    use Carbon\Carbon;
+@endphp
+
 <style>
     body,
     html {
@@ -51,22 +55,36 @@
 </style>
 
 @section('content')
-    <h2 style="text-align: center">Solicitud de gastos (aceptada)</h2>
-    <br><br>
+    @php
+        $estado = 'Aceptada';
+        if ($solicitud->aceptadoNivel1 == 2 || $solicitud->aceptadoNivel2 == 2 || $solicitud->aceptadoNivel3 == 2) {
+            $estado = 'Rechazada';
+        }
+    @endphp
+
+    <h2 style="text-align: center">Solicitud de gastos ({{ $estado }})</h2>
+    <div class="row justify-content-center">
+        <div class="col text-end">
+            <a href="{{ route('historial') }}" style="text-decoration: none;" class="btn btn-secondary">
+                Regresar
+            </a>
+        </div>
+    </div>
+
     <h3 style="text-align: center">Aceptado por:</h3>
     <br>
     <form class="centered-form">
         <div class="row mb-3">
             <div class="col">
                 <label for="grupo" class="form-label">Proyecto:</label>
-                <input type="text" class="form-control" id="comentario" name="proyecto" placeholder="Proyecto seleccionado"
-                    readonly>
+                <input type="text" class="form-control" id="comentario" name="proyecto"
+                    value="{{ $solicitud->proyecto->nombreProy }}" readonly>
             </div>
 
             <div class="col">
                 <label for="grupo" class="form-label">Cliente:</label>
                 <input type="text" class="form-control" id="comentario" name="cliente" placeholder="Cliente seleccionado"
-                    readonly>
+                    value="{{ $solicitud->proyecto->cliente->nombre }}" readonly>
 
             </div>
 
@@ -81,13 +99,18 @@
                 </div>
             </div>
             <div class="row mb-3">
-                <div class="col" style="text-align: center;">
+                <div class="col text-center">
                     <label for="fecha_sesion" class="form-label">Inicio:</label>
-                    <input type="text" class="form-control" id="inicio" name="inicio" readonly>
+                    <input type="text" class="form-control text-center" id="inicio" name="inicio"
+                        value="{{ Carbon::parse($solicitud->solicitudfecha_via)->translatedFormat('d \\ F \\ Y') }}"
+                        readonly>
                 </div>
+
                 <div class="col" style="text-align: center;">
                     <label for="fecha_sesion" class="form-label">Fin:</label>
-                    <input type="text" class="form-control" id="inicio" name="fin" readonly>
+                    <input type="text" class="form-control text-center" id="fin" name="fin"
+                        value="{{ Carbon::parse($solicitud->solFinalFecha_via)->translatedFormat('d \\ F \\ Y') }}"
+                        readonly>
                 </div>
             </div>
         </div>
@@ -99,51 +122,54 @@
 
         <div class="row mb-3">
             <div class="col">
-                <label for="tutor" class="form-label">Monto solicitado: _ _ _ _ _ _ _ _</label>
+                <label for="tutor" class="form-label">
+                    <h5>
+                        <strong>Monto solicitado: $
+                            {{ $solicitud->total_via }}
+                        </strong>
+                    </h5>
+                </label>
             </div>
 
         </div>
 
         <br><br>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Revisor</th>
-                    <th scope="col">Comentario</th>
-                    <th scope="col">Fecha</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">Revisor 1</th>
-                    <td>Comentarios</td>
-                    <td>28-04-2024</td>
-                </tr>
-                <tr>
-                    <th scope="row">Revisor 1</th>
-                    <td>Comentarios</td>
-                    <td>28-04-2024</td>
-                </tr>
-                <tr>
-                    <th scope="row">Revisor 1</th>
-                    <td>Comentarios</td>
-                    <td>28-04-2024</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped text-center align-middle">
+                <thead class="table-header">
+                    <tr>
+                        <th scope="col" style="background-color: #4772C6; color: white; border-radius: 8px 0 0 0;">
+                            Revisor</th>
+                        <th scope="col" style="background-color: #4772C6; color: white;">Nivel</th>
+                        <th scope="col" style="background-color: #4772C6; color: white;">Rol</th>
+                        <th scope="col" style="background-color: #4772C6; color: white;">Comentario</th>
+                        <th scope="col" style="background-color: #4772C6; color: white; border-radius: 0 8px 0 0;">
+                            Fecha y hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if ($comentarios->isEmpty())
+                        <tr>
+                            <td colspan="5">No hay datos disponibles.</td>
+                        </tr>
+                    @else
+                        @foreach ($comentarios as $comentario)
+                            <tr>
+                                <td>{{ $comentario->revisor->name }}</td>
+                                <td>{{ $comentario->revisor->nivel }}</td>
+                                <td>{{ $comentario->revisor->role }}</td>
+                                <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $comentario->comentario }}</td>
+                                <td>{{ date('d/m/Y', strtotime($comentario->fecha_hora)) }}
+                                    ({{ date('H:i', strtotime($comentario->fecha_hora)) }})
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
 
-
-        <br><br>
-
-
-        <div class="row">
-            <div class="col-sm-6 col-md-6 col-lg-6">
-                <div class="d-flex justify-content-center justify-content-sm-end mb-2 mb-sm-0">
-                    <a href="{{ route('historial') }}">
-                        <button type="button" class="btn btn-outline-danger">Cancelar</button>
-                    </a>
-                </div>
-            </div>
     </form>
 @endsection
