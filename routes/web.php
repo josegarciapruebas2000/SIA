@@ -62,46 +62,46 @@ Route::post('/perfil/actualizar', [Usuarios::class, 'profileUpdate'])->name('per
 /* Clientes */
 
 Route::get('/clientes', [ClienteController::class, 'listaClientes'])
-    ->name('clientes.lista')->middleware('role:SuperAdmin,Administrador');
+    ->name('clientes.lista')->middleware('role:SuperAdmin,Administrador,Gerente General');
 
 Route::post('/clientes-add', [ClienteController::class, 'agregarCliente'])
-    ->name('add.clientes')->middleware('role:SuperAdmin,Administrador');
+    ->name('add.clientes')->middleware('role:SuperAdmin,Administrador,Gerente General');
 
 Route::put('/clientes-update/{id}', [ClienteController::class, 'editarCliente'])
     ->name('update.clientes')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Gerente General');
 
 
 Route::match(['get', 'post'], '/clientes/{id}/toggle-status', [ClienteController::class, 'toggleStatus'])
     ->name('clientes.toggleStatus')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Gerente General');
 
 Route::get('/eliminar-cliente/{id}', [ClienteController::class, 'eliminarCliente'])
     ->name('eliminar.cliente')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Gerente General');
 
 
 /* Proyectos */
 
 Route::get('/proyectos', [ProyectoController::class, 'listaProyectos'])
     ->name('proyectos.lista')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
 
 Route::post('/proyectos-add', [ProyectoController::class, 'agregarProyecto'])
     ->name('add.proyectos')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
 
 Route::put('/proyectos-update/{id}', [ProyectoController::class, 'editarProyecto'])
     ->name('update.proyectos')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
 
 Route::match(['get', 'post'], '/proyectos/{id}/toggle-status', [ProyectoController::class, 'toggleStatus'])
     ->name('proyectos.toggleStatus')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
 
 Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProyecto'])
     ->name('proyectos.eliminar')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
 
 
 
