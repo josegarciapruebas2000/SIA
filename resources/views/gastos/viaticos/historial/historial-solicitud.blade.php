@@ -56,9 +56,16 @@
 
 @section('content')
     @php
-        $estado = 'Aceptada';
+        // Inicializamos el estado como 'Pendiente' por defecto
+        $estado = 'Pendiente';
+
+        // Verificar si la solicitud ha sido rechazada en algún nivel
         if ($solicitud->aceptadoNivel1 == 2 || $solicitud->aceptadoNivel2 == 2 || $solicitud->aceptadoNivel3 == 2) {
             $estado = 'Rechazada';
+        }
+        // Verificar si la solicitud ha sido aceptada en el nivel necesario
+        elseif ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel3 == 1) {
+            $estado = 'Aceptada';
         }
     @endphp
 
