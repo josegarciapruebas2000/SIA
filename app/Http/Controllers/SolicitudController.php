@@ -274,12 +274,36 @@ class SolicitudController extends Controller
 
     public function historialVer()
     {
-        // Obtener todas las solicitudes ordenadas por FOLIO_via de manera descendente y paginadas
-        $solicitudes = SolicitudViaticos::orderBy('FOLIO_via', 'desc')->paginate(10); // Ajusta el número 10 según tus necesidades
+        // Obtener el usuario autenticado
+        $user = Auth::user();
+
+        // Si el usuario es SuperAdmin, mostrar todas las solicitudes
+        if ($user->role === 'SuperAdmin') {
+            $solicitudes = SolicitudViaticos::orderBy('FOLIO_via', 'desc')->paginate(10);
+        } elseif ($user->nivel == '3') {
+            // Si el usuario es de nivel 3, aplicar filtros adicionales
+            $solicitudes = SolicitudViaticos::where('user_id', $user->id)
+                ->where(function ($query) {
+                    $query->where(function ($subQuery) {
+                        $subQuery->where('aceptadoNivel1', 1)
+                            ->where('aceptadoNivel2', 1);
+                    })->orWhere('aceptadoNivel1', 2)
+                        ->orWhere('aceptadoNivel2', 2)
+                        ->orWhere('aceptadoNivel3', 2);
+                })
+                ->orderBy('FOLIO_via', 'desc')
+                ->paginate(10);
+        } else {
+            // Para usuarios de otros niveles, mostrar solo sus propias solicitudes
+            $solicitudes = SolicitudViaticos::where('user_id', $user->id)
+                ->orderBy('FOLIO_via', 'desc')
+                ->paginate(10);
+        }
 
         // Pasar las solicitudes filtradas a la vista
         return view('gastos.viaticos.historial.historial', compact('solicitudes'));
     }
+
 
 
     public function historialSolicitud($id)
