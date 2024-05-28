@@ -98,6 +98,13 @@
                     @endforeach
                 </select>
             </div>
+
+
+            <div class="col">
+                <label for="tutor" class="form-label">Comentario:</label>
+                <input type="text" class="form-control" id="comentario" name="comentario"
+                    placeholder="Ingrese comentarios" value=" {{ $comprobacion->comentario_via }}" readonly>
+            </div>
         </div>
 
         <br><br>
@@ -131,7 +138,7 @@
 
 
 
-                <div class="col">
+                <div class="col" style="display: none;">
                     <label class="btn btn-danger d-block mx-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"
                             style="fill: #ffffff; width: 1em; height: 1em;">
@@ -151,25 +158,11 @@
 
         <br><br>
 
-        <div class="row mb-3">
-            <div class="col">
-                <label for="tutor" class="form-label">Comentario:</label>
-                <input type="text" class="form-control" id="comentario" name="comentario"
-                    placeholder="Ingrese comentarios" value=" {{ $comprobacion->comentario_via }}" readonly>
-            </div>
-        </div>
-        <br>
-
 
         <div class="row mb-3">
             <div class="col">
                 <strong><label for="tutor" class="form-label" id="monto-comprobado">Monto comprobado:
                         $0.00</label></strong>
-            </div>
-            <div class="col">
-                <strong> <label for="grado" class="form-label">Monto a comprobar: $ {{ $comprobacion->total_via }}
-                    </label>
-                </strong>
             </div>
         </div>
 
@@ -250,7 +243,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">$</span>
                 </div>
-                <input type="number" id="total" class="form-control" aria-label="Total">
+                <input type="number" id="total" class="form-control" aria-label="Total" readonly>
             </div>
         </div>
         <div class="col-md-6 col-lg-3 d-flex align-items-center justify-content-start">
@@ -287,7 +280,6 @@
     <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Inicializar Flatpickr en español
         flatpickr("#fecha_sesion", {
             dateFormat: "Y-m-d",
             locale: "es", // Establecer el idioma a español
@@ -318,7 +310,6 @@
                 removeButton.addEventListener('click', function() {
                     fileArray.splice(index, 1);
                     renderFileList(listContainer, fileArray, callback);
-                    callback(fileArray);
                 });
                 listItem.appendChild(removeButton);
 
@@ -328,17 +319,11 @@
         }
 
         function updateMontoComprobado(files) {
-            if (files.length === 0) {
-                document.getElementById('monto-comprobado').textContent = 'Monto comprobado: $0.00';
-                document.getElementById('table-body').innerHTML = '';
-                return;
-            }
-
             let totalAmount = 0;
-            let fileProcessedCount = 0;
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = ''; // Limpiar la tabla antes de agregar nuevas filas
 
+            let fileProcessedCount = 0;
             files.forEach((file, fileIndex) => {
                 const reader = new FileReader();
                 reader.onload = function(event) {
@@ -452,15 +437,24 @@
             addFileToList(fileList, listContainer, updateMontoComprobado, pdfFiles);
         });
 
+        function actualizarMontoComprobado(total) {
+            const montoComprobadoElement = document.getElementById('monto-comprobado');
+            const montoComprobadoText = montoComprobadoElement.textContent.replace('Monto comprobado: $', '').replace(',',
+                '');
+            const montoComprobado = parseFloat(montoComprobadoText) || 0;
+            const nuevoMontoComprobado = montoComprobado + total;
+            montoComprobadoElement.textContent = 'Monto comprobado: $' + nuevoMontoComprobado.toFixed(2);
+        }
+
         document.getElementById('agregarManualmente').addEventListener('click', function() {
             // Obtener los valores ingresados por el usuario
             const descripcion = document.getElementById('descripcion').value;
-            const subtotal = parseFloat(document.getElementById('subtotal').value);
-            const iva = parseFloat(document.getElementById('iva').value);
-            const total = parseFloat(document.getElementById('total').value);
+            const subtotal = parseFloat(document.getElementById('subtotal').value) || 0;
+            const iva = parseFloat(document.getElementById('iva').value) || 0;
+            const total = subtotal + iva;
 
             // Comprobar si todos los campos están completos
-            if (descripcion === '' || isNaN(subtotal) || isNaN(iva) || isNaN(total)) {
+            if (descripcion === '' || subtotal === 0 || iva === 0 || total === 0) {
                 // Mostrar mensaje de advertencia con SweetAlert
                 Swal.fire({
                     title: "Atención",
@@ -470,26 +464,18 @@
                 return; // Detener la ejecución si no se completan todos los campos
             }
 
-            // Calcular el total si subtotal e iva están presentes
-            const nuevoTotal = subtotal + iva;
-
-            // Actualizar el valor del campo monto-comprobado sumando el total actual
-            const montoComprobado = parseFloat(document.getElementById('monto-comprobado').textContent.replace(
-                'Monto comprobado: $', ''));
-            const nuevoMontoComprobado = montoComprobado + total;
-            document.getElementById('monto-comprobado').textContent = 'Monto comprobado: $' + nuevoMontoComprobado
-                .toFixed(2);
+            // Actualizar el valor del campo monto-comprobado
+            actualizarMontoComprobado(total);
 
             // Crear una nueva fila para la tabla
             const row = document.createElement('tr');
 
             // Crear celdas para cada dato
+            const folioCell = document.createElement('td');
+            folioCell.textContent = ''; // Dejar el campo del folio en blanco para agregarlo después
+
             const descripcionCell = document.createElement('td');
             descripcionCell.textContent = descripcion;
-
-            const folioCell = document.createElement('td');
-            // Dejar el campo del folio en blanco para agregarlo después
-            folioCell.textContent = '';
 
             const subtotalCell = document.createElement('td');
             subtotalCell.textContent = subtotal.toFixed(2);
@@ -498,7 +484,7 @@
             ivaCell.textContent = iva.toFixed(2);
 
             const totalCell = document.createElement('td');
-            totalCell.textContent = nuevoTotal.toFixed(2);
+            totalCell.textContent = total.toFixed(2);
 
             const xmlCell = document.createElement('td');
             const xmlIcon = document.createElement('i');
@@ -523,9 +509,7 @@
 
             // Agregar las celdas a la fila
             row.appendChild(folioCell); // Agregar la celda del folio primero
-
             row.appendChild(descripcionCell);
-            row.appendChild(folioCell); // Agregar la celda del folio después de la descripción
             row.appendChild(subtotalCell);
             row.appendChild(ivaCell);
             row.appendChild(totalCell);
@@ -549,6 +533,17 @@
             });
         });
 
+        function handlePdfUpload(event) {
+            const fileIndex = event.target.dataset.fileIndex;
+            const pdfFile = event.target.files[0];
+            if (pdfFile) {
+                pdfFiles[fileIndex] = pdfFile;
+                const pdfIcon = event.target.previousSibling;
+                pdfIcon.classList.add('uploaded');
+                pdfIcon.title = pdfFile.name; // Establecer el nombre del archivo como título al pasar el cursor
+            }
+        }
+
         const subtotalInput = document.getElementById('subtotal');
         const ivaInput = document.getElementById('iva');
         const totalInput = document.getElementById('total');
@@ -559,7 +554,7 @@
         // Agregar un evento input al campo de iva
         ivaInput.addEventListener('input', updateTotal);
 
-        // Función para actualizar el valor del campo total y el campo monto-comprobado
+        // Función para actualizar el valor del campo total
         function updateTotal() {
             // Obtener los valores de subtotal e iva
             const subtotal = parseFloat(subtotalInput.value) || 0;
@@ -570,13 +565,6 @@
 
             // Actualizar el valor del campo total
             totalInput.value = total.toFixed(2);
-
-            // Actualizar el valor del campo monto-comprobado sumando el total actual
-            const montoComprobado = parseFloat(document.getElementById('monto-comprobado').textContent.replace(
-                'Monto comprobado: $', ''));
-            const nuevoMontoComprobado = montoComprobado + total;
-            document.getElementById('monto-comprobado').textContent = 'Monto comprobado: $' + nuevoMontoComprobado.toFixed(
-                2);
         }
     </script>
 @endsection
