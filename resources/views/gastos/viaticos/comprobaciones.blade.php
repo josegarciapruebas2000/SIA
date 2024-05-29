@@ -1,6 +1,29 @@
 @extends('base')
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 @section('content')
+
+    @if (session('message'))
+        <script>
+            Swal.fire({
+                title: "Listo",
+                text: "{{ session('message') }}",
+                icon: "success"
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                title: "Error",
+                text: "{{ session('error') }}",
+                icon: "error"
+            });
+        </script>
+    @endif
+
     <h2 style="text-align: center">Comprobaciones de gastos</h2>
     <br><br>
     <form class="centered-form">
@@ -43,7 +66,9 @@
                 </tbody>
             </table>
         </div>
-
-
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 @endsection

@@ -29,4 +29,9 @@ class SolicitudViaticos extends Model
     {
         return $this->belongsTo(User::class, 'revisor_id');
     }
+
+    public function comprobaciones()
+{
+    return $this->hasMany('App\Models\ComprobacionInfo', 'folio_via', 'FOLIO_via');
+}
 }

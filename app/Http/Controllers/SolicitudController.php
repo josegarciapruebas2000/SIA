@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\SolicitudViaticos;
 use App\Models\ComentarioRevisor;
 use App\Models\Notificacion;
+use App\Models\ComprobacionInfo;
 use Carbon\Carbon;
 
 
@@ -98,38 +99,60 @@ class SolicitudController extends Controller
     }
 
 
+    // * Solicitudes - Comprobaciones  *
     public function autorizarVerSolicitudes()
     {
         // Obtener el usuario autenticado
         $user = Auth::user();
 
-        // Si el usuario es SuperAdmin, obtener todas las solicitudes que no sean de nivel 4
+        // Si el usuario es SuperAdmin, obtener todas las solicitudes y comprobaciones que no sean de nivel 4
         if ($user->role === 'SuperAdmin') {
             $solicitudes = SolicitudViaticos::where('nivel', '<>', 4)
                 ->with('proyecto')
+                ->get();
+
+            $foliosNivel4 = SolicitudViaticos::where('nivel', 4)->pluck('FOLIO_via');
+
+            // Suponiendo que ComprobacionInfo tiene una relación llamada 'solicitudViatico' definida que vincula a través de 'folio_via'
+            $comprobaciones = ComprobacionInfo::with('solicitudViatico')
+                ->where('nivel', '<>', 4)
+                ->whereIn('folio_via', $foliosNivel4)
                 ->get();
         } else {
             // Obtener el nivel del usuario autenticado
             $nivelUsuario = $user->nivel;
 
-            // Obtener las solicitudes de viáticos asociadas al nivel del usuario autenticado y que no sean de nivel 4
+            // Obtener las solicitudes de viáticos y comprobaciones asociadas al nivel del usuario autenticado y que no sean de nivel 4
             $solicitudes = SolicitudViaticos::where('nivel', $nivelUsuario)
                 ->where('nivel', '<>', 4)
                 ->with('proyecto')
                 ->get();
+            $comprobaciones = ComprobacionInfo::where('nivel', $nivelUsuario)
+                ->where('nivel', '<>', 4)
+                ->get();
         }
 
-        // Calcular la suma de total_via
-        $totalSum = $solicitudes->sum('total_via');
+        // Calcular la suma total de viáticos y montos comprobados
+        $totalSumViaticos = $solicitudes->sum('total_via');
+        $totalSumComprobado = $comprobaciones->sum('monto_comprobado');
 
-        // Pasar las solicitudes y la suma total a la vista
-        return view('gastos.viaticos.autorizar', compact('solicitudes', 'totalSum'));
+        // Pasar las solicitudes, comprobaciones y las sumas totales a la vista
+        return view('gastos.viaticos.autorizar', [
+            'solicitudes' => $solicitudes,
+            'comprobaciones' => $comprobaciones,
+            'totalSumViaticos' => $totalSumViaticos,
+            'totalSumComprobado' => $totalSumComprobado
+        ]);
     }
 
 
 
 
 
+
+
+
+    // Solicitudes
     public function actualizarEstado($id, Request $request)
     {
         // Obtener la solicitud especificada por ID
@@ -273,54 +296,54 @@ class SolicitudController extends Controller
     //Historial de gastos:
 
     public function historialVer()
-{
-    // Obtener el usuario autenticado
-    $user = Auth::user();
+    {
+        // Obtener el usuario autenticado
+        $user = Auth::user();
 
-    // Si el usuario es SuperAdmin, mostrar todas las solicitudes
-    if ($user->role === 'SuperAdmin') {
-        $solicitudes = SolicitudViaticos::orderBy('FOLIO_via', 'desc')->paginate(10);
-    } else {
-        // Verificar si el usuario autenticado es un revisor o no
-        if ($user->revisor == '1') {  // Asumiendo que '1' significa que el usuario es revisor
-            // Iniciar la consulta básica para revisores
-            $query = SolicitudViaticos::query();
-
-            // Aplicar filtros adicionales basados en el nivel del usuario
-            if ($user->nivel == '1') {
-                // Nivel 1: Ver solicitudes una vez que aceptadoNivel1 tenga el valor de 1 o 2
-                $query->where(function($q) {
-                    $q->where('aceptadoNivel1', 1)->orWhere('aceptadoNivel1', 2);
-                });
-            } elseif ($user->nivel == '2') {
-                // Nivel 2: Ver solicitudes una vez que aceptadoNivel2 tenga el valor de 1 o que aceptadoNivel1 tenga el valor de 2
-                $query->where(function($q) {
-                    $q->where('aceptadoNivel2', 1)->orWhere('aceptadoNivel1', 2);
-                });
-            } elseif ($user->nivel == '3') {
-                // Nivel 3: Ver solicitudes una vez que aceptadoNivel2 tenga el valor de 1 o 2, y además ver si todos los niveles son 2
-                $query->where(function($q) {
-                    $q->where('aceptadoNivel2', 1)
-                      ->orWhere('aceptadoNivel2', 2)
-                      ->orWhere(function($q2) {
-                          $q2->where('aceptadoNivel1', 2)
-                             ->where('aceptadoNivel2', 2)
-                             ->where('aceptadoNivel3', 2);
-                      });
-                });
-            }
-            $solicitudes = $query->orderBy('FOLIO_via', 'desc')->paginate(10);
+        // Si el usuario es SuperAdmin, mostrar todas las solicitudes
+        if ($user->role === 'SuperAdmin') {
+            $solicitudes = SolicitudViaticos::orderBy('FOLIO_via', 'desc')->paginate(10);
         } else {
-            // Para usuarios que no son revisores, mostrar solo sus propias solicitudes
-            $solicitudes = SolicitudViaticos::where('user_id', $user->id)
-                                            ->orderBy('FOLIO_via', 'desc')
-                                            ->paginate(10);
-        }
-    }
+            // Verificar si el usuario autenticado es un revisor o no
+            if ($user->revisor == '1') {  // Asumiendo que '1' significa que el usuario es revisor
+                // Iniciar la consulta básica para revisores
+                $query = SolicitudViaticos::query();
 
-    // Pasar las solicitudes filtradas a la vista
-    return view('gastos.viaticos.historial.historial', compact('solicitudes'));
-}
+                // Aplicar filtros adicionales basados en el nivel del usuario
+                if ($user->nivel == '1') {
+                    // Nivel 1: Ver solicitudes una vez que aceptadoNivel1 tenga el valor de 1 o 2
+                    $query->where(function ($q) {
+                        $q->where('aceptadoNivel1', 1)->orWhere('aceptadoNivel1', 2);
+                    });
+                } elseif ($user->nivel == '2') {
+                    // Nivel 2: Ver solicitudes una vez que aceptadoNivel2 tenga el valor de 1 o que aceptadoNivel1 tenga el valor de 2
+                    $query->where(function ($q) {
+                        $q->where('aceptadoNivel2', 1)->orWhere('aceptadoNivel1', 2);
+                    });
+                } elseif ($user->nivel == '3') {
+                    // Nivel 3: Ver solicitudes una vez que aceptadoNivel2 tenga el valor de 1 o 2, y además ver si todos los niveles son 2
+                    $query->where(function ($q) {
+                        $q->where('aceptadoNivel2', 1)
+                            ->orWhere('aceptadoNivel2', 2)
+                            ->orWhere(function ($q2) {
+                                $q2->where('aceptadoNivel1', 2)
+                                    ->where('aceptadoNivel2', 2)
+                                    ->where('aceptadoNivel3', 2);
+                            });
+                    });
+                }
+                $solicitudes = $query->orderBy('FOLIO_via', 'desc')->paginate(10);
+            } else {
+                // Para usuarios que no son revisores, mostrar solo sus propias solicitudes
+                $solicitudes = SolicitudViaticos::where('user_id', $user->id)
+                    ->orderBy('FOLIO_via', 'desc')
+                    ->paginate(10);
+            }
+        }
+
+        // Pasar las solicitudes filtradas a la vista
+        return view('gastos.viaticos.historial.historial', compact('solicitudes'));
+    }
 
 
 

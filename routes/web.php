@@ -11,6 +11,9 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\ComentarioRevisorController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\ComprobacionesController;
+
+use Illuminate\Support\Facades\Storage;
+use App\Models\ComprobacionDocumento;
 use App\Http\Middleware\CheckRole;
 use App\Models\Empleado;
 
@@ -165,7 +168,7 @@ Route::post('/guardar-solicitud', [SolicitudController::class, 'guardarSolicitud
 
 
 
-/* Autorización */
+/* Autorización solicitudes*/
 
 Route::get('/autorizar', [SolicitudController::class, 'autorizarVerSolicitudes'])->name('autorizar')
     ->middleware('nivelOrole:1,2,3,SuperAdmin');
@@ -177,6 +180,17 @@ Route::get('/autorizarViatico/{id}', [SolicitudController::class, 'revisarAutori
 Route::post('/comentarios_revisor', [ComentarioRevisorController::class, 'agregarComentarioRevisor'])->name('comentarios_revisor.agregar');
 
 Route::post('/actualizar-estado/{id}', [SolicitudController::class, 'actualizarEstado'])->name('actualizar_estado');
+
+
+/* Autorización comprobaciones*/
+
+Route::get('/autorizar-comprobacion', [ComprobacionesController::class, 'autorizarVerComprobaciones'])
+    ->name('autorizar.comprobacion')
+    ->middleware('nivelOrole:1,2,3,SuperAdmin');
+
+
+Route::get('/autorizar-comprobacion/{id}', [ComprobacionesController::class, 'revisarAutorizacionComprobacion'])->name('revisarAutorizacionComprobacion')
+    ->middleware('nivelOrole:1,2,3,SuperAdmin');
 
 
 
@@ -204,9 +218,17 @@ Route::get('/historial-solicitud/{id}', [SolicitudController::class, 'historialS
     ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 
+//Descargar xml y pdf
+Route::get('/download-file/{id}', function ($id) {
+    $documento = ComprobacionDocumento::find($id);
+    if ($documento && Storage::disk('public')->exists($documento->pdf_path)) {
+        return response()->download(storage_path('app/public/' . $documento->pdf_path));
+    } else {
+        return response()->json(['message' => 'Archivo no encontrado'], 404);
+    }
+});
 
-
-
+//_________________
 
 Route::get('/historial-comprobacion', function () {
     return view('gastos/viaticos/historial/historial-comprobacion');
@@ -234,11 +256,15 @@ Route::post('/notificaciones/{id}/marcar-como-leida', [NotificacionController::c
 
 
 Route::get('/comprobaciones', [ComprobacionesController::class, 'listaComprobaciones'])
-->name('comprobaciones.lista');
+    ->name('comprobaciones.lista');
 
 
 Route::get('/comprobacion/{id}', [ComprobacionesController::class, 'verComprobacion'])
-->name('ver.comprobacion');
+    ->name('ver.comprobacion');
+
+Route::post('/save-comprobacion/{id}', [ComprobacionesController::class, 'store'])
+    ->name('guardar.comprobacion');
+
 
 
 
