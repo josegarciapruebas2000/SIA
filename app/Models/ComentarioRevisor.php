@@ -11,15 +11,19 @@ class ComentarioRevisor extends Model
 
     protected $table = 'comentarios_revisores';
 
+    protected $dates = ['fecha_hora', 'created_at', 'updated_at'];
+
+
     protected $fillable = [
         'idRevisor',
         'folioSoli',
+        'folioComprobacion',
         'comentario',
-        'fecha_hora',
+        'fecha_hora',        
     ];
 
     public function revisor()
-{
-    return $this->belongsTo(User::class, 'idRevisor');
-}
+    {
+        return $this->belongsTo(User::class, 'idRevisor');
+    }
 }

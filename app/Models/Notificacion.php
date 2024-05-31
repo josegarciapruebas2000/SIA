@@ -17,6 +17,7 @@ class Notificacion extends Model
         'leida',
         'nivel',
         'folio_via',
+        'id_User',
     ];
 
     /**

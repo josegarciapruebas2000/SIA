@@ -126,11 +126,11 @@
             </div>
 
             <div class="row mb-2">
-                <form action="{{ route('comentarios_revisor.agregar') }}" method="POST">
+                <form action="{{ route('comentarios_revisor_comprobacion.agregar') }}" method="POST">
                     @csrf
                     <input type="hidden" name="idRevisor" value="{{ auth()->user()->id }}">
                     <!-- Verifica que auth()->user()->idRevisor está disponible -->
-                    <input type="hidden" name="folioSoli" value="{{ $solicitud->FOLIO_via }}">
+                    <input type="hidden" name="folioComprobacion" value="{{ $solicitud->comprobaciones->first()->idComprobacion }}">
                     <!-- Verifica que $solicitud->FOLIO_via está disponible -->
                     <label for="comentarioRevisor" class="form-label"><strong>Comentario de revisor:</strong></label>
                     <div class="col">
@@ -275,10 +275,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        Pendiente por realizar
+                        @if ($comentariosComprobaciones->isEmpty())
+                            <tr>
+                                <td colspan="5">No hay datos disponibles.</td>
+                            </tr>
+                        @else
+                            @foreach ($comentariosComprobaciones as $comentario)
+                                <tr>
+                                    <td>{{ $comentario->revisor->name ?? 'No especificado' }}</td>
+                                    <!-- Asumiendo que 'revisor' es una relación cargada con el nombre del revisor -->
+                                    <td>{{ $comentario->revisor->nivel ?? 'No especificado' }}</td>
+                                    <!-- Asegúrate que 'nivel' esté disponible en el modelo relacionado -->
+                                    <td>{{ $comentario->revisor->role ?? 'No especificado' }}</td>
+                                    <!-- Asegúrate que 'rol' esté disponible en el modelo relacionado -->
+                                    <td>{{ $comentario->comentario }}</td>
+                                    <td>{{ $comentario->fecha_hora->format('d/m/Y H:i') }}</td>
+                                    <!-- Formatea la fecha como necesites -->
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
+
+
 
         </div>
     </div>

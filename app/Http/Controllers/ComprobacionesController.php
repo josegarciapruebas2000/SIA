@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Models\Notificacion;
+use App\Models\ComentarioRevisor;
 
 class ComprobacionesController extends Controller
 {
@@ -132,6 +134,14 @@ class ComprobacionesController extends Controller
                 ]);
             }
 
+            // Obtener el ID del usuario autenticado
+            $userId = Auth::id();
+
+            // Eliminar las notificaciones existentes con el mismo folio y el mismo id del usuario
+            Notificacion::where('folio_via', $solicitud->FOLIO_via)
+                ->where('id_User', $solicitud->user_id)  // Asegurar que solo se eliminen las del usuario autenticado
+                ->delete();
+
             return response()->json(['message' => 'Documentos guardados con éxito.'], 201);
         } catch (\Exception $e) {
             Log::error('Error al guardar los documentos: ' . $e->getMessage());
@@ -161,7 +171,12 @@ class ComprobacionesController extends Controller
         return redirect()->route('error.403');
     }*/
 
+        // Filtrar los comentarios que tienen el mismo folio de comprobacion
+        $comentariosComprobaciones = ComentarioRevisor::with('revisor')
+        ->where('folioComprobacion', $comprobacionInfo->idComprobacion)
+        ->get();
+        
         // Pasar la solicitud, comprobación y documentos a la vista
-        return view('gastos.viaticos.autorizarComprobacion', compact('solicitud', 'comprobacionInfo', 'facturas'));
+        return view('gastos.viaticos.autorizarComprobacion', compact('solicitud', 'comentariosComprobaciones', 'comprobacionInfo', 'facturas'));
     }
 }

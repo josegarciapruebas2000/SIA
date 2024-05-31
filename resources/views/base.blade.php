@@ -253,7 +253,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDesktop">
                         <li><a class="dropdown-item" href="{{ route('profile') }}">Editar Perfil</a></li>
-                        <li><a class="dropdown-item" href="{{ route('logout') }}">Cerrar Sesión</a></li>
+                        <li><a class="dropdown-item" href="{{ route('login') }}">Cerrar Sesión</a></li>
                     </ul>
                 </li>
 
@@ -283,7 +283,7 @@
                                     <a href="{{ route('profile') }}" class="btn btn-primary w-100">Editar Perfil</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <a href="{{ route('logout') }}" class="btn btn-danger w-100">Cerrar Sesión</a>
+                                    <a href="{{ route('login') }}" class="btn btn-danger w-100">Cerrar Sesión</a>
                                 </li>
                             </ul>
                         </div>

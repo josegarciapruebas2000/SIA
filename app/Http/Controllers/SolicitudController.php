@@ -223,6 +223,20 @@ class SolicitudController extends Controller
             // Comprobar si todos los niveles han sido aceptados
             if ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel3 == 1) {
                 $solicitud->comprobacionVisible = 1;
+
+
+                // Crear una nueva notificación 
+                $contenido = "Se ha aprovado tú solicitud del folio {$solicitud->FOLIO_via}, ya puedes subir la comprobación.";
+                $notificacion = new Notificacion([
+                    'titulo' => 'Comprobación pendiente', // Asignar un título a la notificación
+                    'mensaje' => $contenido, // Asignar el contenido como el mensaje de la notificación
+                    'leida' => false, // Asignar el siguiente nivel
+                    'id_User' => $solicitud->user_id,  // Acceder al ID del usuario a través de la relación
+                    'folio_via' => $solicitud->FOLIO_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
+                ]);
+
+                // Guardar la notificación
+                $notificacion->save();
             }
 
             // Guardar los cambios en la base de datos
@@ -231,8 +245,11 @@ class SolicitudController extends Controller
             // Obtener el nivel siguiente
             $siguienteNivel = $solicitud->nivel;
 
-            // Eliminar las notificaciones existentes con el mismo folio de solicitud de viáticos
-            Notificacion::where('folio_via', $solicitud->FOLIO_via)->delete();
+            // Eliminar las notificaciones existentes con el mismo folio de solicitud de viáticos y con un nivel definido
+            Notificacion::where('folio_via', $solicitud->FOLIO_via)
+                ->whereNotNull('nivel')  // Asegura que el campo 'nivel' no sea nulo
+                ->delete();
+
 
             // Verificar si el siguiente nivel es menor que 4 para guardar la notificación
             if ($siguienteNivel < 4) {

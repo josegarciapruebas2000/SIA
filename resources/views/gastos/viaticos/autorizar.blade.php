@@ -187,7 +187,7 @@
                             <td>{{ $comprobacion->folio_via }}</td>
                             <td>{{ $comprobacion->solicitudViatico->nombreSolicitud ?? 'No especificado' }}</td>
                             <td>{{ $comprobacion->solicitudViatico->user->name ?? 'No especificado' }}</td>
-                            <td>$ {{ number_format($comprobacion->solicitudViatico->total_via, 2) }}</td>
+                            <td>$ {{ number_format($comprobacion->monto_comprobado, 2) }}</td>
                             <td>
                                 {{ \Carbon\Carbon::parse($comprobacion->solicitudViatico->solicitudfecha_via)->format('d M Y') }}
                                 <strong> - </strong>
@@ -216,23 +216,17 @@
                                                 d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
                                         </svg>
                                     </button>
-                                @elseif (
-                                    $comprobacion->solicitudViatico->aceptadoNivel3 == 1 &&
-                                        $comprobacion->solicitudViatico->aceptadoNivel2 == 1 &&
-                                        $comprobacion->solicitudViatico->aceptadoNivel1 == 1)
+                                @elseif ($comprobacion->aceptadoNivel3 == 1 && $comprobacion->aceptadoNivel2 == 1 && $comprobacion->aceptadoNivel1 == 1)
                                     <button type="button" class="btn btn-success">3/3</button>
-                                @elseif ($comprobacion->solicitudViatico->aceptadoNivel3 == 1 && $comprobacion->solicitudViatico->aceptadoNivel2 == 1)
+                                @elseif ($comprobacion->aceptadoNivel3 == 1 && $comprobacion->aceptadoNivel2 == 1)
                                     <button type="button" class="btn btn-success">3/3</button>
-                                @elseif ($comprobacion->solicitudViatico->aceptadoNivel2 == 1 && $comprobacion->solicitudViatico->aceptadoNivel1 == 0)
+                                @elseif ($comprobacion->aceptadoNivel2 == 1 && $comprobacion->aceptadoNivel1 == 0)
                                     <button type="button" class="btn btn-primary">2/3</button>
-                                @elseif ($comprobacion->solicitudViatico->aceptadoNivel1 == 1 && $comprobacion->solicitudViatico->aceptadoNivel2 == 1)
+                                @elseif ($comprobacion->aceptadoNivel1 == 1 && $comprobacion->aceptadoNivel2 == 1)
                                     <button type="button" class="btn btn-primary">2/3</button>
-                                @elseif ($comprobacion->solicitudViatico->aceptadoNivel1 == 1)
+                                @elseif ($comprobacion->aceptadoNivel1 == 1)
                                     <button type="button" class="btn btn-dark">1/3</button>
-                                @elseif (
-                                    $comprobacion->solicitudViatico->aceptadoNivel3 == 1 &&
-                                        $comprobacion->solicitudViatico->aceptadoNivel2 == 0 &&
-                                        $comprobacion->solicitudViatico->aceptadoNivel1 == 0)
+                                @elseif ($comprobacion->aceptadoNivel3 == 1 && $comprobacion->aceptadoNivel2 == 0 && $comprobacion->aceptadoNivel1 == 0)
                                     <button type="button" class="btn btn-success">3/3</button>
                                 @else
                                     <button type="button" class="btn btn-warning">Pendiente</button>
@@ -243,11 +237,10 @@
                     <!-- Agregar la fila con la suma total -->
                     <tr>
                         <td></td>
-                        <td colspan="2" class="text-end font-weight-bold" style="font-weight: bold;">Total de
-                            viáticos:
+                        <td colspan="2" class="text-end font-weight-bold" style="font-weight: bold;">Total comprobado:
                         </td>
                         <td class="text-left font-weight-bold" style="font-weight: bold;">$
-                            {{ number_format($totalSumViaticos, 2) }}</td>
+                            {{ number_format($totalSumComprobado, 2) }}</td>
                         <td colspan="2"></td>
                     </tr>
                 @endif

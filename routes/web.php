@@ -192,6 +192,7 @@ Route::get('/autorizar-comprobacion', [ComprobacionesController::class, 'autoriz
 Route::get('/autorizar-comprobacion/{id}', [ComprobacionesController::class, 'revisarAutorizacionComprobacion'])->name('revisarAutorizacionComprobacion')
     ->middleware('nivelOrole:1,2,3,SuperAdmin');
 
+Route::post('/comentarios_revisor/comprobacion', [ComentarioRevisorController::class, 'agregarComentarioRevisorComprobación'])->name('comentarios_revisor_comprobacion.agregar');
 
 
 
