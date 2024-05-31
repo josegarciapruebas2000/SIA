@@ -16,14 +16,22 @@ class ComprobacionesController extends Controller
 {
     public function listaComprobaciones()
     {
-        // Filtrar las solicitudes donde aceptadoNivel1, aceptadoNivel2 y aceptadoNivel3 son 1
-        $comprobaciones = SolicitudViaticos::where('aceptadoNivel1', 1)
-            ->where('aceptadoNivel2', 1)
-            ->where('aceptadoNivel3', 1)
-            ->get();
+        $usuarioActual = auth()->user(); // Obtener el usuario autenticado
+
+        // Iniciar la consulta
+        $query = SolicitudViaticos::where('comprobacionVisible', 1);
+
+        // Agregar condiciones adicionales solo si el usuario no es SuperAdmin
+        if ($usuarioActual->role !== 'SuperAdmin') {
+            $query->where('user_id', $usuarioActual->id);
+        }
+
+        // Ejecutar la consulta
+        $comprobaciones = $query->get();
 
         return view('gastos.viaticos.comprobaciones', compact('comprobaciones'));
     }
+
 
 
     public function verComprobacion($id)
@@ -92,6 +100,10 @@ class ComprobacionesController extends Controller
             $comprobacion->aceptadoNivel3 = 0;
             $comprobacion->save();
 
+            $solicitud = SolicitudViaticos::findOrFail($id);
+            $solicitud->comprobacionVisible = 0;
+            $solicitud->save();
+
             // Verificar si el ID de comprobacion se asignó correctamente
             if (is_null($comprobacion->idComprobacion)) {
                 Log::error('El ID de comprobacion es nulo después de guardar.');
@@ -138,19 +150,18 @@ class ComprobacionesController extends Controller
         // Obtener la solicitud especificada por ID
         $solicitud = SolicitudViaticos::with('proyecto', 'user')->findOrFail($id);
 
+        // Obtener la comprobación relacionada con la solicitud
+        $comprobacionInfo = ComprobacionInfo::where('folio_via', $solicitud->FOLIO_via)->firstOrFail();
+
+        // Obtener los documentos relacionados con la comprobación
+        $facturas = $comprobacionInfo->documentos;
+
         // Verificar si el usuario tiene permiso para ver la solicitud
         /*if ($user->role !== 'SuperAdmin' && $solicitud->revisor_id !== $user->id) {
         return redirect()->route('error.403');
     }*/
 
-        // Filtrar los comentarios que tienen el mismo folio
-        //$comentarios = ComentarioRevisor::where('folioSoli', $solicitud->FOLIO_via)->get();
-
-        // Pasar la solicitud y sus relaciones a la vista
-        //return view('gastos.viaticos.autorizarViatico', compact('solicitud', 'comentarios'));
-        return view('gastos.viaticos.autorizarComprobacion', compact('solicitud'));
-
+        // Pasar la solicitud, comprobación y documentos a la vista
+        return view('gastos.viaticos.autorizarComprobacion', compact('solicitud', 'comprobacionInfo', 'facturas'));
     }
-
-
 }

@@ -15,6 +15,11 @@ class ComprobacionDocumento extends Model
 
     public $timestamps = false;
 
+    public function documentos()
+    {
+        return $this->hasMany(ComprobacionDocumento::class, 'idComprobacion', 'idComprobacion');
+    }
+
     protected $fillable = [
         'idComprobacion', 'fecha_subida', 'descripcion',
         'N_factura', 'subtotal', 'iva', 'total',

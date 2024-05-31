@@ -170,7 +170,7 @@ Route::post('/guardar-solicitud', [SolicitudController::class, 'guardarSolicitud
 
 /* Autorización solicitudes*/
 
-Route::get('/autorizar', [SolicitudController::class, 'autorizarVerSolicitudes'])->name('autorizar')
+Route::get('/autorizar', [SolicitudController::class, 'mostrarAutorizaciones'])->name('autorizar')
     ->middleware('nivelOrole:1,2,3,SuperAdmin');
 
 Route::get('/autorizarViatico/{id}', [SolicitudController::class, 'revisarAutorizacionSolicitud'])->name('revisarAutorizacionSolicitud')
@@ -218,8 +218,19 @@ Route::get('/historial-solicitud/{id}', [SolicitudController::class, 'historialS
     ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 
-//Descargar xml y pdf
-Route::get('/download-file/{id}', function ($id) {
+//Descargar xml FACTURA
+Route::get('/download-file/xml/{id}', function ($id) {
+    $documento = ComprobacionDocumento::find($id);
+    if ($documento && Storage::disk('public')->exists($documento->xml_path)) {
+        return response()->download(storage_path('app/public/' . $documento->xml_path));
+    } else {
+        return response()->json(['message' => 'Archivo no encontrado'], 404);
+    }
+})->name('descargar.xml');
+
+
+//Descargar pdf FACTURA
+Route::get('/download-file/pdf/{id}', function ($id) {
     $documento = ComprobacionDocumento::find($id);
     if ($documento && Storage::disk('public')->exists($documento->pdf_path)) {
         return response()->download(storage_path('app/public/' . $documento->pdf_path));

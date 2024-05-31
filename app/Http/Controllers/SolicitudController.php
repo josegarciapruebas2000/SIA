@@ -100,7 +100,7 @@ class SolicitudController extends Controller
 
 
     // * Solicitudes - Comprobaciones  *
-    public function autorizarVerSolicitudes()
+    public function mostrarAutorizaciones()
     {
         // Obtener el usuario autenticado
         $user = Auth::user();
@@ -218,6 +218,11 @@ class SolicitudController extends Controller
                         }
                         break;
                 }
+            }
+
+            // Comprobar si todos los niveles han sido aceptados
+            if ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel3 == 1) {
+                $solicitud->comprobacionVisible = 1;
             }
 
             // Guardar los cambios en la base de datos

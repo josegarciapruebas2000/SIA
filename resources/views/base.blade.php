@@ -127,7 +127,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a id="dashboard-title" class="navbar-brand" style="color: #1a1a1b00">Dashboard</a>
+            <a id="dashboard-title" class="navbar-brand" style="color: #1a1a1b00"></a>
             <button id="menu-toggle" onclick="toggleSidebar()" class="btn btn-dark">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="width: 24px; height: 24px;">
                     <path
@@ -188,7 +188,7 @@
                         @endif
                     </ul>
                 </li>
-            
+
                 <li class="nav-item dropdown d-sm-none">
                     <a class="nav-link" href="#" id="navbarDropdownMenuLinkMobile" role="button"
                         data-bs-toggle="modal" data-bs-target="#notificationsModal">
@@ -203,7 +203,7 @@
                         @endif
                     </a>
                 </li>
-            
+
                 <div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -218,7 +218,8 @@
                                     @if ($notificaciones !== null && $unreadCount > 0)
                                         @foreach ($notificaciones as $notificacion)
                                             <li class="list-group-item">
-                                                <h3 style="font-weight: bold !important;">{{ $notificacion->titulo }}</h3>
+                                                <h3 style="font-weight: bold !important;">{{ $notificacion->titulo }}
+                                                </h3>
                                                 {{ $notificacion->mensaje }}
                                             </li>
                                             <li class="list-group-item">
@@ -243,19 +244,54 @@
                         </div>
                     </div>
                 </div>
-            
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarProfile" role="button"
+
+                <!-- Enlace de Perfil para Escritorio (visible en sm y tamaños mayores) -->
+                <li class="nav-item dropdown d-none d-sm-block">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarProfileDesktop" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         Perfil
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfile">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarProfileDesktop">
                         <li><a class="dropdown-item" href="{{ route('profile') }}">Editar Perfil</a></li>
-                        <li><a class="dropdown-item" href="{{ route('login') }}">Cerrar Sesión</a></li>
+                        <li><a class="dropdown-item" href="{{ route('logout') }}">Cerrar Sesión</a></li>
                     </ul>
                 </li>
+
+                <!-- Enlace de Perfil para Móviles (visible solo en xs, desaparece en sm y mayores) -->
+                <li class="nav-item d-block d-sm-none">
+                    <a class="nav-link" href="#" id="navbarProfileMobile" role="button"
+                        data-bs-toggle="modal" data-bs-target="#profileModal">
+                        Perfil
+                    </a>
+                </li>
             </ul>
-            
+
+
+            <!-- Modal de Perfil para Móviles -->
+            <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="profileModalLabel">Opciones de Perfil</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <a href="{{ route('profile') }}" class="btn btn-primary w-100">Editar Perfil</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="{{ route('logout') }}" class="btn btn-danger w-100">Cerrar Sesión</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
 
         </div>

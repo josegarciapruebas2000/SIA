@@ -39,10 +39,10 @@
 
     .custom-color.active {
         background-color: rgba(0, 8, 44, 255) !important;
-        /* Añadido !important */
+        /* !important */
         color: white !important;
         border-color: #555556 !important;
-        /* Añadido !important */
+        /* !important */
     }
 
     .table-container {
@@ -93,7 +93,7 @@
             <tbody>
                 @if ($solicitudes->isEmpty())
                     <tr>
-                        <td colspan="5" class="text-center">No hay datos disponibles</td>
+                        <td colspan="6" class="text-center">No hay datos disponibles</td>
                     </tr>
                 @else
                     @foreach ($solicitudes as $solicitud)
@@ -178,7 +178,7 @@
             <tbody>
                 @if ($comprobaciones->isEmpty())
                     <tr>
-                        <td colspan="5" class="text-center">No hay datos disponibles</td>
+                        <td colspan="6" class="text-center">No hay datos disponibles</td>
                     </tr>
                 @else
                     @foreach ($comprobaciones as $comprobacion)
@@ -205,7 +205,10 @@
                                     </button>
                                 </a>
 
-                                @if ($solicitud->aceptadoNivel1 == 2 || $solicitud->aceptadoNivel2 == 2 || $solicitud->aceptadoNivel3 == 2)
+                                @if (
+                                    $comprobacion->solicitudViatico->aceptadoNivel1 == 2 ||
+                                        $comprobacion->solicitudViatico->aceptadoNivel2 == 2 ||
+                                        $comprobacion->solicitudViatico->aceptadoNivel3 == 2)
                                     <button type="button" class="btn btn-danger">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="20"
                                             height="20">
@@ -213,17 +216,23 @@
                                                 d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
                                         </svg>
                                     </button>
-                                @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel1 == 1)
+                                @elseif (
+                                    $comprobacion->solicitudViatico->aceptadoNivel3 == 1 &&
+                                        $comprobacion->solicitudViatico->aceptadoNivel2 == 1 &&
+                                        $comprobacion->solicitudViatico->aceptadoNivel1 == 1)
                                     <button type="button" class="btn btn-success">3/3</button>
-                                @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 1)
+                                @elseif ($comprobacion->solicitudViatico->aceptadoNivel3 == 1 && $comprobacion->solicitudViatico->aceptadoNivel2 == 1)
                                     <button type="button" class="btn btn-success">3/3</button>
-                                @elseif ($solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel1 == 0)
+                                @elseif ($comprobacion->solicitudViatico->aceptadoNivel2 == 1 && $comprobacion->solicitudViatico->aceptadoNivel1 == 0)
                                     <button type="button" class="btn btn-primary">2/3</button>
-                                @elseif ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1)
+                                @elseif ($comprobacion->solicitudViatico->aceptadoNivel1 == 1 && $comprobacion->solicitudViatico->aceptadoNivel2 == 1)
                                     <button type="button" class="btn btn-primary">2/3</button>
-                                @elseif ($solicitud->aceptadoNivel1 == 1)
+                                @elseif ($comprobacion->solicitudViatico->aceptadoNivel1 == 1)
                                     <button type="button" class="btn btn-dark">1/3</button>
-                                @elseif ($solicitud->aceptadoNivel3 == 1 && $solicitud->aceptadoNivel2 == 0 && $solicitud->aceptadoNivel1 == 0)
+                                @elseif (
+                                    $comprobacion->solicitudViatico->aceptadoNivel3 == 1 &&
+                                        $comprobacion->solicitudViatico->aceptadoNivel2 == 0 &&
+                                        $comprobacion->solicitudViatico->aceptadoNivel1 == 0)
                                     <button type="button" class="btn btn-success">3/3</button>
                                 @else
                                     <button type="button" class="btn btn-warning">Pendiente</button>

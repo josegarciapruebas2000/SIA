@@ -63,11 +63,20 @@
         if ($solicitud->aceptadoNivel1 == 2 || $solicitud->aceptadoNivel2 == 2 || $solicitud->aceptadoNivel3 == 2) {
             $estado = 'Rechazada';
         }
-        // Verificar si la solicitud ha sido aceptada en el nivel necesario
+        // Verificar si solo un nivel tiene el valor de 1 y los demás 0
+        elseif (
+            ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 0 && $solicitud->aceptadoNivel3 == 0) ||
+            ($solicitud->aceptadoNivel1 == 0 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel3 == 0) ||
+            ($solicitud->aceptadoNivel1 == 0 && $solicitud->aceptadoNivel2 == 0 && $solicitud->aceptadoNivel3 == 1)
+        ) {
+            $estado = 'Aceptada';
+        }
+        // Verificar si la solicitud ha sido aceptada en todos los niveles
         elseif ($solicitud->aceptadoNivel1 == 1 && $solicitud->aceptadoNivel2 == 1 && $solicitud->aceptadoNivel3 == 1) {
             $estado = 'Aceptada';
         }
     @endphp
+
 
     <h2 style="text-align: center">Solicitud de gastos ({{ $estado }})</h2>
     <div class="row justify-content-center">

@@ -179,8 +179,7 @@
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-start">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">
+                    <button type="button" class="btn btn-primary" onclick="validarRevisor()">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="bi me-2" width="24"
                             height="24">
                             <path fill="#ffffff"
@@ -260,7 +259,7 @@
         <table class="table table-striped rounded text-center">
             <thead>
                 <tr>
-                    <th scope="col">Folio</th>
+                    <th scope="col">Factura</th>
                     <th scope="col">Descripción</th>
                     <th scope="col">Subtotal</th>
                     <th scope="col">IVA</th>
@@ -310,6 +309,9 @@
                 removeButton.textContent = 'Eliminar';
                 removeButton.addEventListener('click', function() {
                     fileArray.splice(index, 1);
+                    if (pdfFiles[index]) {
+                        pdfFiles.splice(index, 1); // Eliminar el PDF asociado
+                    }
                     renderFileList(listContainer, fileArray, callback);
                 });
                 listItem.appendChild(removeButton);
@@ -319,10 +321,17 @@
             callback(fileArray);
         }
 
+
         function updateMontoComprobado(files) {
             let totalAmount = 0;
             const tableBody = document.getElementById('table-body');
             tableBody.innerHTML = ''; // Limpiar la tabla antes de agregar nuevas filas
+
+            if (files.length === 0) {
+                // Si no hay archivos, establecer el monto comprobado a 0 y salir de la función
+                document.getElementById('monto-comprobado').textContent = 'Monto comprobado: $0.00';
+                return;
+            }
 
             let fileProcessedCount = 0;
             files.forEach((file, fileIndex) => {
@@ -570,72 +579,140 @@
 
 
         document.getElementById('guardar-datos').addEventListener('click', function(event) {
-    event.preventDefault(); // Evita el envío del formulario inmediatamente
+            event.preventDefault(); // Evita el envío del formulario inmediatamente
 
-    const nivel = document.getElementById('revisor').value;
-    const montoComprobadoText = document.getElementById('monto-comprobado').textContent.replace('Monto comprobado: $', '').replace(',', '');
-    const montoComprobado = parseFloat(montoComprobadoText) || 0;
+            // Deshabilitar el botón para prevenir múltiples envíos
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = 'Enviando...'; // Cambiar el texto del botón para indicar el proceso
 
-    const formData = new FormData();
-    const tableRows = document.querySelectorAll('#table-body tr');
+            const nivel = document.getElementById('revisor').value;
+            const montoComprobadoText = document.getElementById('monto-comprobado').textContent.replace(
+                'Monto comprobado: $', '').replace(',', '');
+            const montoComprobado = parseFloat(montoComprobadoText) || 0;
 
-    formData.append('nivel', nivel);
-    formData.append('monto_comprobado', montoComprobado);
+            const formData = new FormData();
+            const tableRows = document.querySelectorAll('#table-body tr');
 
-    tableRows.forEach((row, index) => {
-        const cells = row.children;
-        formData.append(`documentos[${index}][N_factura]`, cells[0].textContent.trim());
-        formData.append(`documentos[${index}][fecha_subida]`, new Date().toISOString().slice(0, 10));
-        formData.append(`documentos[${index}][descripcion]`, cells[1].textContent.trim());
-        formData.append(`documentos[${index}][subtotal]`, cells[2].textContent.trim());
-        formData.append(`documentos[${index}][iva]`, cells[3].textContent.trim());
-        formData.append(`documentos[${index}][total]`, cells[4].textContent.trim());
-
-        // Utilizar los arrays xmlFiles y pdfFiles para añadir los archivos al formData
-        if (xmlFiles[index]) {
-            formData.append(`documentos[${index}][xml]`, xmlFiles[index]);
-        }
-        if (pdfFiles[index]) {
-            formData.append(`documentos[${index}][pdf]`, pdfFiles[index]);
-        }
-    });
-
-    const id = window.location.pathname.split('/').pop(); // Obtiene el ID de la URL actual
-
-    fetch(`/save-comprobacion/${id}`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            Swal.fire({
-                title: "Listo",
-                text: data.message,
-                icon: "success"
-            }).then(() => {
-                window.location.href = '/comprobaciones'; // Redirige a la lista de comprobaciones después de cerrar el modal
+            // Logs para verificar la correspondencia de los archivos
+            console.log("Verificación de los archivos antes de enviar:");
+            tableRows.forEach((row, index) => {
+                console.log(`Fila ${index}:`);
+                console.log(`XML File: ${xmlFiles[index] ? xmlFiles[index].name : 'No file'}`);
+                console.log(`PDF File: ${pdfFiles[index] ? pdfFiles[index].name : 'No file'}`);
             });
-        } else if (data.error) {
-            Swal.fire({
-                title: "Error",
-                text: data.error,
-                icon: "error"
+
+            formData.append('nivel', nivel);
+            formData.append('monto_comprobado', montoComprobado);
+
+            tableRows.forEach((row, index) => {
+                const cells = row.children;
+                formData.append(`documentos[${index}][N_factura]`, cells[0].textContent.trim());
+                formData.append(`documentos[${index}][fecha_subida]`, new Date().toISOString().slice(0,
+                10));
+                formData.append(`documentos[${index}][descripcion]`, cells[1].textContent.trim());
+                formData.append(`documentos[${index}][subtotal]`, cells[2].textContent.trim());
+                formData.append(`documentos[${index}][iva]`, cells[3].textContent.trim());
+                formData.append(`documentos[${index}][total]`, cells[4].textContent.trim());
+
+                // Utilizar los arrays xmlFiles y pdfFiles para añadir los archivos al formData
+                if (xmlFiles[index]) {
+                    formData.append(`documentos[${index}][xml]`, xmlFiles[index]);
+                }
+                if (pdfFiles[index]) {
+                    formData.append(`documentos[${index}][pdf]`, pdfFiles[index]);
+                }
             });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire({
-            title: "Error",
-            text: 'Ocurrió un error al guardar los documentos.',
-            icon: "error"
+
+            const id = window.location.pathname.split('/').pop(); // Obtiene el ID de la URL actual
+
+            fetch(`/save-comprobacion/${id}`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        Swal.fire({
+                            title: "Listo",
+                            text: data.message,
+                            icon: "success"
+                        }).then(() => {
+                            window.location.href =
+                            '/comprobaciones'; // Redirige a la lista de comprobaciones después de cerrar el modal
+                        });
+                    } else if (data.error) {
+                        btn.disabled = false;
+                        btn.textContent = 'Enviar'; // Restaurar texto del botón si hay un error
+                        Swal.fire({
+                            title: "Error",
+                            text: data.error,
+                            icon: "error"
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar'; // Restaurar texto del botón si hay un error
+                    Swal.fire({
+                        title: "Error",
+                        text: 'Ocurrió un error al guardar los documentos.',
+                        icon: "error"
+                    });
+                });
         });
-    });
-});
 
+
+
+
+        function validarRevisor() {
+            var revisor = document.getElementById('revisor').value;
+            var filas = document.getElementById('table-body').rows.length;
+
+            if (revisor === '') {
+                // Mostrar alerta de SweetAlert para el revisor
+                Swal.fire({
+                    title: "Advertencia",
+                    text: "Debe seleccionar un revisor antes de continuar.",
+                    icon: "warning",
+                    confirmButtonText: 'Entendido'
+                });
+            } else if (filas === 0) {
+                // Mostrar alerta de SweetAlert para la tabla vacía
+                Swal.fire({
+                    title: "Información",
+                    text: "La tabla está vacía. Por favor, agregue al menos una factura antes de continuar.",
+                    icon: "info",
+                    confirmButtonText: 'Entendido'
+                });
+            } else if (!allPDFsUploaded(filas)) {
+                // Mostrar alerta si no todos los PDFs han sido cargados
+                Swal.fire({
+                    title: "Información",
+                    text: "Por favor, asegúrese de que cada factura tenga un PDF asociado antes de proceder.",
+                    icon: "info",
+                    confirmButtonText: 'Entendido'
+                });
+            } else {
+                // Todo está bien, proceder con la operación (como abrir un modal)
+                var modalElement = document.getElementById('exampleModal');
+                var modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+        }
+
+        function allPDFsUploaded(rowCount) {
+            for (let i = 0; i < rowCount; i++) {
+                if (!pdfFiles[i] || pdfFiles[i].length === 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
     </script>
 @endsection
