@@ -15,11 +15,11 @@ return new class extends Migration
     public function up()
     {
         DB::table('users')->insert([
-            'name' => 'Danae',
-            'email' => 'danae@gmail.com',
+            'name' => 'Administrador',
+            'email' => 'super.admin@ajeb.com.mx ',
             'role' => 'SuperAdmin',
             'status' => true,
-            'password' => bcrypt('12345678'),
+            'password' => bcrypt('202425@AjebCCS!'),
         ]);
     }
 
