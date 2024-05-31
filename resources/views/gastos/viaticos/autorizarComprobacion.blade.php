@@ -130,7 +130,8 @@
                     @csrf
                     <input type="hidden" name="idRevisor" value="{{ auth()->user()->id }}">
                     <!-- Verifica que auth()->user()->idRevisor está disponible -->
-                    <input type="hidden" name="folioComprobacion" value="{{ $solicitud->comprobaciones->first()->idComprobacion }}">
+                    <input type="hidden" name="folioComprobacion"
+                        value="{{ $solicitud->comprobaciones->first()->idComprobacion }}">
                     <!-- Verifica que $solicitud->FOLIO_via está disponible -->
                     <label for="comentarioRevisor" class="form-label"><strong>Comentario de revisor:</strong></label>
                     <div class="col">
@@ -164,7 +165,8 @@
                         <div class="col-12 col-md-6 text-end mb-2">
                             <div class="d-flex justify-content-end flex-wrap">
                                 <!-- Botón para aceptar -->
-                                <form method="POST" action="" class="me-2 mb-2">
+                                <form method="POST" action="{{ route('actualizar_estado_comprobacion', ['id' => $comprobacionInfo->idComprobacion]) }}"
+                                    class="me-2 mb-2">
                                     @csrf
                                     <button type="submit" name="estado" value="aceptar" class="btn btn-primary">
                                         Aceptar
@@ -172,7 +174,8 @@
                                 </form>
 
                                 <!-- Botón para rechazar -->
-                                <form method="POST" action="" class="mb-2">
+                                <form method="POST" action="{{ route('actualizar_estado_comprobacion', ['id' => $comprobacionInfo->idComprobacion]) }}"
+                                    class="mb-2">
                                     @csrf
                                     <button type="submit" name="estado" value="rechazar" class="btn btn-danger">
                                         Rechazar

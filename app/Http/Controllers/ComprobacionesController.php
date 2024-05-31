@@ -100,6 +100,7 @@ class ComprobacionesController extends Controller
             $comprobacion->aceptadoNivel1 = 0;
             $comprobacion->aceptadoNivel2 = 0;
             $comprobacion->aceptadoNivel3 = 0;
+            $comprobacion->fechaComprobacion = now();  // Guardar fecha y hora actual
             $comprobacion->save();
 
             $solicitud = SolicitudViaticos::findOrFail($id);
@@ -173,10 +174,162 @@ class ComprobacionesController extends Controller
 
         // Filtrar los comentarios que tienen el mismo folio de comprobacion
         $comentariosComprobaciones = ComentarioRevisor::with('revisor')
-        ->where('folioComprobacion', $comprobacionInfo->idComprobacion)
-        ->get();
-        
+            ->where('folioComprobacion', $comprobacionInfo->idComprobacion)
+            ->get();
+
         // Pasar la solicitud, comprobación y documentos a la vista
         return view('gastos.viaticos.autorizarComprobacion', compact('solicitud', 'comentariosComprobaciones', 'comprobacionInfo', 'facturas'));
+    }
+
+
+    public function actualizarEstadoComprobacion($id, Request $request)
+    {
+        // Obtener la solicitud especificada por ID
+        $comprobacion = ComprobacionInfo::findOrFail($id);
+
+        // Validar si el usuario ha agregado un comentario
+        $comentarioUsuario = $this->validarComentarioUsuarioComprobacion($comprobacion->idComprobacion);
+
+        if (!$comentarioUsuario) {
+            // El usuario no ha agregado un comentario, puedes devolver un mensaje de error o tomar alguna acción
+            return redirect()->back()->with('error', 'Debes agregar un comentario antes de aceptar o rechazar la solicitud.');
+        }
+
+        // Obtener el nivel del usuario autenticado
+        $nivelUsuario = auth()->user()->nivel;
+
+        // Determinar si el usuario es SuperAdmin
+        $esSuperAdmin = auth()->user()->role === 'SuperAdmin';
+
+        // Verificar que el nivel del usuario sea válido (0, 1, 2 o 3)
+        if ($esSuperAdmin || ($nivelUsuario >= 1 && $nivelUsuario <= 3)) {
+            // Verificar si se está aceptando o rechazando
+            if ($request->estado == 'rechazar') {
+                // Establecer el estado de rechazo
+                $estado = 2;  // Asumiendo que 2 representa 'rechazado'
+                // Actualizar el nivel a 4 en caso de rechazo
+                $comprobacion->nivel = 4;
+                $mensaje = 'Se ha rechazado correctamente.';
+            } else {
+                // Establecer el estado de aceptación
+                $estado = 1;  // Asumiendo que 1 representa 'aceptado'
+                // Incrementar el nivel solo si no se rechaza
+                if (!$esSuperAdmin || $esSuperAdmin) {
+                    $comprobacion->nivel = $comprobacion->nivel + 1;
+                }
+                $mensaje = 'Se ha aceptado correctamente.';
+            }
+
+            // Actualizar los campos aceptadoNivelX dependiendo del nivel del usuario
+            if ($esSuperAdmin) {
+                // El SuperAdmin puede actualizar cualquier nivel
+                if ($comprobacion->aceptadoNivel1 == 0) {
+                    $comprobacion->aceptadoNivel1 = $estado;
+                } elseif ($comprobacion->aceptadoNivel1 == 1 && $comprobacion->aceptadoNivel2 == 0) {
+                    $comprobacion->aceptadoNivel2 = $estado;
+                } elseif ($comprobacion->aceptadoNivel1 == 1 && $comprobacion->aceptadoNivel2 == 1 && $comprobacion->aceptadoNivel3 == 0) {
+                    $comprobacion->aceptadoNivel3 = $estado;
+                }
+            } else {
+                // Actualizar el campo correspondiente según el nivel del usuario
+                switch ($nivelUsuario) {
+                    case 1:
+                        $comprobacion->aceptadoNivel1 = $estado;
+                        break;
+                    case 2:
+                        if ($comprobacion->aceptadoNivel1 == 1) {
+                            $comprobacion->aceptadoNivel2 = $estado;
+                        }
+                        break;
+                    case 3:
+                        if ($comprobacion->aceptadoNivel1 == 1 && $comprobacion->aceptadoNivel2 == 1) {
+                            $comprobacion->aceptadoNivel3 = $estado;
+                        }
+                        break;
+                }
+            }
+
+            // Comprobar si todos los niveles han sido aceptados
+            if ($comprobacion->aceptadoNivel1 == 1 && $comprobacion->aceptadoNivel2 == 1 && $comprobacion->aceptadoNivel3 == 1) {
+
+
+                // Crear una nueva notificación 
+                $contenido = "Se ha aprovado tú comprobación del folio {$comprobacion->folio_via}.";
+                $notificacion = new Notificacion([
+                    'titulo' => 'Comprobación aceptada', // Asignar un título a la notificación
+                    'mensaje' => $contenido, // Asignar el contenido como el mensaje de la notificación
+                    'leida' => false, // Asignar el siguiente nivel
+                    'id_User' => $comprobacion->user_id,  // Acceder al ID del usuario a través de la relación
+                    'folio_via' => $comprobacion->folio_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
+                ]);
+
+                // Guardar la notificación
+                $notificacion->save();
+            }
+
+            // Guardar los cambios en la base de datos
+            $comprobacion->save();
+
+            // Obtener el nivel siguiente
+            $siguienteNivel = $comprobacion->nivel;
+
+            // Eliminar las notificaciones existentes con el mismo folio de solicitud de viáticos y con un nivel definido
+            Notificacion::where('folio_via', $comprobacion->folio_via)
+                ->whereNotNull('nivel')  // Asegura que el campo 'nivel' no sea nulo
+                ->delete();
+
+
+            // Verificar si el siguiente nivel es menor que 4 para guardar la notificación
+            if ($siguienteNivel < 4) {
+                // Crear una nueva notificación 
+                $contenido = "Tienes una nueva comprobación por aprobar del folio {$comprobacion->folio_via}";
+                $notificacion = new Notificacion([
+                    'titulo' => 'Nueva comprobación', // Asignar un título a la notificación
+                    'mensaje' => $contenido, // Asignar el contenido como el mensaje de la notificación
+                    'leida' => false,
+                    'nivel' => $siguienteNivel, // Asignar el siguiente nivel
+                    'folio_via' => $comprobacion->folio_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
+                ]);
+
+                // Guardar la notificación
+                $notificacion->save();
+            }
+
+
+            // Suponiendo que 'autorizar' es el nombre de tu ruta
+            return redirect()->route('autorizar', ['tab' => 'comprobacion'])->with('success', $mensaje);
+        } else {
+            return redirect()->back()->with('error', 'El nivel del usuario no es válido.');
+        }
+    }
+
+
+
+
+    public function validarComentarioUsuarioComprobacion($folioComprobacion)
+    {
+        // Obtenemos el ID del usuario autenticado
+        $idUsuario = auth()->user()->id;
+
+        // Buscamos si existe un comentario del usuario en la tabla comentarios_revisores
+        $comentario = ComentarioRevisor::where('idRevisor', $idUsuario)
+            ->where('folioComprobacion', $folioComprobacion)
+            ->exists();
+
+        return $comentario;
+    }
+
+
+    public function historialComprobacion($id)
+    {
+        // Obtener la comprobación o fallar con una excepción que Laravel manejará como un error 404
+        $comprobacion = ComprobacionInfo::findOrFail($id);
+
+        // Obtener comentarios y facturas relacionados con la comprobación
+        $comentarios = ComentarioRevisor::where('folioComprobacion', $comprobacion->idComprobacion)->get();
+        $facturas = ComprobacionDocumento::where('idComprobacion', $comprobacion->idComprobacion)->get();
+
+        // Pasar las solicitudes filtradas a la vista
+        return view('gastos.viaticos.historial.historial-comprobacion', compact('comprobacion', 'comentarios', 'facturas'));
     }
 }

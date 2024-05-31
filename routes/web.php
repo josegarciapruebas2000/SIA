@@ -15,6 +15,7 @@ use App\Http\Controllers\ComprobacionesController;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ComprobacionDocumento;
 use App\Http\Middleware\CheckRole;
+use App\Models\ComprobacionInfo;
 use App\Models\Empleado;
 
 /*
@@ -188,11 +189,12 @@ Route::get('/autorizar-comprobacion', [ComprobacionesController::class, 'autoriz
     ->name('autorizar.comprobacion')
     ->middleware('nivelOrole:1,2,3,SuperAdmin');
 
-
 Route::get('/autorizar-comprobacion/{id}', [ComprobacionesController::class, 'revisarAutorizacionComprobacion'])->name('revisarAutorizacionComprobacion')
     ->middleware('nivelOrole:1,2,3,SuperAdmin');
 
 Route::post('/comentarios_revisor/comprobacion', [ComentarioRevisorController::class, 'agregarComentarioRevisorComprobación'])->name('comentarios_revisor_comprobacion.agregar');
+
+Route::post('/actualizar-estado/comprobacion/{id}', [ComprobacionesController::class, 'actualizarEstadoComprobacion'])->name('actualizar_estado_comprobacion');
 
 
 
@@ -219,6 +221,13 @@ Route::get('/historial-solicitud/{id}', [SolicitudController::class, 'historialS
     ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 
+Route::get('/historial-comprobacion/{id}', [ComprobacionesController::class, 'historialComprobacion'])
+    ->name('historial.comprobacion')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
+
+
+
+
 //Descargar xml FACTURA
 Route::get('/download-file/xml/{id}', function ($id) {
     $documento = ComprobacionDocumento::find($id);
@@ -242,9 +251,6 @@ Route::get('/download-file/pdf/{id}', function ($id) {
 
 //_________________
 
-Route::get('/historial-comprobacion', function () {
-    return view('gastos/viaticos/historial/historial-comprobacion');
-})->name('historial.comprobacion');
 
 Route::get('/historial-reposicion', function () {
     return view('gastos/viaticos/historial/historial-reposicion');

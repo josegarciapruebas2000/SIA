@@ -23,8 +23,6 @@ class SolicitudViaticos extends Model
         return $this->belongsTo(Proyecto::class, 'idProy_via', 'idProy');
     }
 
-  
-
     public function revisor()
     {
         return $this->belongsTo(User::class, 'revisor_id');

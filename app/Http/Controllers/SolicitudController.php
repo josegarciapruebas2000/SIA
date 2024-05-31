@@ -322,29 +322,41 @@ class SolicitudController extends Controller
         // Obtener el usuario autenticado
         $user = Auth::user();
 
-        // Si el usuario es SuperAdmin, mostrar todas las solicitudes
+        // Si el usuario es SuperAdmin, mostrar todas las solicitudes y comprobaciones
         if ($user->role === 'SuperAdmin') {
             $solicitudes = SolicitudViaticos::orderBy('FOLIO_via', 'desc')->paginate(10);
+            $comprobaciones = ComprobacionInfo::orderBy('folio_via', 'desc')->paginate(10);
         } else {
             // Verificar si el usuario autenticado es un revisor o no
             if ($user->revisor == '1') {  // Asumiendo que '1' significa que el usuario es revisor
-                // Iniciar la consulta básica para revisores
-                $query = SolicitudViaticos::query();
+                // Iniciar la consulta básica para revisores de solicitudes
+                $querySolicitud = SolicitudViaticos::query();
+                $queryComprobacion = ComprobacionInfo::query(); // Iniciar la consulta básica para revisores de comprobaciones
 
-                // Aplicar filtros adicionales basados en el nivel del usuario
+                // Aplicar filtros adicionales basados en el nivel del usuario para solicitudes y comprobaciones
                 if ($user->nivel == '1') {
-                    // Nivel 1: Ver solicitudes una vez que aceptadoNivel1 tenga el valor de 1 o 2
-                    $query->where(function ($q) {
+                    $querySolicitud->where(function ($q) {
                         $q->where('aceptadoNivel1', 1)->orWhere('aceptadoNivel1', 2);
                     });
+                    $queryComprobacion->where('aceptadoNivel1', 1); // Asumiendo que solo necesitan ver comprobaciones aceptadas en Nivel 1
                 } elseif ($user->nivel == '2') {
-                    // Nivel 2: Ver solicitudes una vez que aceptadoNivel2 tenga el valor de 1 o que aceptadoNivel1 tenga el valor de 2
-                    $query->where(function ($q) {
+                    $querySolicitud->where(function ($q) {
+                        $q->where('aceptadoNivel2', 1)->orWhere('aceptadoNivel1', 2);
+                    });
+                    $queryComprobacion->where(function ($q) {
                         $q->where('aceptadoNivel2', 1)->orWhere('aceptadoNivel1', 2);
                     });
                 } elseif ($user->nivel == '3') {
-                    // Nivel 3: Ver solicitudes una vez que aceptadoNivel2 tenga el valor de 1 o 2, y además ver si todos los niveles son 2
-                    $query->where(function ($q) {
+                    $querySolicitud->where(function ($q) {
+                        $q->where('aceptadoNivel2', 1)
+                            ->orWhere('aceptadoNivel2', 2)
+                            ->orWhere(function ($q2) {
+                                $q2->where('aceptadoNivel1', 2)
+                                    ->where('aceptadoNivel2', 2)
+                                    ->where('aceptadoNivel3', 2);
+                            });
+                    });
+                    $queryComprobacion->where(function ($q) {
                         $q->where('aceptadoNivel2', 1)
                             ->orWhere('aceptadoNivel2', 2)
                             ->orWhere(function ($q2) {
@@ -354,17 +366,22 @@ class SolicitudController extends Controller
                             });
                     });
                 }
-                $solicitudes = $query->orderBy('FOLIO_via', 'desc')->paginate(10);
+                $solicitudes = $querySolicitud->orderBy('FOLIO_via', 'desc')->paginate(10);
+                $comprobaciones = $queryComprobacion->orderBy('folio_via', 'desc')->paginate(10);
             } else {
-                // Para usuarios que no son revisores, mostrar solo sus propias solicitudes
-                $solicitudes = SolicitudViaticos::where('user_id', $user->id)
-                    ->orderBy('FOLIO_via', 'desc')
-                    ->paginate(10);
+                // Para usuarios que no son revisores, mostrar solo sus propias solicitudes y comprobaciones
+                $solicitudes = SolicitudViaticos::where('user_id', $user->id)->orderBy('FOLIO_via', 'desc')->paginate(10);
+
+                // Obtener los folios de las solicitudes que pertenecen al usuario
+                $folios = SolicitudViaticos::where('user_id', $user->id)->pluck('FOLIO_via');
+
+                // Filtrar las comprobaciones que están relacionadas con esos folios
+                $comprobaciones = ComprobacionInfo::whereIn('folio_via', $folios)->orderBy('folio_via', 'desc')->paginate(10);
             }
         }
 
-        // Pasar las solicitudes filtradas a la vista
-        return view('gastos.viaticos.historial.historial', compact('solicitudes'));
+        // Pasar las solicitudes y comprobaciones filtradas a la vista
+        return view('gastos.viaticos.historial.historial', compact('solicitudes', 'comprobaciones'));
     }
 
 

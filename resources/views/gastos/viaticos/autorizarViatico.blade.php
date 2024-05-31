@@ -175,8 +175,7 @@
 
 
     <script>
-        
-        @if(session('error'))
+        @if (session('error'))
             Swal.fire({
                 icon: 'warning',
                 title: 'No has agregado comentarios',
@@ -184,12 +183,38 @@
             });
         @endif
 
-        @if(session('success'))
+        @if (session('success'))
             Swal.fire({
                 icon: 'success',
                 title: '{{ session('success') }}',
             });
         @endif
+
+
+        $(document).ready(function() {
+            // Leer el parámetro 'tab' de la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const tab = urlParams.get('tab');
+
+            // Si hay un parámetro 'tab', activar la pestaña correspondiente y mostrar el contenido
+            if (tab) {
+                $('.filter-btn').removeClass('active');
+                $(`.filter-btn[data-target="${tab}"]`).addClass('active');
+                $('.table-container').removeClass(
+                'active-table'); // Asegúrate de que todos los contenedores estén ocultos
+                $(`#${tab}`).addClass('active-table'); // Muestra solo el contenedor de la pestaña activa
+            }
+
+            // Evento para cambiar de pestañas y mostrar contenido asociado
+            $('.filter-btn').click(function() {
+                let target = $(this).data('target');
+
+                $('.filter-btn').removeClass('active');
+                $(this).addClass('active');
+                $('.table-container').removeClass('active-table');
+                $(`#${target}`).addClass('active-table');
+            });
+        });
     </script>
-    
+
 @endsection
