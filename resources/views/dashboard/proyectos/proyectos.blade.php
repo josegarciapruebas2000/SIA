@@ -162,7 +162,8 @@
                                                 <span class="input-group-text">$</span>
                                             </div>
                                             <input type="number" class="form-control" id="monto" name="monto"
-                                                aria-label="Amount (to the nearest dollar)" required>
+                                                aria-label="Amount (to the nearest dollar)" step="0.01" required>
+
                                         </div>
                                     </div>
                                 </div>
@@ -287,7 +288,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
                                         <input type="number" class="form-control" id="monto{{ $proyecto->idProy }}"
-                                            name="monto" aria-label="Amount (to the nearest dollar)"
+                                            name="monto" aria-label="Amount (to the nearest dollar)" step="0.01"
                                             value="{{ $proyecto->montoProy }}">
                                     </div>
                                 </div>

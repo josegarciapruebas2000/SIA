@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 
+@php
+    use Carbon\Carbon;
+@endphp
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -191,6 +196,19 @@
             button {
                 display: none;
             }
+
+            .form-control {
+                display: none;
+            }
+
+            .print-text {
+                display: block !important;
+            }
+        }
+
+        .print-text {
+            display: none;
+
         }
 
         body {
@@ -255,6 +273,14 @@
         .right {
             text-align: right;
         }
+
+
+        .no-bold {
+            font-weight: normal;
+            /* Quitar negrita del texto */
+        }
+    </style>
+
     </style>
 </head>
 
@@ -265,10 +291,11 @@
             <tr>
                 <td class="logo"><img src="/img/logo.png" alt="Logo"></td>
                 <td class="title">
-                    <h4>SOLICITUD DE COMPROBACIÓN DE GASTOS</h4>
+                    <h4>SOLICITUD DE CHEQUE ELETRÓNICO</h4>
                 </td>
                 <td class="revision">
-                    <p id="revision-data">Rev: 0<br>Fecha: <span id="current-date"></span><br>Página: <span id="current-page"></span> de <span id="total-pages"></span></p>
+                    <p id="revision-data">Rev: 0<br>Fecha: <span id="current-date"></span><br>Página: <span
+                            id="current-page"></span> de <span id="total-pages"></span></p>
                 </td>
             </tr>
         </table>
@@ -276,113 +303,88 @@
         <table>
             <tr>
                 <th>Fecha de solicitud:</th>
-                <td>19-ene-24</td>
-                <th>Periodo del gasto:</th>
-                <th>Del</th>
-                <td>01-ene-24</td>
-            </tr>
-            <tr>
+                <td>{{ Carbon::parse($solicitud->solicitudfecha_via)->translatedFormat('d \\ F \\ Y') }}</td>
                 <th>Fecha de requerido:</th>
-                <td>31-ene-24</td>
-                <td></td>
-                <th>Al</th>
-                <td>25-ene-24</td>
-                <td colspan="4"></td>
+                <td colspan="4">{{ Carbon::parse($solicitud->solFinalFecha_via)->translatedFormat('d \\ F \\ Y') }}</td>
             </tr>
-            <tr>
-                <th>A nombre de (Beneficiario):</th>
-                <td colspan="5">JOSE MANUEL TORRES VALENCIA</td>
-            </tr>
-        </table>
-
-        <table>
             <tr>
                 <th>Se solicita la cantidad de:</th>
-                <td>$ 0.00</td>
-                <th>como</th>
-                <td>comprobación</td>
+                <td colspan="4">$ <span id="total-amount">{{ $solicitud->total_via }}</span></td>
             </tr>
             <tr>
                 <th>Cantidad con letra:</th>
-                <td colspan="5">Cero</td>
+                <td colspan="5"><span id="amount-in-words">Cero</span></td>
             </tr>
             <tr>
-                <th>Concepto o motivo del gasto:</th>
-                <td colspan="5">Visita a Cardenas para recolección de material (Gasolina) (19-01-24)</td>
+                <th>A nombre de (Beneficiario):</th>
+                <td colspan="5">{{ $solicitud->user->name }}</td>
+            </tr>
+            <tr>
+                <th>Concepto o motivo:</th>
+                <td colspan="5">{{ $solicitud->nombreSolicitud }}</td>
             </tr>
         </table>
 
-        <h3>GASTOS REALIZADOS</h3>
+        <h3>PRESUPUESTO</h3>
         <table class="gastos-realizados-table">
             <tr>
                 <th>Código QB</th>
-                <td style="text-align: left;" colspan="3">Pasajes ()</td>
+                <td style="text-align: left;" colspan="3"></td>
             </tr>
             <tr>
-                <th>Factura</th>
-                <th>Descripción</th>
+                <th rowspan="2">Concepto</th>
+                <td style="text-align: left;" colspan="5">{{ $solicitud->nombreSolicitud }}</td>
+
+            </tr>
+            <tr>
                 <th>Subtotal</th>
-                <th>Total</th>
+                <th style="text-align: left;">IVA</th>
             </tr>
             <tr>
                 <td></td>
-                <td>Bitácora de Taxi</td>
-                <td>$1,500.00</td>
-                <td>$1,500.00</td>
+                <td class="bold">$ {{ $solicitud->total_via }}</td>
+                <td style="text-align: left;" class="bold">$ 0.00</td>
             </tr>
             <tr>
-                <td></td>
-                <td></td>
-                <td class="bold">$1,500.00</td>
-                <td class="bold">$1,500.00</td>
+                <th colspan="2" class="bold" style="text-align: right;">Total</th>
+                <td style="text-align: left;" class="bold">$ {{ $solicitud->total_via }}</td>
             </tr>
         </table>
 
         <table>
             <tr>
-                <td class="right bold">Subtotal</td>
-                <td>$1,500.00</td>
+                <th>Número de personas:</th>
+                <th colspan="4">Perido del gasto:</th>
             </tr>
             <tr>
-                <td class="right bold">Total Comprobado</td>
-                <td>$1,500.00</td>
+                <td>1</td>
+                <th>Del</th>
+                <td>{{ Carbon::parse($solicitud->proyecto->fechaInicio)->translatedFormat('d \\ F \\ Y') }}</td>
+                <th>Al</th>
+                <td>{{ Carbon::parse($solicitud->proyecto->fechaFin)->translatedFormat('d \\ F \\ Y') }}</td>
             </tr>
             <tr>
-                <td class="right bold">Total a Comprobar</td>
-                <td>$1,500.00</td>
-            </tr>
-            <tr>
-                <td class="right bold">Diferencia</td>
-                <td class="bold">$0.00</td>
-            </tr>
-        </table>
-
-        <table>
-            <tr>
-                <th>Departamento:</th>
-                <td>Coordinador</td>
-                <th>Proyecto (Quickbooks):</th>
-                <td>GASOLINA</td>
-            </tr>
-            <tr>
-                <td colspan="4" class="center bold underline">Si requiere transferencia electrónica, favor de llenar
-                    los siguientes datos</td>
-            </tr>
-            <tr>
-                <th class="center">Cuenta Bancaria</th>
-                <td colspan="3" class="center">N/D (N/D: N/D)</td>
+                <th>Departamento <br>
+                    <p class="no-bold">
+                        <input type="text" class="form-control">
+                        <span class="print-text"></span>
+                    </p>
+                </th>
+                <th colspan="4">Nombre del proyecto <br>
+                    <p class="no-bold">{{ $solicitud->proyecto->nombreProy }}</p>
+                </th>
             </tr>
         </table>
 
         <table class="signature-table">
             <tr>
-                <th>Solicita</th>
-                <th>Autoriza</th>
-                <th>Revisa</th>
+                <th>SOLICITA</th>
+                <th>AUTORIZA</th>
+                <th>VO. BO.</th>
             </tr>
             <tr class="sign-space">
-                <td>JOSE MANUEL TORRES VALENCIA</td>
-                <td>Erick Uriel Luria Hernandez</td>
+                <td>{{ $solicitud->user->name }}</td>
+                <td>{{ $user->name }}</td>
                 <td></td>
             </tr>
             <tr>
@@ -393,9 +395,17 @@
         </table>
     </div>
 
-    <button class="print-button" onclick="window.print()">Vista Previa / Imprimir</button>
+    <button class="print-button" onclick="prepareForPrint()">Vista Previa / Imprimir</button>
+
 
     <script>
+        function prepareForPrint() {
+            var input = document.querySelector('.form-control');
+            var span = document.querySelector('.print-text');
+            span.textContent = input.value;
+            window.print();
+        }
+
         function updateDateAndPagination() {
             const currentDate = new Date();
             const options = {
@@ -411,10 +421,47 @@
         }
 
         window.onload = updateDateAndPagination; // Asegura que la función se ejecuta después de cargar el documento
+
+        function numberToWords(num) {
+            const units = ['Cero', 'Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve', 'Diez',
+                'Once', 'Doce', 'Trece', 'Catorce', 'Quince'
+            ];
+            const tens = ['', '', 'Veinte', 'Treinta', 'Cuarenta', 'Cincuenta', 'Sesenta', 'Setenta', 'Ochenta', 'Noventa'];
+            const hundreds = ['', 'Cien', 'Doscientos', 'Trescientos', 'Cuatrocientos', 'Quinientos', 'Seiscientos',
+                'Setecientos', 'Ochocientos', 'Novecientos'
+            ];
+
+            function convertToWords(n) {
+                if (n < 16) return units[n];
+                if (n < 20) return 'Dieci' + units[n - 10].toLowerCase();
+                if (n < 30) return (n === 20) ? 'Veinte' : 'Veinti' + units[n - 20].toLowerCase();
+                if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 === 0 ? '' : ' y ' + units[n % 10].toLowerCase());
+                if (n < 200) return (n === 100 ? 'Cien' : 'Ciento ' + convertToWords(n - 100).toLowerCase());
+                if (n < 1000) return hundreds[Math.floor(n / 100)] + ' ' + convertToWords(n % 100).toLowerCase();
+                if (n === 1000) return 'Mil';
+                if (n < 2000) return 'Mil ' + convertToWords(n % 1000).toLowerCase();
+                if (n < 1000000) return convertToWords(Math.floor(n / 1000)) + ' mil' + (n % 1000 !== 0 ? ' ' +
+                    convertToWords(n % 1000).toLowerCase() : '');
+
+                return n.toString();
+            }
+
+            return convertToWords(num);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const totalAmount = parseFloat(document.getElementById('total-amount').textContent);
+            const integerPart = Math.floor(totalAmount);
+            const decimalPart = Math.round((totalAmount - integerPart) * 100);
+
+            const amountInWords = numberToWords(integerPart);
+            const formattedAmount = amountInWords.charAt(0).toUpperCase() + amountInWords.slice(1) +
+                ` pesos ${decimalPart.toString().padStart(2, '0')}/100 M.N.`;
+
+            document.getElementById('amount-in-words').textContent = formattedAmount;
+        });
     </script>
 
 </body>
-
-
 
 </html>

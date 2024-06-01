@@ -69,6 +69,7 @@ class SolicitudController extends Controller
         $solicitud->nombreSolicitud = $request->input('solicitud');
         $solicitud->idProy_via = $request->input('proyecto');
         $solicitud->comentario_via = $request->input('comentario');
+        $solicitud->fechaSolicitud = now();
         $solicitud->solicitudfecha_via = $request->input('fecha_inicio');
         $solicitud->solFinalFecha_via = $request->input('fecha_fin');
         $solicitud->revisor_id = $revisor->id;
@@ -396,5 +397,14 @@ class SolicitudController extends Controller
 
         // Pasar las solicitudes filtradas a la vista
         return view('gastos.viaticos.historial.historial-solicitud', compact('solicitud', 'comentarios'));
+    }
+
+    public function verCheque($id) {
+
+        $user = Auth::user();
+
+        $solicitud = SolicitudViaticos::find($id);
+
+        return view('gastos.viaticos.historial.cheque', compact('solicitud', 'user'));
     }
 }

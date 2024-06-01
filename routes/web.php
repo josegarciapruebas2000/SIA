@@ -298,5 +298,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 Route::get('/pruebasPDF', function () {
-    return view('gastos/viaticos/pruebas');
+    return view('gastos/viaticos/historial/cheque');
 })->name('pruebas');
+
+
+Route::get('/cheque/{id}', [SolicitudController::class, 'verCheque'])
+    ->name('generar.cheque');
