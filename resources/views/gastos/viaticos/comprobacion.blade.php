@@ -586,7 +586,7 @@
             btn.disabled = true;
             btn.textContent = 'Enviando...'; // Cambiar el texto del botón para indicar el proceso
 
-            const nivel = document.getElementById('revisor').value;
+            const revisorId = document.getElementById('revisor').value; // Obtener el ID del revisor seleccionado
             const montoComprobadoText = document.getElementById('monto-comprobado').textContent.replace(
                 'Monto comprobado: $', '').replace(',', '');
             const montoComprobado = parseFloat(montoComprobadoText) || 0;
@@ -602,7 +602,7 @@
                 console.log(`PDF File: ${pdfFiles[index] ? pdfFiles[index].name : 'No file'}`);
             });
 
-            formData.append('nivel', nivel);
+            formData.append('revisor_id', revisorId); // Cambiado de 'nivel' a 'revisor_id'
             formData.append('monto_comprobado', montoComprobado);
 
             tableRows.forEach((row, index) => {
@@ -666,6 +666,7 @@
                     });
                 });
         });
+
 
 
 

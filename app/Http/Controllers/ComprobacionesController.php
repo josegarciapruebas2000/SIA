@@ -86,21 +86,41 @@ class ComprobacionesController extends Controller
     public function store(Request $request, $id)
     {
         try {
+            // Obtener id del revisor
+            $revisorId = $request->input('revisor_id');
+
             // Obtener el monto comprobado del campo en el formulario
             $montoComprobado = floatval(str_replace('$', '', $request->input('monto_comprobado')));
 
-            // Obtener el nivel del revisor
-            $nivel = $request->input('nivel');
+            // Buscar el usuario en la tabla de Users y obtener su nivel
+            $revisor = User::find($revisorId);
+            if (!$revisor) {
+                return response()->json(['error' => 'Revisor no encontrado'], 404);
+            }
+            $nivelRevisor = $revisor->nivel;
 
             // Crear una nueva instancia de ComprobacionInfo y asignar valores
             $comprobacion = new ComprobacionInfo();
             $comprobacion->folio_via = $id;
             $comprobacion->monto_comprobado = $montoComprobado;
-            $comprobacion->nivel = $nivel - 1;
-            $comprobacion->aceptadoNivel1 = 0;
-            $comprobacion->aceptadoNivel2 = 0;
-            $comprobacion->aceptadoNivel3 = 0;
+            $comprobacion->nivel = $nivelRevisor;
             $comprobacion->fechaComprobacion = now();  // Guardar fecha y hora actual
+
+            // Ajustar los valores de aceptadoNivel1, aceptadoNivel2, y aceptadoNivel3 según el nivel del revisor
+            if ($nivelRevisor == 1) {
+                $comprobacion->aceptadoNivel1 = 0;
+                $comprobacion->aceptadoNivel2 = 0;
+                $comprobacion->aceptadoNivel3 = 0;
+            } elseif ($nivelRevisor == 2) {
+                $comprobacion->aceptadoNivel1 = 1;
+                $comprobacion->aceptadoNivel2 = 0;
+                $comprobacion->aceptadoNivel3 = 0;
+            } elseif ($nivelRevisor == 3) {
+                $comprobacion->aceptadoNivel1 = 1;
+                $comprobacion->aceptadoNivel2 = 1;
+                $comprobacion->aceptadoNivel3 = 0;
+            }
+
             $comprobacion->save();
 
             $solicitud = SolicitudViaticos::findOrFail($id);
@@ -149,6 +169,7 @@ class ComprobacionesController extends Controller
             return response()->json(['error' => 'Ocurrió un error al guardar los documentos: ' . $e->getMessage()], 500);
         }
     }
+
 
 
 
@@ -333,16 +354,17 @@ class ComprobacionesController extends Controller
         return view('gastos.viaticos.historial.historial-comprobacion', compact('comprobacion', 'comentarios', 'facturas'));
     }
 
-    public function verComprobacionGasto($id) {
+    public function verComprobacionGasto($id)
+    {
         $user = Auth::user();
-    
+
         // Obtener la información de comprobacion junto con sus documentos relacionados
         $comprobacion = ComprobacionInfo::with('documentos')->find($id);
-    
+
         if (!$comprobacion) {
             return redirect()->back()->with('error', 'Comprobación no encontrada');
         }
-    
+
         // Calcular los totales
         $totalSubtotal = $comprobacion->documentos->sum('subtotal');
         $totalIva = $comprobacion->documentos->sum('iva');
@@ -350,10 +372,9 @@ class ComprobacionesController extends Controller
         $totalComprobado = $comprobacion->monto_comprobado;
         $totalAComprobar = $comprobacion->solicitudviatico->total_via;
         $diferencia = $totalComprobado - $totalAComprobar;
-    
+
         $aFavor = $diferencia > 0 ? 'Beneficiario' : 'Empresa';
-    
+
         return view('gastos.viaticos.historial.comprobacionGasto', compact('comprobacion', 'user', 'totalSubtotal', 'totalIva', 'totalTotal', 'totalComprobado', 'totalAComprobar', 'diferencia', 'aFavor'));
     }
-        
 }

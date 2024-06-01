@@ -55,11 +55,14 @@ class SolicitudController extends Controller
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
             'revisor' => 'required|exists:users,id',
-            'total_via' => 'required|numeric', // Agregar la validación para el campo total_via
+            'total_via' => 'required|numeric',
         ]);
 
         // Obtener el ID del usuario autenticado
         $user_id = Auth::id();
+
+        // Obtener el usuario autenticado
+        $user = Auth::user();
 
         // Obtener el revisor
         $revisor = User::findOrFail($request->input('revisor'));
@@ -73,15 +76,35 @@ class SolicitudController extends Controller
         $solicitud->solicitudfecha_via = $request->input('fecha_inicio');
         $solicitud->solFinalFecha_via = $request->input('fecha_fin');
         $solicitud->revisor_id = $revisor->id;
-        $solicitud->total_via = $request->input('total_via'); // Asignar el valor del campo total_via
-        $solicitud->user_id = $user_id; // Asignar el ID del usuario autenticado
+        $solicitud->total_via = $request->input('total_via');
+        $solicitud->user_id = $user_id;
 
         // Asignar el nivel basado en el revisor
         $solicitud->nivel = $revisor->nivel;
 
+        // Verificar si el usuario autenticado es revisor
+        if ($user->revisor == 1) {
+            switch ($user->nivel) {
+                case 1:
+                    $solicitud->aceptadoNivel1 = 1;
+                    break;
+                case 2:
+                    $solicitud->aceptadoNivel1 = 1;
+                    $solicitud->aceptadoNivel2 = 1;
+                    break;
+                case 3:
+                    $solicitud->aceptadoNivel1 = 1;
+                    $solicitud->aceptadoNivel2 = 1;
+                    $solicitud->aceptadoNivel3 = 1;
+                    $solicitud->nivel = 4; // Cambiar el nivel a 4
+                    $solicitud->comprobacionVisible = 1; // Establecer comprobacionVisible a 1
+                    break;
+            }
+        }
+
         $solicitud->save();
 
-        // Crear una nueva notificación 
+        // Crear una nueva notificación
         $contenido = "Tienes una nueva solicitud por aprobar del folio {$solicitud->FOLIO_via}";
         $notificacion = new Notificacion([
             'titulo' => 'Nueva solicitud', // Asignar un título a la notificación
@@ -91,13 +114,13 @@ class SolicitudController extends Controller
             'folio_via' => $solicitud->FOLIO_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
         ]);
 
-
         // Guardar la notificación
         $notificacion->save();
 
         // Redirigir al dashboard con el mensaje de éxito
         return redirect()->route('dashboard')->with(['showConfirmationModal' => true, 'success' => '¡Tu solicitud ha sido enviada con éxito!']);
     }
+
 
 
     // * Solicitudes - Comprobaciones  *
@@ -399,7 +422,8 @@ class SolicitudController extends Controller
         return view('gastos.viaticos.historial.historial-solicitud', compact('solicitud', 'comentarios'));
     }
 
-    public function verCheque($id) {
+    public function verCheque($id)
+    {
 
         $user = Auth::user();
 
