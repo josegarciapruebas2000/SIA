@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('solicitudViaticos', function (Blueprint $table) {
+        Schema::table('solicitudviaticos', function (Blueprint $table) {
             $table->string('nivel')->after('revisor_id');
         });
     }

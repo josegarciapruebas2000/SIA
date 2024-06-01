@@ -302,5 +302,9 @@ Route::get('/pruebasPDF', function () {
 })->name('pruebas');
 
 
+// PDF generados en historial
 Route::get('/cheque/{id}', [SolicitudController::class, 'verCheque'])
     ->name('generar.cheque');
+
+Route::get('/comprobacion/pdf/{id}', [ComprobacionesController::class, 'verComprobacionGasto'])
+    ->name('generar.coprobacion');

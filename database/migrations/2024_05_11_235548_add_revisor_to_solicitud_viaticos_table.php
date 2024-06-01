@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('solicitudViaticos', function (Blueprint $table) {
+        Schema::table('solicitudviaticos', function (Blueprint $table) {
             $table->unsignedBigInteger('revisor_id')->nullable();
             $table->foreign('revisor_id')->references('id')->on('users')->onDelete('set null');
         });
@@ -26,7 +26,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('solicitudViaticos', function (Blueprint $table) {
+        Schema::table('solicitudviaticos', function (Blueprint $table) {
             $table->unsignedBigInteger('revisor_id')->nullable();
             $table->foreign('revisor_id')->references('id')->on('users')->onDelete('set null');
         });

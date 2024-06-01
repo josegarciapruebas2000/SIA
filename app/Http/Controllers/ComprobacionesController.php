@@ -332,4 +332,28 @@ class ComprobacionesController extends Controller
         // Pasar las solicitudes filtradas a la vista
         return view('gastos.viaticos.historial.historial-comprobacion', compact('comprobacion', 'comentarios', 'facturas'));
     }
+
+    public function verComprobacionGasto($id) {
+        $user = Auth::user();
+    
+        // Obtener la información de comprobacion junto con sus documentos relacionados
+        $comprobacion = ComprobacionInfo::with('documentos')->find($id);
+    
+        if (!$comprobacion) {
+            return redirect()->back()->with('error', 'Comprobación no encontrada');
+        }
+    
+        // Calcular los totales
+        $totalSubtotal = $comprobacion->documentos->sum('subtotal');
+        $totalIva = $comprobacion->documentos->sum('iva');
+        $totalTotal = $comprobacion->documentos->sum('total');
+        $totalComprobado = $comprobacion->monto_comprobado;
+        $totalAComprobar = $comprobacion->solicitudviatico->total_via;
+        $diferencia = $totalComprobado - $totalAComprobar;
+    
+        $aFavor = $diferencia > 0 ? 'Beneficiario' : 'Empresa';
+    
+        return view('gastos.viaticos.historial.comprobacionGasto', compact('comprobacion', 'user', 'totalSubtotal', 'totalIva', 'totalTotal', 'totalComprobado', 'totalAComprobar', 'diferencia', 'aFavor'));
+    }
+        
 }

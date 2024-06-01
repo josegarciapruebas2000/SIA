@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('solicitudViaticos', function (Blueprint $table) {
-            Schema::table('solicitudViaticos', function (Blueprint $table) {
+        Schema::table('solicitudviaticos', function (Blueprint $table) {
+            Schema::table('solicitudviaticos', function (Blueprint $table) {
                 $table->boolean('aceptadoNivel1')->default(false);
                 $table->boolean('aceptadoNivel2')->default(false);
                 $table->boolean('aceptadoNivel3')->default(false);

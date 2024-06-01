@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('solicitudViaticos', function (Blueprint $table) {
+        Schema::table('solicitudviaticos', function (Blueprint $table) {
             $table->boolean('comprobacionVisible')->default(false);
         });
     }

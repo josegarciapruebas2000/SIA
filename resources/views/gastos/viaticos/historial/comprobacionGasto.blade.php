@@ -5,11 +5,13 @@
     use Carbon\Carbon;
 @endphp
 
+<link rel="icon" href="/img/logo.png" sizes="32x32" type="image/png">
+
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOLICITUD DE CHEQUE ELETRONICO</title>
+    <title>SOLICITUD DE COMPROBACION DE GASTOS</title>
     <style>
         .print-button {
             padding: 10px 20px;
@@ -45,7 +47,8 @@
 
             footer,
             header,
-            .hide-on-print {
+            .hide-on-print,
+            .print-button {
                 display: none;
             }
         }
@@ -61,7 +64,7 @@
         .container {
             width: 100%;
             max-width: 800px;
-            margin: 20px auto;
+            margin: 60px auto; /* Ajusta este valor para mover más abajo */
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
@@ -71,6 +74,7 @@
         .header-table {
             width: 100%;
             margin-bottom: 20px;
+            margin-top: 60px; /* Agrega un margen superior a la tabla */
         }
 
         .header-table th,
@@ -136,13 +140,9 @@
 
         .signature-table .sign-space td {
             vertical-align: bottom;
-            /* Alinea el contenido al fondo de la celda */
             font-size: 12px;
-            /* Ajusta el tamaño del texto si es necesario */
             font-style: italic;
-            /* Opcional: estilo de fuente para diferenciarlo */
         }
-
 
         .bold {
             font-weight: bold;
@@ -169,14 +169,10 @@
             body {
                 width: 100%;
                 height: 100vh;
-                /* Altura completa de la ventana de visualización */
                 margin: 0;
                 display: flex;
-                /* Habilita Flexbox para el body */
                 justify-content: center;
-                /* Centrado horizontal */
                 align-items: center;
-                /* Centrado vertical */
                 padding: 0;
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
@@ -187,7 +183,6 @@
                 margin: 0;
                 width: auto;
                 max-width: 100%;
-                /* Ancho máximo para evitar desbordamiento */
             }
 
             footer,
@@ -204,11 +199,18 @@
             .print-text {
                 display: block !important;
             }
+
+            .cuenta-bancaria {
+                display: none;
+            }
+
+            .print-text-banca {
+                display: block !important;
+            }
         }
 
         .print-text {
             display: none;
-
         }
 
         body {
@@ -220,7 +222,6 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            /* Altura mínima completa de la ventana de visualización */
         }
 
         .container {
@@ -231,7 +232,6 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 20px;
-            /* Margen para mantener el contenido centrado y dentro de un marco visual atractivo */
         }
 
         .header-table,
@@ -273,14 +273,6 @@
         .right {
             text-align: right;
         }
-
-
-        .no-bold {
-            font-weight: normal;
-            /* Quitar negrita del texto */
-        }
-    </style>
-
     </style>
 </head>
 
@@ -291,7 +283,7 @@
             <tr>
                 <td class="logo"><img src="/img/logo.png" alt="Logo"></td>
                 <td class="title">
-                    <h4>SOLICITUD DE CHEQUE ELETRÓNICO</h4>
+                    <h4>SOLICITUD DE COMPROBACIÓN DE GASTOS</h4>
                 </td>
                 <td class="revision">
                     <p id="revision-data">Rev: 0<br>Fecha: <span id="current-date"></span><br>Página: <span
@@ -303,76 +295,128 @@
         <table>
             <tr>
                 <th>Fecha de solicitud:</th>
-                <td>{{ Carbon::parse($solicitud->solicitudfecha_via)->translatedFormat('d \\ F \\ Y') }}</td>
-                <th>Fecha de requerido:</th>
-                <td colspan="4">{{ Carbon::parse($solicitud->solFinalFecha_via)->translatedFormat('d \\ F \\ Y') }}</td>
+                <td>{{ Carbon::parse($comprobacion->solicitudviatico->solicitudfecha_via)->translatedFormat('d \\ F \\ Y') }}
+                </td>
+                <th>Periodo del gasto:</th>
+                <th>Del</th>
+                <td>{{ Carbon::parse($comprobacion->solicitudviatico->proyecto->fechaInicio)->translatedFormat('d \\ F \\ Y') }}
+                </td>
             </tr>
             <tr>
+                <th>Fecha de requerido:</th>
+                <td>{{ Carbon::parse($comprobacion->solicitudviatico->solFinalFecha_via)->translatedFormat('d \\ F \\ Y') }}
+                </td>
+                <td></td>
+                <th>Al</th>
+                <td>{{ Carbon::parse($comprobacion->solicitudviatico->proyecto->fechaFin)->translatedFormat('d \\ F \\ Y') }}
+                </td>
+                <td colspan="4"></td>
+            </tr>
+            <tr>
+                <th>A nombre de (Beneficiario):</th>
+                <td colspan="5">{{ $comprobacion->solicitudviatico->user->name }}</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
                 <th>Se solicita la cantidad de:</th>
-                <td colspan="4">$ <span id="total-amount">{{ number_format($solicitud->total_via, 2) }}</span></td>                
+                <td>$ <span id="total-amount">{{ number_format($comprobacion->solicitudviatico->total_via, 2) }}</span>
+                </td>
+                <th>como</th>
+                <td>Comprobación</td>
             </tr>
             <tr>
                 <th>Cantidad con letra:</th>
                 <td colspan="5"><span id="amount-in-words">Cero</span></td>
             </tr>
             <tr>
-                <th>A nombre de (Beneficiario):</th>
-                <td colspan="5">{{ $solicitud->user->name }}</td>
-            </tr>
-            <tr>
-                <th>Concepto o motivo:</th>
-                <td colspan="5">{{ $solicitud->nombreSolicitud }}</td>
+                <th>Concepto o motivo del gasto:</th>
+                <td colspan="5">{{ $comprobacion->solicitudviatico->nombreSolicitud }}</td>
             </tr>
         </table>
 
-        <h3>PRESUPUESTO</h3>
+        <h3>GASTOS REALIZADOS</h3>
         <table class="gastos-realizados-table">
             <tr>
-                <th>Código QB</th>
-                <td style="text-align: left;" colspan="3"></td>
+                <th colspan="1">Código QB</th>
+                <td style="text-align: left;" colspan="4"></td>
             </tr>
             <tr>
-                <th rowspan="2">Concepto</th>
-                <td style="text-align: left;" colspan="5">{{ $solicitud->nombreSolicitud }}</td>
-
-            </tr>
-            <tr>
+                <th>Factura</th>
+                <th>Descripción</th>
                 <th>Subtotal</th>
-                <th style="text-align: left;">IVA</th>
+                <th>IVA</th>
+                <th>Total</th>
             </tr>
+            @foreach ($comprobacion->documentos as $documento)
+                <tr>
+                    <td>{{ $documento->N_factura }}</td>
+                    <td>{{ $documento->descripcion }}</td>
+                    <td>{{ number_format($documento->subtotal, 2) }}</td>
+                    <td>{{ number_format($documento->iva, 2) }}</td>
+                    <td>{{ number_format($documento->total, 2) }}</td>
+                </tr>
+            @endforeach
             <tr>
-                <td></td>
-                <td class="bold">$ {{ number_format($solicitud->total_via, 2) }}</td>
-                <td style="text-align: left;" class="bold">$ 0.00</td>
-            </tr>
-            <tr>
-                <th colspan="2" class="bold" style="text-align: right;">Total</th>
-                <td style="text-align: left;" class="bold">$ {{ number_format($solicitud->total_via, 2) }}</td>                
+                <td colspan="2" class="right bold" style="text-align: right;">Totales:</td>
+                <td class="bold">{{ number_format($totalSubtotal, 2) }}</td>
+                <td class="bold">{{ number_format($totalIva, 2) }}</td>
+                <td class="bold">{{ number_format($totalTotal, 2) }}</td>
             </tr>
         </table>
 
         <table>
             <tr>
-                <th>Número de personas:</th>
-                <th colspan="4">Perido del gasto:</th>
+                <th class="right bold">Subtotal</th>
+                <td>$ {{ number_format($totalSubtotal, 2) }}</td>
             </tr>
             <tr>
-                <td>1</td>
-                <th>Del</th>
-                <td>{{ Carbon::parse($solicitud->proyecto->fechaInicio)->translatedFormat('d \\ F \\ Y') }}</td>
-                <th>Al</th>
-                <td>{{ Carbon::parse($solicitud->proyecto->fechaFin)->translatedFormat('d \\ F \\ Y') }}</td>
+                <th class="right bold">IVA</th>
+                <td>$ {{ number_format($totalIva, 2) }}</td>
             </tr>
             <tr>
-                <th>Departamento <br>
+                <th class="right bold">Total Comprobado</th>
+                <td>$ {{ number_format($totalComprobado, 2) }}</td>
+            </tr>
+            <tr>
+                <th class="right bold">Total a Comprobar</th>
+                <td>$ {{ number_format($totalAComprobar, 2) }}</td>
+            </tr>
+            <tr>
+                <th class="right bold">Diferencia</th>
+                <td class="bold">$ {{ number_format($diferencia, 2) }}</td>
+            </tr>
+            <tr>
+                <th class="right bold">A favor</th>
+                <td class="bold">{{ $aFavor }}</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th>Departamento:</th>
+                <td>
                     <p class="no-bold">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" placeholder="Ingrese un departamento">
                         <span class="print-text"></span>
                     </p>
-                </th>
-                <th colspan="4">Nombre del proyecto <br>
-                    <p class="no-bold">{{ $solicitud->proyecto->nombreProy }}</p>
-                </th>
+                </td>
+                <th>Proyecto (Quickbooks):</th>
+                <td>{{ $comprobacion->solicitudviatico->nombreSolicitud }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" class="center bold underline">Si requiere transferencia electrónica, favor de llenar
+                    los siguientes datos</td>
+            </tr>
+            <tr>
+                <th class="center">Cuenta Bancaria</th>
+                <td colspan="3" class="center">
+                    <p class="no-bold">
+                        <input type="text" class="cuenta-bancaria" placeholder="Ingrese cuenta bancaria">
+                        <span class="print-text-banca"></span>
+                    </p>
+                </td>
             </tr>
         </table>
 
@@ -380,10 +424,10 @@
             <tr>
                 <th>SOLICITA</th>
                 <th>AUTORIZA</th>
-                <th>VO. BO.</th>
+                <th>REVISA</th>
             </tr>
             <tr class="sign-space">
-                <td>{{ $solicitud->user->name }}</td>
+                <td>{{ $comprobacion->solicitudviatico->user->name }}</td>
                 <td>{{ $user->name }}</td>
                 <td></td>
             </tr>
@@ -397,12 +441,22 @@
 
     <button class="print-button" onclick="prepareForPrint()">Vista Previa / Imprimir</button>
 
-
     <script>
         function prepareForPrint() {
-            var input = document.querySelector('.form-control');
-            var span = document.querySelector('.print-text');
-            span.textContent = input.value;
+            // Para el campo de texto general
+            var generalInput = document.querySelector('.form-control');
+            var generalSpan = document.querySelector('.print-text');
+            generalSpan.textContent = generalInput.value;
+
+            // Para el campo de cuenta bancaria
+            var cuentaInput = document.querySelector('.cuenta-bancaria');
+            var cuentaSpan = document.querySelector('.print-text-banca');
+            if (cuentaInput.value.trim() === "") {
+                cuentaSpan.textContent = "N/D (N/D: N/D)";
+            } else {
+                cuentaSpan.textContent = cuentaInput.value;
+            }
+
             window.print();
         }
 
@@ -415,12 +469,11 @@
             };
             document.getElementById('current-date').textContent = currentDate.toLocaleDateString('es-ES', options);
 
-            // Establecer la paginación (asumiendo que el documento se maneja en una sola página para este ejemplo)
             document.getElementById('current-page').textContent = '1';
-            document.getElementById('total-pages').textContent = '1'; // Cambiar según la cantidad de páginas real
+            document.getElementById('total-pages').textContent = '1';
         }
 
-        window.onload = updateDateAndPagination; // Asegura que la función se ejecuta después de cargar el documento
+        window.onload = updateDateAndPagination;
 
         function numberToWords(num) {
             const units = ['Cero', 'Uno', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve', 'Diez',
