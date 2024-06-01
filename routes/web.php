@@ -274,14 +274,17 @@ Route::post('/notificaciones/{id}/marcar-como-leida', [NotificacionController::c
 
 
 Route::get('/comprobaciones', [ComprobacionesController::class, 'listaComprobaciones'])
-    ->name('comprobaciones.lista');
+    ->name('comprobaciones.lista')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 
 Route::get('/comprobacion/{id}', [ComprobacionesController::class, 'verComprobacion'])
-    ->name('ver.comprobacion');
+    ->name('ver.comprobacion')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 Route::post('/save-comprobacion/{id}', [ComprobacionesController::class, 'store'])
-    ->name('guardar.comprobacion');
+    ->name('guardar.comprobacion')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 
 
@@ -304,7 +307,9 @@ Route::get('/pruebasPDF', function () {
 
 // PDF generados en historial
 Route::get('/cheque/{id}', [SolicitudController::class, 'verCheque'])
-    ->name('generar.cheque');
+    ->name('generar.cheque')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 Route::get('/comprobacion/pdf/{id}', [ComprobacionesController::class, 'verComprobacionGasto'])
-    ->name('generar.coprobacion');
+    ->name('generar.coprobacion')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
