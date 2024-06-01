@@ -46,75 +46,75 @@ Route::get('/perfil', function () {
 
 Route::get('/usuarios', [Usuarios::class, 'listaUsuarios'])
     ->name('usuarios.lista')
-    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin', 'Ciberseguridad');
 
 Route::get('/RegistrarUsuario', function () {
     return view('dashboard/usuarios/alta-usuario');
 })->name('registrar.usuario')
-    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin', 'Ciberseguridad');
 
 Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario')
-    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin', 'Ciberseguridad');
 
 Route::put('/usuarios/{id}/toggle', [Usuarios::class, 'toggleUsuario'])->name('usuarios.toggle')
-    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin', 'Ciberseguridad');
 
 Route::delete('/usuarios/{id}', [Usuarios::class, 'eliminarUsuario'])->name('usuarios.delete')
-    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin', 'Ciberseguridad');
 
 Route::get('/editar-usuario/{id}', [Usuarios::class, 'editarUsuario'])->name('editar.usuario')
-    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin', 'Ciberseguridad');
 
 Route::put('/usuario/{id}', [Usuarios::class, 'update'])->name('usuarios.update')
-    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin', 'Ciberseguridad');
 
 Route::post('/perfil/actualizar', [Usuarios::class, 'profileUpdate'])->name('perfil.actualizar')
-    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin,', 'Ciberseguridad');
 
 
 /* Clientes */
 
 Route::get('/clientes', [ClienteController::class, 'listaClientes'])
-    ->name('clientes.lista')->middleware('role:SuperAdmin,Administrador,Gerente General');
+    ->name('clientes.lista')->middleware('role:SuperAdmin,Gerente General');
 
 Route::post('/clientes-add', [ClienteController::class, 'agregarCliente'])
-    ->name('add.clientes')->middleware('role:SuperAdmin,Administrador,Gerente General');
+    ->name('add.clientes')->middleware('role:SuperAdmin,Gerente General');
 
 Route::put('/clientes-update/{id}', [ClienteController::class, 'editarCliente'])
     ->name('update.clientes')
-    ->middleware('role:SuperAdmin,Administrador,Gerente General');
+    ->middleware('role:SuperAdmin,Gerente General');
 
 
 Route::match(['get', 'post'], '/clientes/{id}/toggle-status', [ClienteController::class, 'toggleStatus'])
     ->name('clientes.toggleStatus')
-    ->middleware('role:SuperAdmin,Administrador,Gerente General');
+    ->middleware('role:SuperAdmin,Gerente General');
 
 Route::get('/eliminar-cliente/{id}', [ClienteController::class, 'eliminarCliente'])
     ->name('eliminar.cliente')
-    ->middleware('role:SuperAdmin,Administrador,Gerente General');
+    ->middleware('role:SuperAdmin,Gerente General');
 
 
 /* Proyectos */
 
 Route::get('/proyectos', [ProyectoController::class, 'listaProyectos'])
     ->name('proyectos.lista')
-    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
+    ->middleware('role:SuperAdmin,Gerente de Ventas');
 
 Route::post('/proyectos-add', [ProyectoController::class, 'agregarProyecto'])
     ->name('add.proyectos')
-    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
+    ->middleware('role:SuperAdmin,Gerente de Ventas');
 
 Route::put('/proyectos-update/{id}', [ProyectoController::class, 'editarProyecto'])
     ->name('update.proyectos')
-    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
+    ->middleware('role:SuperAdmin,Gerente de Ventas');
 
 Route::match(['get', 'post'], '/proyectos/{id}/toggle-status', [ProyectoController::class, 'toggleStatus'])
     ->name('proyectos.toggleStatus')
-    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
+    ->middleware('role:SuperAdmin,Gerente de Ventas');
 
 Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProyecto'])
     ->name('proyectos.eliminar')
-    ->middleware('role:SuperAdmin,Administrador,Gerente de Ventas');
+    ->middleware('role:SuperAdmin,Gerente de Ventas');
 
 
 
@@ -122,41 +122,41 @@ Route::get('/eliminar-proyecto/{id}', [ProyectoController::class, 'eliminarProye
 
 Route::get('/empleados', [EmpleadoController::class, 'listaEmpleados'])
     ->name('empleados.lista')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 Route::match(['get', 'post'], '/empleados/{id}/toggle-status', [EmpleadoController::class, 'toggleStatus'])
     ->name('empleados.toggleStatus')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 Route::get('/altaEmpleado', function () {
     return view('dashboard/empleados/alta-empleado');
 })->name('alta.empleado')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 Route::post('/guardar-empleado', [EmpleadoController::class, 'agregarEmpleado'])
     ->name('add.empleado')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 Route::get('/editar-empleado/{id}', [EmpleadoController::class, 'cargarEmpleado'])
     ->name('cargar.empleado')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 Route::put('/update-empleado/{id}', [EmpleadoController::class, 'actualizarEmpleado'])
     ->name('update.empleado')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 
 Route::get('/archivo-empleado/{id}', [EmpleadoController::class, 'documentoEmpleado'])
     ->name('documentos.empleado')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 Route::post('/documento-empleado/{id}', [EmpleadoController::class, 'addDocumentoEmpleado'])
     ->name('documentos.empleado.guardar')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 Route::get('/documentos/empleado/{id}/descargar/{tipo}', [EmpleadoController::class, 'descargarDocumento'])
     ->name('documentos.empleado.descargar')
-    ->middleware('role:SuperAdmin,Administrador,Recursos Humanos');
+    ->middleware('role:SuperAdmin,Recursos Humanos');
 
 
 
@@ -256,7 +256,8 @@ Route::get('/download-file/pdf/{id}', function ($id) {
     } else {
         return response()->json(['message' => 'Archivo no encontrado'], 404);
     }
-});
+})
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 //_________________
 
