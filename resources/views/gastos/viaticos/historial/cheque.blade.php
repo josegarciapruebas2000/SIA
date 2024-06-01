@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitud de Comprobación de Gastos</title>
+    <title>SOLICITUD DE CHEQUE ELETRONICO</title>
     <style>
         .print-button {
             padding: 10px 20px;
