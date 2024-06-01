@@ -46,30 +46,30 @@ Route::get('/perfil', function () {
 
 Route::get('/usuarios', [Usuarios::class, 'listaUsuarios'])
     ->name('usuarios.lista')
-    ->middleware('role:SuperAdmin','Ciberseguridad');
+    ->middleware('role:SuperAdmin,Ciberseguridad');
 
 Route::get('/RegistrarUsuario', function () {
     return view('dashboard/usuarios/alta-usuario');
 })->name('registrar.usuario')
-    ->middleware('role:SuperAdmin', 'Ciberseguridad');
+    ->middleware('role:SuperAdmin,Ciberseguridad');
 
 Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario')
-    ->middleware('role:SuperAdmin','Ciberseguridad');
+    ->middleware('role:SuperAdmin,Ciberseguridad');
 
 Route::put('/usuarios/{id}/toggle', [Usuarios::class, 'toggleUsuario'])->name('usuarios.toggle')
-    ->middleware('role:SuperAdmin','Ciberseguridad');
+    ->middleware('role:SuperAdmin,Ciberseguridad');
 
 Route::delete('/usuarios/{id}', [Usuarios::class, 'eliminarUsuario'])->name('usuarios.delete')
-    ->middleware('role:SuperAdmin','Ciberseguridad');
+    ->middleware('role:SuperAdmin,Ciberseguridad');
 
 Route::get('/editar-usuario/{id}', [Usuarios::class, 'editarUsuario'])->name('editar.usuario')
-    ->middleware('role:SuperAdmin','Ciberseguridad');
+    ->middleware('role:SuperAdmin,Ciberseguridad');
 
 Route::put('/usuario/{id}', [Usuarios::class, 'update'])->name('usuarios.update')
-    ->middleware('role:SuperAdmin','Ciberseguridad');
+    ->middleware('role:SuperAdmin,Ciberseguridad');
 
 Route::post('/perfil/actualizar', [Usuarios::class, 'profileUpdate'])->name('perfil.actualizar')
-    ->middleware('role:SuperAdmin','Ciberseguridad');
+    ->middleware('role:SuperAdmin,Ciberseguridad');
 
 
 /* Clientes */
