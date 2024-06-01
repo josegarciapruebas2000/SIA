@@ -203,6 +203,8 @@
                                         Pemex</option>
                                     <option value="Privada"
                                         {{ $cliente->CategoriaCliente === 'Privada' ? 'selected' : '' }}>Privada</option>
+                                    <option value="Gobierno"
+                                        {{ $cliente->CategoriaCliente === 'Gobierno' ? 'selected' : '' }}>Gobierno</option>
                                 </select>
                             </div>
                             <br>
