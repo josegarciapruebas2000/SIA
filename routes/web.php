@@ -41,26 +41,35 @@ Route::post('/login', [LoginController::class, 'authenticate'])->name('login.aut
 
 Route::get('/perfil', function () {
     return view('dashboard/usuarios/profile');
-})->name('profile');
+})->name('profile')
+    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 Route::get('/usuarios', [Usuarios::class, 'listaUsuarios'])
     ->name('usuarios.lista')
-    ->middleware('role:SuperAdmin,Administrador');
+    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
 
 Route::get('/RegistrarUsuario', function () {
     return view('dashboard/usuarios/alta-usuario');
-})->name('registrar.usuario');
+})->name('registrar.usuario')
+    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
 
-Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario');
+Route::post('/guardar-usuario', [Usuarios::class, 'guardar'])->name('guardar.usuario')
+    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
 
-Route::put('/usuarios/{id}/toggle', [Usuarios::class, 'toggleUsuario'])->name('usuarios.toggle');
-Route::delete('/usuarios/{id}', [Usuarios::class, 'eliminarUsuario'])->name('usuarios.delete');
+Route::put('/usuarios/{id}/toggle', [Usuarios::class, 'toggleUsuario'])->name('usuarios.toggle')
+    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
 
-Route::get('/editar-usuario/{id}', [Usuarios::class, 'editarUsuario'])->name('editar.usuario')->middleware('role:SuperAdmin,Administrador');
+Route::delete('/usuarios/{id}', [Usuarios::class, 'eliminarUsuario'])->name('usuarios.delete')
+    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
 
-Route::put('/usuario/{id}', [Usuarios::class, 'update'])->name('usuarios.update');
+Route::get('/editar-usuario/{id}', [Usuarios::class, 'editarUsuario'])->name('editar.usuario')
+    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
 
-Route::post('/perfil/actualizar', [Usuarios::class, 'profileUpdate'])->name('perfil.actualizar');
+Route::put('/usuario/{id}', [Usuarios::class, 'update'])->name('usuarios.update')
+    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
+
+Route::post('/perfil/actualizar', [Usuarios::class, 'profileUpdate'])->name('perfil.actualizar')
+    ->middleware('role:SuperAdmin,Administrador', 'Ciberseguridad');
 
 
 /* Clientes */
