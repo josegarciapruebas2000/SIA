@@ -120,8 +120,10 @@
                                     <button type="button" class="btn btn-outline-warning btn-sm mx-1 btn-editar"
                                         data-bs-toggle="modal" data-bs-target="#editarModal{{ $proyecto->idProy }}"
                                         data-proyecto-id="{{ $proyecto->idProy }}">Editar</button>
-                                    <a href="{{ route('proyectos.eliminar', ['id' => $proyecto->idProy]) }}"
-                                        class="btn btn-outline-danger btn-sm mx-1">Eliminar</a>
+                                    @unless ($proyecto->solicitudesAsociadas)
+                                        <a href="{{ route('proyectos.eliminar', ['id' => $proyecto->idProy]) }}"
+                                            class="btn btn-outline-danger btn-sm mx-1">Eliminar</a>
+                                    @endunless
                                 </td>
                             </tr>
                         @endforeach

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Proyecto;
 use App\Models\ProyectoUsuario;
+use App\Models\SolicitudViaticos;
 use App\Models\Cliente;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,6 +36,11 @@ class ProyectoController extends Controller
         // Obtener los proyectos filtrados y paginados
         $proyectos = $query->orderBy('idProy', 'desc')->paginate(5);
 
+        // Verificar si cada proyecto tiene solicitudes de viáticos asociadas
+        foreach ($proyectos as $proyecto) {
+            $proyecto->solicitudesAsociadas = SolicitudViaticos::where('idProy_via', $proyecto->idProy)->exists();
+        }
+
         // Obtener todos los clientes disponibles
         $clientes = Cliente::all();
 
@@ -43,13 +49,13 @@ class ProyectoController extends Controller
             ->where('role', '!=', 'SuperAdmin')
             ->get();
 
-        //Obtener lista de la tabla pivote proyecto_usuario
+        // Obtener lista de la tabla pivote proyecto_usuario
         $pivotes = ProyectoUsuario::all();
-
 
         // Pasar los proyectos y clientes a la vista
         return view('dashboard.proyectos.proyectos', compact('proyectos', 'clientes', 'usuarios', 'pivotes'));
     }
+
 
 
     public function agregarProyecto(Request $request)
@@ -125,10 +131,16 @@ class ProyectoController extends Controller
         return redirect()->back()->with('success', 'El estado del proyecto se ha cambiado correctamente.');
     }
 
-    public function eliminarProyecto($id)
+    public function eliminarProyecto(Request $request, $id)
     {
-        Proyecto::where('idProy', $id)->delete();
+        $proyecto = Proyecto::findOrFail($id);
+        $solicitudesAsociadas = SolicitudViaticos::where('idProy_via', $id)->exists();
 
-        return redirect()->route('proyectos.lista')->with('success', 'Proyecto eliminado correctamente.');
+        if (!$solicitudesAsociadas) {
+            $proyecto->delete();
+            return redirect()->route('proyectos.lista')->with('success', 'Proyecto eliminado correctamente.');
+        } else {
+            return redirect()->route('proyectos.lista')->with('error', 'No se puede eliminar el proyecto porque tiene solicitudes de viáticos asociadas.');
+        }
     }
 }
