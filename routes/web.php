@@ -241,23 +241,27 @@ Route::get('/historial-comprobacion/{id}', [ComprobacionesController::class, 'hi
 Route::get('/download-file/xml/{id}', function ($id) {
     $documento = ComprobacionDocumento::find($id);
     if ($documento && Storage::disk('public')->exists($documento->xml_path)) {
-        $originalName = $documento->original_xml_name ?? 'factura.xml';
-        return response()->download(storage_path('app/public/' . $documento->xml_path), $originalName);
+        $path = $documento->xml_path;
+        $originalName = basename($path); // Extrae solo el nombre del archivo
+        return response()->download(storage_path('app/public/' . $path), $originalName);
     } else {
         return response()->json(['message' => 'Archivo no encontrado'], 404);
     }
 })->name('descargar.xml');
 
+
 // Descargar pdf FACTURA
 Route::get('/download-file/pdf/{id}', function ($id) {
     $documento = ComprobacionDocumento::find($id);
     if ($documento && Storage::disk('public')->exists($documento->pdf_path)) {
-        $originalName = $documento->original_pdf_name ?? 'factura.pdf';
-        return response()->download(storage_path('app/public/' . $documento->pdf_path), $originalName);
+        $path = $documento->pdf_path;
+        $originalName = basename($path); // Extrae solo el nombre del archivo
+        return response()->download(storage_path('app/public/' . $path), $originalName);
     } else {
         return response()->json(['message' => 'Archivo no encontrado'], 404);
     }
 });
+
 //_________________
 
 
