@@ -579,95 +579,81 @@
 
 
         document.getElementById('guardar-datos').addEventListener('click', function(event) {
-            event.preventDefault(); // Evita el envío del formulario inmediatamente
+    event.preventDefault(); // Evita el envío del formulario inmediatamente
 
-            // Deshabilitar el botón para prevenir múltiples envíos
-            const btn = this;
-            btn.disabled = true;
-            btn.textContent = 'Enviando...'; // Cambiar el texto del botón para indicar el proceso
+    // Deshabilitar el botón para prevenir múltiples envíos
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Enviando...'; // Cambiar el texto del botón para indicar el proceso
 
-            const revisorId = document.getElementById('revisor').value; // Obtener el ID del revisor seleccionado
-            const montoComprobadoText = document.getElementById('monto-comprobado').textContent.replace(
-                'Monto comprobado: $', '').replace(',', '');
-            const montoComprobado = parseFloat(montoComprobadoText) || 0;
+    const revisorId = document.getElementById('revisor').value; // Obtener el ID del revisor seleccionado
+    const montoComprobadoText = document.getElementById('monto-comprobado').textContent.replace('Monto comprobado: $', '').replace(',', '');
+    const montoComprobado = parseFloat(montoComprobadoText) || 0;
 
-            const formData = new FormData();
-            const tableRows = document.querySelectorAll('#table-body tr');
+    const formData = new FormData();
+    const tableRows = document.querySelectorAll('#table-body tr');
 
-            // Logs para verificar la correspondencia de los archivos
-            console.log("Verificación de los archivos antes de enviar:");
-            tableRows.forEach((row, index) => {
-                console.log(`Fila ${index}:`);
-                console.log(`XML File: ${xmlFiles[index] ? xmlFiles[index].name : 'No file'}`);
-                console.log(`PDF File: ${pdfFiles[index] ? pdfFiles[index].name : 'No file'}`);
-            });
+    formData.append('revisor_id', revisorId); // Cambiado de 'nivel' a 'revisor_id'
+    formData.append('monto_comprobado', montoComprobado);
 
-            formData.append('revisor_id', revisorId); // Cambiado de 'nivel' a 'revisor_id'
-            formData.append('monto_comprobado', montoComprobado);
+    tableRows.forEach((row, index) => {
+        const cells = row.children;
+        formData.append(`documentos[${index}][N_factura]`, cells[0].textContent.trim());
+        formData.append(`documentos[${index}][fecha_subida]`, new Date().toISOString().slice(0, 10));
+        formData.append(`documentos[${index}][descripcion]`, cells[1].textContent.trim());
+        formData.append(`documentos[${index}][subtotal]`, cells[2].textContent.trim());
+        formData.append(`documentos[${index}][iva]`, cells[3].textContent.trim());
+        formData.append(`documentos[${index}][total]`, cells[4].textContent.trim());
 
-            tableRows.forEach((row, index) => {
-                const cells = row.children;
-                formData.append(`documentos[${index}][N_factura]`, cells[0].textContent.trim());
-                formData.append(`documentos[${index}][fecha_subida]`, new Date().toISOString().slice(0,
-                10));
-                formData.append(`documentos[${index}][descripcion]`, cells[1].textContent.trim());
-                formData.append(`documentos[${index}][subtotal]`, cells[2].textContent.trim());
-                formData.append(`documentos[${index}][iva]`, cells[3].textContent.trim());
-                formData.append(`documentos[${index}][total]`, cells[4].textContent.trim());
+        // Utilizar los arrays xmlFiles y pdfFiles para añadir los archivos al formData
+        if (xmlFiles[index]) {
+            formData.append(`documentos[${index}][xml]`, xmlFiles[index]);
+        }
+        if (pdfFiles[index]) {
+            formData.append(`documentos[${index}][pdf]`, pdfFiles[index]);
+        }
+    });
 
-                // Utilizar los arrays xmlFiles y pdfFiles para añadir los archivos al formData
-                if (xmlFiles[index]) {
-                    formData.append(`documentos[${index}][xml]`, xmlFiles[index]);
-                }
-                if (pdfFiles[index]) {
-                    formData.append(`documentos[${index}][pdf]`, pdfFiles[index]);
-                }
-            });
+    const id = window.location.pathname.split('/').pop(); // Obtiene el ID de la URL actual
 
-            const id = window.location.pathname.split('/').pop(); // Obtiene el ID de la URL actual
-
-            fetch(`/save-comprobacion/${id}`, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        Swal.fire({
-                            title: "Listo",
-                            text: data.message,
-                            icon: "success"
-                        }).then(() => {
-                            window.location.href =
-                            '/comprobaciones'; // Redirige a la lista de comprobaciones después de cerrar el modal
-                        });
-                    } else if (data.error) {
-                        btn.disabled = false;
-                        btn.textContent = 'Enviar'; // Restaurar texto del botón si hay un error
-                        Swal.fire({
-                            title: "Error",
-                            text: data.error,
-                            icon: "error"
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    btn.disabled = false;
-                    btn.textContent = 'Enviar'; // Restaurar texto del botón si hay un error
-                    Swal.fire({
-                        title: "Error",
-                        text: 'Ocurrió un error al guardar los documentos.',
-                        icon: "error"
-                    });
+    fetch(`/save-comprobacion/${id}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                Swal.fire({
+                    title: "Listo",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    window.location.href = '/comprobaciones'; // Redirige a la lista de comprobaciones después de cerrar el modal
                 });
+            } else if (data.error) {
+                btn.disabled = false;
+                btn.textContent = 'Enviar'; // Restaurar texto del botón si hay un error
+                Swal.fire({
+                    title: "Error",
+                    text: data.error,
+                    icon: "error"
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            btn.disabled = false;
+            btn.textContent = 'Enviar'; // Restaurar texto del botón si hay un error
+            Swal.fire({
+                title: "Error",
+                text: 'Ocurrió un error al guardar los documentos.',
+                icon: "error"
+            });
         });
-
-
+});
 
 
 

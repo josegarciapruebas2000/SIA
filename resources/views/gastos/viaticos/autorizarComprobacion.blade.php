@@ -123,29 +123,29 @@
                         <strong> - </strong>
                         {{ Carbon::parse($solicitud->solFinalFecha_via)->translatedFormat('d \\ F \\ Y') }}</label>
 
-                        <br><br>
-                        <div class="row mb-3 text-center">
-                            <div class="col">
-                                <label for="tutor" class="form-label">
-                                    <h5>
-                                        <strong>Monto solicitado: $
-                                            {{ $solicitud->total_via }}
-                                        </strong>
-                                    </h5>
-                                </label>
-                            </div>
-                        
-                            <div class="col">
-                                <label for="tutor" class="form-label">
-                                    <h5>
-                                        <strong>Monto comprobado: $
-                                            {{ $comprobacionInfo->monto_comprobado }}
-                                        </strong>
-                                    </h5>
-                                </label>
-                            </div>
+                    <br><br>
+                    <div class="row mb-3 text-center">
+                        <div class="col">
+                            <label for="tutor" class="form-label">
+                                <h5>
+                                    <strong>Monto solicitado: $
+                                        {{ $solicitud->total_via }}
+                                    </strong>
+                                </h5>
+                            </label>
                         </div>
-                        
+
+                        <div class="col">
+                            <label for="tutor" class="form-label">
+                                <h5>
+                                    <strong>Monto comprobado: $
+                                        {{ $comprobacionInfo->monto_comprobado }}
+                                    </strong>
+                                </h5>
+                            </label>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -189,7 +189,8 @@
                         <div class="col-12 col-md-6 text-end mb-2">
                             <div class="d-flex justify-content-end flex-wrap">
                                 <!-- Botón para aceptar -->
-                                <form method="POST" action="{{ route('actualizar_estado_comprobacion', ['id' => $comprobacionInfo->idComprobacion]) }}"
+                                <form method="POST"
+                                    action="{{ route('actualizar_estado_comprobacion', ['id' => $comprobacionInfo->idComprobacion]) }}"
                                     class="me-2 mb-2">
                                     @csrf
                                     <button type="submit" name="estado" value="aceptar" class="btn btn-primary">
@@ -198,7 +199,8 @@
                                 </form>
 
                                 <!-- Botón para rechazar -->
-                                <form method="POST" action="{{ route('actualizar_estado_comprobacion', ['id' => $comprobacionInfo->idComprobacion]) }}"
+                                <form method="POST"
+                                    action="{{ route('actualizar_estado_comprobacion', ['id' => $comprobacionInfo->idComprobacion]) }}"
                                     class="mb-2">
                                     @csrf
                                     <button type="submit" name="estado" value="rechazar" class="btn btn-danger">
@@ -234,7 +236,8 @@
                                                 ID</th>
                                             <th scope="col" style="background-color: #4772C6; color: white;">
                                                 Factura</th>
-                                            <th scope="col" style="background-color: #4772C6; color: white;">Descripción
+                                            <th scope="col" style="background-color: #4772C6; color: white;">
+                                                Descripción
                                             </th>
                                             <th scope="col" style="background-color: #4772C6; color: white;">SubTotal
                                             </th>

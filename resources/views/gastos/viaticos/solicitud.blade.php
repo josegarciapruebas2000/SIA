@@ -105,7 +105,8 @@
             </div>
             <div class="col-sm-6 col-md-6 col-lg-6">
                 <div class="d-flex justify-content-center justify-content-sm-start">
-                    <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button type="submit" class="btn btn-primary" id="submit-button" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
                         <!-- Icono SVG con clase de tamaño -->
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="bi me-2" width="24"
                             height="24">
@@ -212,5 +213,17 @@
 
         document.getElementById('fecha_inicio').onchange = validarPeriodo;
         document.getElementById('fecha_fin').onchange = validarPeriodo;
+
+        document.getElementById('submit-button').addEventListener('click', function(event) {
+            // Obtener el botón
+            const btn = this;
+
+            // Cambiar el texto y deshabilitar el botón
+            btn.textContent = 'Enviando...';
+            btn.disabled = true;
+
+            // Asegurarse de que el formulario se envía después de deshabilitar el botón
+            btn.closest('form').submit();
+        });
     </script>
 @endsection

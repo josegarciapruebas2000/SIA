@@ -84,104 +84,101 @@ class ComprobacionesController extends Controller
     }
 
     public function store(Request $request, $id)
-    {
-        try {
-            // Obtener id del revisor
-            $revisorId = $request->input('revisor_id');
+{
+    try {
+        // Obtener id del revisor
+        $revisorId = $request->input('revisor_id');
 
-            // Obtener el monto comprobado del campo en el formulario
-            $montoComprobado = floatval(str_replace('$', '', $request->input('monto_comprobado')));
+        // Obtener el monto comprobado del campo en el formulario
+        $montoComprobado = floatval(str_replace('$', '', $request->input('monto_comprobado')));
 
-            // Buscar el usuario en la tabla de Users y obtener su nivel
-            $revisor = User::find($revisorId);
-            if (!$revisor) {
-                return response()->json(['error' => 'Revisor no encontrado'], 404);
-            }
-            $nivelRevisor = $revisor->nivel;
-
-            // Crear una nueva instancia de ComprobacionInfo y asignar valores
-            $comprobacion = new ComprobacionInfo();
-            $comprobacion->folio_via = $id;
-            $comprobacion->monto_comprobado = $montoComprobado;
-            $comprobacion->nivel = $nivelRevisor;
-            $comprobacion->fechaComprobacion = now();  // Guardar fecha y hora actual
-
-            // Ajustar los valores de aceptadoNivel1, aceptadoNivel2, y aceptadoNivel3 según el nivel del revisor
-            if ($nivelRevisor == 1) {
-                $comprobacion->aceptadoNivel1 = 0;
-                $comprobacion->aceptadoNivel2 = 0;
-                $comprobacion->aceptadoNivel3 = 0;
-            } elseif ($nivelRevisor == 2) {
-                $comprobacion->aceptadoNivel1 = 1;
-                $comprobacion->aceptadoNivel2 = 0;
-                $comprobacion->aceptadoNivel3 = 0;
-            } elseif ($nivelRevisor == 3) {
-                $comprobacion->aceptadoNivel1 = 1;
-                $comprobacion->aceptadoNivel2 = 1;
-                $comprobacion->aceptadoNivel3 = 0;
-            }
-
-            $comprobacion->save();
-
-            $solicitud = SolicitudViaticos::findOrFail($id);
-            $solicitud->comprobacionVisible = 0;
-            $solicitud->save();
-
-            // Crear una nueva notificación 
-            $contenido = "Tienes una nueva comprobación por aprobar del folio {$comprobacion->folio_via}";
-            $notificacion = new Notificacion([
-                'titulo' => 'Nueva comprobación', // Asignar un título a la notificación
-                'mensaje' => $contenido, // Asignar el contenido como el mensaje de la notificación
-                'leida' => false,
-                'nivel' => $nivelRevisor, // Asignar el siguiente nivel
-                'folio_via' => $comprobacion->folio_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
-            ]);
-
-            // Guardar la notificación
-            $notificacion->save();
-
-            // Verificar si el ID de comprobacion se asignó correctamente
-            if (is_null($comprobacion->idComprobacion)) {
-                Log::error('El ID de comprobacion es nulo después de guardar.');
-                throw new \Exception('El ID de comprobacion es nulo después de guardar.');
-            }
-
-            Log::info('ID de Comprobacion generado: ' . $comprobacion->idComprobacion);
-
-            // Guardar documentos asociados
-            foreach ($request->documentos as $index => $documento) {
-                $xmlPath = $request->hasFile("documentos.$index.xml") ? $request->file("documentos.$index.xml")->store('xmls', 'public') : null;
-                $pdfPath = $request->hasFile("documentos.$index.pdf") ? $request->file("documentos.$index.pdf")->store('pdfs', 'public') : null;
-
-                Log::info('Guardando documento ' . $index);
-
-                ComprobacionDocumento::create([
-                    'idComprobacion' => $comprobacion->idComprobacion, // Usar el ID de la comprobación creada
-                    'fecha_subida' => $documento['fecha_subida'],
-                    'descripcion' => $documento['descripcion'],
-                    'N_factura' => $documento['N_factura'],
-                    'subtotal' => $documento['subtotal'],
-                    'iva' => $documento['iva'],
-                    'total' => $documento['total'],
-                    'xml_path' => $xmlPath,
-                    'pdf_path' => $pdfPath
-                ]);
-            }
-
-            // Obtener el ID del usuario autenticado
-            $userId = Auth::id();
-
-            // Eliminar las notificaciones existentes con el mismo folio y el mismo id del usuario
-            Notificacion::where('folio_via', $solicitud->FOLIO_via)
-                ->where('id_User', $solicitud->user_id)  // Asegurar que solo se eliminen las del usuario autenticado
-                ->delete();
-
-            return response()->json(['message' => 'Documentos guardados con éxito.'], 201);
-        } catch (\Exception $e) {
-            Log::error('Error al guardar los documentos: ' . $e->getMessage());
-            return response()->json(['error' => 'Ocurrió un error al guardar los documentos: ' . $e->getMessage()], 500);
+        // Buscar el usuario en la tabla de Users y obtener su nivel
+        $revisor = User::find($revisorId);
+        if (!$revisor) {
+            return response()->json(['error' => 'Revisor no encontrado'], 404);
         }
+        $nivelRevisor = $revisor->nivel;
+
+        // Crear una nueva instancia de ComprobacionInfo y asignar valores
+        $comprobacion = new ComprobacionInfo();
+        $comprobacion->folio_via = $id;
+        $comprobacion->monto_comprobado = $montoComprobado;
+        $comprobacion->nivel = $nivelRevisor;
+        $comprobacion->fechaComprobacion = now();  // Guardar fecha y hora actual
+
+        // Ajustar los valores de aceptadoNivel1, aceptadoNivel2, y aceptadoNivel3 según el nivel del revisor
+        if ($nivelRevisor == 1) {
+            $comprobacion->aceptadoNivel1 = 0;
+            $comprobacion->aceptadoNivel2 = 0;
+            $comprobacion->aceptadoNivel3 = 0;
+        } elseif ($nivelRevisor == 2) {
+            $comprobacion->aceptadoNivel1 = 1;
+            $comprobacion->aceptadoNivel2 = 0;
+            $comprobacion->aceptadoNivel3 = 0;
+        } elseif ($nivelRevisor == 3) {
+            $comprobacion->aceptadoNivel1 = 1;
+            $comprobacion->aceptadoNivel2 = 1;
+            $comprobacion->aceptadoNivel3 = 0;
+        }
+
+        $comprobacion->save();
+
+        $solicitud = SolicitudViaticos::findOrFail($id);
+        $solicitud->comprobacionVisible = 0;
+        $solicitud->save();
+
+        // Crear una nueva notificación 
+        $contenido = "Tienes una nueva comprobación por aprobar del folio {$comprobacion->folio_via}";
+        $notificacion = new Notificacion([
+            'titulo' => 'Nueva comprobación', // Asignar un título a la notificación
+            'mensaje' => $contenido, // Asignar el contenido como el mensaje de la notificación
+            'leida' => false,
+            'nivel' => $nivelRevisor, // Asignar el siguiente nivel
+            'folio_via' => $comprobacion->folio_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
+        ]);
+
+        // Guardar la notificación
+        $notificacion->save();
+
+        // Guardar documentos asociados
+        foreach ($request->documentos as $index => $documento) {
+            $xmlFile = $request->file("documentos.$index.xml");
+            $pdfFile = $request->file("documentos.$index.pdf");
+
+            $xmlName = $xmlFile->getClientOriginalName();
+            $pdfName = $pdfFile->getClientOriginalName();
+
+            $xmlPath = $xmlFile->storeAs('xmls', $xmlName, 'public');
+            $pdfPath = $pdfFile->storeAs('pdfs', $pdfName, 'public');
+
+            ComprobacionDocumento::create([
+                'idComprobacion' => $comprobacion->idComprobacion, // Usar el ID de la comprobación creada
+                'fecha_subida' => $documento['fecha_subida'],
+                'descripcion' => $documento['descripcion'],
+                'N_factura' => $documento['N_factura'],
+                'subtotal' => $documento['subtotal'],
+                'iva' => $documento['iva'],
+                'total' => $documento['total'],
+                'xml_path' => $xmlPath,
+                'pdf_path' => $pdfPath,
+                'original_xml_name' => $xmlName,
+                'original_pdf_name' => $pdfName,
+            ]);
+        }
+
+        // Eliminar las notificaciones existentes con el mismo folio y el mismo id del usuario
+        Notificacion::where('folio_via', $solicitud->FOLIO_via)
+            ->where('id_User', $solicitud->user_id)  // Asegurar que solo se eliminen las del usuario autenticado
+            ->delete();
+
+        return response()->json(['message' => 'Documentos guardados con éxito.'], 201);
+    } catch (\Exception $e) {
+        Log::error('Error al guardar los documentos: ' . $e->getMessage());
+        return response()->json(['error' => 'Ocurrió un error al guardar los documentos: ' . $e->getMessage()], 500);
     }
+}
+
+
 
 
 

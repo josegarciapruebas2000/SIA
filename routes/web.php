@@ -237,28 +237,27 @@ Route::get('/historial-comprobacion/{id}', [ComprobacionesController::class, 'hi
 
 
 
-//Descargar xml FACTURA
+// Descargar xml FACTURA
 Route::get('/download-file/xml/{id}', function ($id) {
     $documento = ComprobacionDocumento::find($id);
     if ($documento && Storage::disk('public')->exists($documento->xml_path)) {
-        return response()->download(storage_path('app/public/' . $documento->xml_path));
+        $originalName = $documento->original_xml_name ?? 'factura.xml';
+        return response()->download(storage_path('app/public/' . $documento->xml_path), $originalName);
     } else {
         return response()->json(['message' => 'Archivo no encontrado'], 404);
     }
 })->name('descargar.xml');
 
-
-//Descargar pdf FACTURA
+// Descargar pdf FACTURA
 Route::get('/download-file/pdf/{id}', function ($id) {
     $documento = ComprobacionDocumento::find($id);
     if ($documento && Storage::disk('public')->exists($documento->pdf_path)) {
-        return response()->download(storage_path('app/public/' . $documento->pdf_path));
+        $originalName = $documento->original_pdf_name ?? 'factura.pdf';
+        return response()->download(storage_path('app/public/' . $documento->pdf_path), $originalName);
     } else {
         return response()->json(['message' => 'Archivo no encontrado'], 404);
     }
-})
-    ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
-
+});
 //_________________
 
 
