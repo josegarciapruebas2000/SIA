@@ -321,5 +321,5 @@ Route::get('/cheque/{id}', [SolicitudController::class, 'verCheque'])
     ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
 
 Route::get('/comprobacion/pdf/{id}', [ComprobacionesController::class, 'verComprobacionGasto'])
-    ->name('generar.coprobacion')
+    ->name('generar.comprobacion')
     ->middleware('role:SuperAdmin,Calidad,Ciberseguridad,Contador,Empleado,Gerencia,Gerente de Ventas,Gerente General,Recursos Humanos');
