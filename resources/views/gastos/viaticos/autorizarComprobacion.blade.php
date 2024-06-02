@@ -122,6 +122,30 @@
                         {{ Carbon::parse($solicitud->solicitudfecha_via)->translatedFormat('d \\ F \\ Y') }}
                         <strong> - </strong>
                         {{ Carbon::parse($solicitud->solFinalFecha_via)->translatedFormat('d \\ F \\ Y') }}</label>
+
+                        <br><br>
+                        <div class="row mb-3 text-center">
+                            <div class="col">
+                                <label for="tutor" class="form-label">
+                                    <h5>
+                                        <strong>Monto solicitado: $
+                                            {{ $solicitud->total_via }}
+                                        </strong>
+                                    </h5>
+                                </label>
+                            </div>
+                        
+                            <div class="col">
+                                <label for="tutor" class="form-label">
+                                    <h5>
+                                        <strong>Monto comprobado: $
+                                            {{ $comprobacionInfo->monto_comprobado }}
+                                        </strong>
+                                    </h5>
+                                </label>
+                            </div>
+                        </div>
+                        
                 </div>
             </div>
 
