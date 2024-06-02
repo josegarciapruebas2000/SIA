@@ -127,6 +127,19 @@ class ComprobacionesController extends Controller
             $solicitud->comprobacionVisible = 0;
             $solicitud->save();
 
+            // Crear una nueva notificación 
+            $contenido = "Tienes una nueva comprobación por aprobar del folio {$comprobacion->folio_via}";
+            $notificacion = new Notificacion([
+                'titulo' => 'Nueva comprobación', // Asignar un título a la notificación
+                'mensaje' => $contenido, // Asignar el contenido como el mensaje de la notificación
+                'leida' => false,
+                'nivel' => $nivelRevisor, // Asignar el siguiente nivel
+                'folio_via' => $comprobacion->folio_via, // Asignar el valor de FOLIO_via de la solicitud de viáticos
+            ]);
+
+            // Guardar la notificación
+            $notificacion->save();
+
             // Verificar si el ID de comprobacion se asignó correctamente
             if (is_null($comprobacion->idComprobacion)) {
                 Log::error('El ID de comprobacion es nulo después de guardar.');
